@@ -1,0 +1,10 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*$py.class
+**/*.py[cod]
+*/**/Dockerfile
+.git
+.DS_Store
+.gitignore
+README.md
+env.*

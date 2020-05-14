@@ -1,0 +1,24 @@
+version: "3"
+
+services:
+  server:
+    build:
+      args:
+        DEV: "yes"
+    image: gaiachain-api-server-dev
+    command: ['flask', 'run', '--host=0.0.0.0']
+    environment:
+      - ENV=dev
+      - FLASK_DEBUG=1
+      - FLASK_APP=/app/server/autoapp.py
+    volumes:
+      - ../api/server:/app
+
+  sync:
+    image: gaiachain-api-sync-dev
+    volumes:
+      - ../api/sync:/app
+
+  db:
+    ports:
+      - '8025:8080'

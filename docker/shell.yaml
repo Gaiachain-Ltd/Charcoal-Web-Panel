@@ -1,0 +1,10 @@
+version: "3"
+
+services:
+  shell:
+    build:
+      context: ../shell
+    container_name: ${PREFIX}_shell
+    entrypoint: "./entrypoint.sh"
+    networks:
+      - validators

@@ -1,0 +1,5 @@
+from config.settings.base import *
+
+SECRET_KEY = env('DJANGO_SECRET_KEY', default='CHANGEME!!!')
+
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['localhost'])

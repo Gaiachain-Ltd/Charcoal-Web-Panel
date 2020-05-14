@@ -1,0 +1,52 @@
+{% load i18n %}
+{% load staticfiles %}
+
+<div class="main-content" id="packages"
+    v-if="active_subelement === 'package_chain'"
+    v-cloak>
+    <div class="start-content">
+        <div class="content-data">
+            <div class="chain-data">
+                <div class="title-block">
+                    <span class="title">{% trans "Supply Chain" %}</span>
+                    <div class="more" @click="getMap()">
+                        <span>{% trans 'Map View' %}</span>
+                        <img src="{% static 'img/icons_right_arrow.png' %}"/>
+                    </div>
+                </div>
+                <div class="actions">
+                    <div class="action" v-for="(action, key) in chain_list" v-bind:id="key">
+                        <div class="action-row">
+                            <div class="name-and-icon">
+                                <div class="action-icon-name">
+                                    <img :src="action.icon_name">
+                                    <div class="action-name">
+                                        [[ action.action_name ]]
+                                    </div>
+                                </div>
+                                <div class="action-dates">
+                                    <div class="action-date" v-for="(date, key) in action.dates" v-bind:id="key">
+                                        <div class="date-name">
+                                            [[ key ]]:
+                                        </div>
+                                        <div class="date-action">
+                                            [[ date ]]
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="action-position">
+                                <img src="{% static 'img/icon-position.png' %}">
+                                <div class="position-coordinates">
+                                    [[ action.location ]]
+                                </div>
+                            </div>
+                        </div>
+                        <div class="line-between"></div>
+{#                        [[action]]#}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,13 @@
+@import "_variables";
+@import "_auth";
+@import "_main";
+@import "_calendar";
+
+body, html{
+  width: 100%;
+  min-height: 100%;
+  padding: 0;
+  margin: 0;
+  font-family: $primary-font;
+  background-color: #FBFBFB;
+}

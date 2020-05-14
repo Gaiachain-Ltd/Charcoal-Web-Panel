@@ -1,0 +1,82 @@
+syntax = "proto3";
+
+package gaiachain;
+
+import "agent.proto";
+import "entity.proto";
+
+message SCPayload {
+    enum Action {
+        CREATE_AGENT = 0;
+        CREATE_ENTITY = 1;
+        CREATE_ENTITY_BATCH = 2;
+        MOVE_ENTITY_BATCH = 3;
+        MOVE_ENTITY = 4;
+    }
+
+    Action action = 1;
+
+    // Approximately when transaction was submitted, as a Unix UTC
+    // timestamp
+    uint64 timestamp = 2;
+
+    // The transaction handler will read from just one of these fields
+    // according to the Action.
+    CreateAgentAction create_agent = 3;
+    CreateEntityAction create_entity = 4;
+    CreateEntityBatchAction create_entity_batch = 5;
+    MoveEntityBatchAction move_entity_batch = 6;
+    MoveEntityAction move_entity = 7;
+}
+
+
+message CreateAgentAction {
+    Agent agent = 1;
+}
+
+message CreateEntityAction {
+    Entity entity = 1;
+}
+
+message CreateEntityBatchAction {
+    repeated Entity entities = 1;
+}
+
+message MoveEntityBatchAction {
+    string entity_batch_id = 1;
+    //EntityBatch.Status status = 2;
+
+    // step 2
+    uint64 breaking_date = 3;
+    uint64 end_fermentation_date = 4;
+    uint64 beans_volume = 5;
+
+    // step 3
+    uint64 reception_date = 6;
+    uint64 transport_date = 7;
+    string buyer = 8;
+}
+
+message MoveEntityAction {
+    string id = 1;
+    Entity.Status status = 2;
+
+    // step 2
+    uint64 breaking_date = 3;
+    uint64 end_fermentation_date = 4;
+    uint64 beans_volume = 5;
+
+    // step 3
+    uint64 reception_date = 6;
+    uint64 transport_date = 7; // also used in step 6
+    string buyer = 8;
+
+    // steps 4 & 5 go in CreateEntityAction within Entity itself
+
+    // step 6
+    string transporter = 9;
+    string destination = 10;
+
+    // step 7
+    uint64 weight = 11;
+}

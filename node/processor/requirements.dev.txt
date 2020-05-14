@@ -1,0 +1,4 @@
+-r requirements.txt
+pytest==4.1.0
+pytest-faker==2.0.0
+pytest-mock==1.10.0

@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package gaiachain;
+
+message Agent {
+  // Public key for auth
+  string public_key = 1;
+
+  // Email
+  string email = 2;
+
+  // Name of company
+  string company_name = 3;
+
+  enum Role {
+    SUPER_USER = 0;
+    INSPECTOR = 1;
+    PCA = 2;
+    WAREHOUSEMAN = 3;
+    COOPERATIVE_REPRESENTATIVE = 4;
+  }
+  // Agent role
+  Role role = 4;
+
+  // Unix UTC timestamp of approximately when this agent was registered
+  uint64 timestamp = 5;
+
+}
+
+message AgentContainer {
+  repeated Agent entries = 1;
+}

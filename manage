@@ -1,0 +1,218 @@
+#!/usr/bin/env python3
+import itertools
+import subprocess
+from enum import Enum
+
+import click
+
+
+class ComposeConfigBuilder:
+    COMPOSE_FILE = "docker/base.yaml"
+    COMPOSE_FILE_DEV = "docker/base.dev.yaml"
+    COMPOSE_CLIENT_FILE = "docker/client.yaml"
+    COMPOSE_CLIENT_FILE_DEV = "docker/client.dev.yaml"
+    COMPOSE_SHELL_FILE = "docker/shell.yaml"
+
+    def __init__(
+        self, name=None, client=False, shell=False, dev=False, env=None, commands=None
+    ):
+        self.name = name
+        self.client = client
+        self.shell = shell
+        self.dev = dev
+        self.env = env
+        self.commands = commands
+
+    def build(self):
+        cmds = ["docker-compose"]
+        cmds += self._get_project_name()
+        cmds += self._get_node_config_files()
+        cmds += self._get_client_config_files()
+        cmds += self._get_shell_config_files()
+        cmds += self._get_commands()
+
+        env = self._build_env()
+        return {"cmds": cmds, "env": env}
+
+    def _build_env(self):
+        env = {k: v for k, v in [env.split("=") for env in self.env]}
+        env["PREFIX"] = self.name
+        return env
+
+    def _get_project_name(self):
+        return self.cf(self.name, cmd="-p")
+
+    def _get_node_config_files(self):
+        return self.cf(self.COMPOSE_FILE, (self.COMPOSE_FILE_DEV, self.dev))
+
+    def _get_client_config_files(self):
+        if not self.client:
+            return []
+
+        return self.cf(
+            self.COMPOSE_CLIENT_FILE, (self.COMPOSE_CLIENT_FILE_DEV, self.dev)
+        )
+
+    def _get_shell_config_files(self):
+        if not self.shell:
+            return []
+
+        return self.cf(self.COMPOSE_SHELL_FILE)
+
+    def _get_commands(self):
+        return list(self.commands)
+
+    def cf(self, *values, cmd="-f"):
+        if not values:
+            return []
+
+        _vs = []
+        for v in values:
+            if type(v) in [list, tuple]:
+                if len(v) == 1:
+                    _vs.append(v[0])
+                elif len(v) > 1 and bool(v[1]):
+                    _vs.append(v[0])
+            elif v is not None:
+                _vs.append(v)
+
+        return list(itertools.chain(*[[cmd, v] for v in _vs]))
+
+    def print(self):
+        conf = self.build()
+
+        skip = len(self.commands)
+        if self.name:
+            echo = [
+                click.style(conf["cmds"][0], bold=True),
+                click.style(" ".join(conf["cmds"][1:3]), fg="red"),
+                click.style(" ".join(conf["cmds"][4:-skip]), fg="yellow"),
+                click.style(" ".join(conf["cmds"][-skip:]), bold=True),
+            ]
+        else:
+            echo = [
+                click.style(conf["cmds"][0], bold=True),
+                click.style(" ".join(conf["cmds"][1:-skip]), fg="yellow"),
+                click.style(" ".join(conf["cmds"][-skip:]), bold=True),
+            ]
+
+        envs = [click.style(" ".join(self.env), fg="blue")] if self.env else []
+
+        click.echo(" ".join(envs + echo))
+
+    def call(self):
+        conf = self.build()
+        subprocess.run("docker network create validators".split(), capture_output=True)
+        subprocess.call(conf["cmds"], env=conf["env"])
+
+
+@click.group(
+    context_settings={
+        "help_option_names": ["-h", "--help"],
+        "ignore_unknown_options": True,
+    }
+)
+def cli():
+    """Run docker-compose with selected additional compose files.
+
+    Usage: ./run [OPTIONS] -- [DOCKER-COMPOSE COMMANDS]...
+
+    All [OPTIONS] arguments are equal to docker-compose args. Running it
+    without arguments will use only `docker-compose.yaml` file as only
+    config file.
+    """
+
+
+@cli.command()
+@click.option("--name", help="Project name (i.e. `node1`).", default=None)
+@click.option(
+    "-s",
+    "--server",
+    is_flag=True,
+    help="Append server services (api, ledger sync and rethinkdb).",
+)
+@click.option("-c", "--shell", is_flag=True, help="Append command shell service.")
+@click.option("-d", "--dev", is_flag=True, help="Run dev mode.")
+@click.option("-e", "--env", multiple=True)
+@click.argument("commands", nargs=-1)
+def run(name, server=False, shell=False, dev=False, env=None, commands=None):
+    """Run docker-compose with selected additional compose files.
+
+    Usage: ./manage run [OPTIONS] -- [DOCKER-COMPOSE COMMANDS]...
+
+    All [OPTIONS] arguments are equal to docker-compose args. Running it
+    without arguments will use only `docker-compose.yaml` file as only
+    config file.
+    """
+    config = ComposeConfigBuilder(name, server, shell, dev, env, commands)
+    config.print()
+    config.call()
+
+
+class Nodes(Enum):
+    node1 = dict(name="node1", server=True, shell=True, env=["SERVER_PORT=8031"])
+    node2 = dict(
+        name="node2",
+        server=True,
+        env=["SERVER_PORT=8032", "PEERS=tcp://node1_validator:8800"],
+    )
+    node3 = dict(
+        name="node3",
+        env=["PEERS=tcp://node1_validator:8800," "tcp://node2_validator:8800"],
+    )
+    node4 = dict(
+        name="node4",
+        env=[
+            "PEERS=tcp://node1_validator:8800,tcp://node2_validator:8800,"
+            "tcp://node3_validator:8800"
+        ],
+    )
+    node5 = dict(
+        name="node5",
+        env=[
+            "PEERS=tcp://node1_validator:8800,tcp://node2_validator:8800,"
+            "tcp://node3_validator:8800,tcp://node4_validator:8800"
+        ],
+    )
+
+
+@cli.command()
+@click.argument("node", type=click.Choice([n.name for n in Nodes]))
+@click.argument("commands", nargs=-1)
+@click.pass_context
+def preset(ctx, node, commands):
+    """Run preset nodes.
+
+    Usage: ./manage preset [NODE] - [DOCKER-COMPOSE COMMANDS]...
+
+    [NODE] is node name, one of: node1, node2, node3, node4, node5.
+    """
+    config = Nodes[node]
+    ctx.invoke(run, commands=commands, **config.value)
+
+
+@cli.group(name="all")
+@click.pass_context
+def all_nodes(fake_arg=None):
+    """Run all nodes from 1 to 5 one by one."""
+    pass
+
+
+@all_nodes.command()
+@click.pass_context
+def up(ctx):
+    """Build and up all nodes."""
+    for n in Nodes:
+        ctx.invoke(preset, node=n.name, commands=["up", "-d", "--build"])
+
+
+@all_nodes.command()
+@click.pass_context
+def down(ctx):
+    """Stop all nodes."""
+    for n in Nodes:
+        ctx.invoke(preset, node=n.name, commands=["down"])
+
+
+if __name__ == "__main__":
+    cli()

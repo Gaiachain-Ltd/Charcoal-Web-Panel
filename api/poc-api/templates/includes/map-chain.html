@@ -1,0 +1,21 @@
+{% load i18n %}
+{% load staticfiles %}
+
+<div class="main-content" id="packages"
+    v-if="active_subelement === 'map_chain'"
+    v-cloak>
+    <div class="start-content">
+        <div class="content-data">
+            <div class="chain-data">
+                <div class="title-block">
+                    <span class="title">{% trans "Supply Chain" %}</span>
+                    <div class="more">
+                        <span @click="active_subelement = 'tracability_packages'">{% trans 'List View' %}</span>
+                        <img src="{% static 'img/icons_right_arrow.png' %}"/>
+                    </div>
+                </div>
+                <div id="mapid"></div>
+            </div>
+        </div>
+    </div>
+</div>

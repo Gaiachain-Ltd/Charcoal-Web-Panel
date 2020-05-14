@@ -1,0 +1,47 @@
+version: "3"
+
+#services:
+#  processor-0:
+#    build:
+#      args:
+#        DEV: "yes"
+#    image: gaiachain-tp-dev
+#    volumes:
+#      - ../node/processor/processor:/app/processor
+#      - ../node/processor/main.py:/app/main.py
+
+#  processor-1:
+#    build:
+#      args:
+#        DEV: "yes"
+#    image: gaiachain-tp-dev
+#    volumes:
+#      - ../node/processor/processor:/app/processor
+#      - ../node/processor/main.py:/app/main.py
+#
+#  processor-2:
+#    build:
+#      args:
+#        DEV: "yes"
+#    image: gaiachain-tp-dev
+#    volumes:
+#      - ../node/processor/processor:/app/processor
+#      - ../node/processor/main.py:/app/main.py
+#
+#  processor-3:
+#    build:
+#      args:
+#        DEV: "yes"
+#    image: gaiachain-tp-dev
+#    volumes:
+#      - ../node/processor/processor:/app/processor
+#      - ../node/processor/main.py:/app/main.py
+#
+#  processor-4:
+#    build:
+#      args:
+#        DEV: "yes"
+#    image: gaiachain-tp-dev
+#    volumes:
+#      - ../node/processor/processor:/app/processor
+#      - ../node/processor/main.py:/app/main.py

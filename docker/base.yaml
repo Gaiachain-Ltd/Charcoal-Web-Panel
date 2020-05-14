@@ -1,0 +1,126 @@
+version: "3"
+
+volumes:
+  poet-shared:
+
+networks:
+  validators:
+    external: true
+
+services:
+  validator:
+    image: hyperledger/sawtooth-validator:1.0
+    container_name: ${PREFIX}_validator
+    environment:
+      PEERS: $PEERS
+      VALIDATOR_HOST: ${PREFIX}_validator
+      VALIDATOR_ALIAS: ${PREFIX}.validator
+      VALIDATOR_PORT: 8800
+      SERVER_IP: ${SERVER_IP}
+    volumes:
+      - poet-shared:/poet-shared
+      - ./entrypoints/validator.sh:/validator.sh
+      - ./entrypoints/utils.sh:/utils.sh
+    command: bash /validator.sh
+    expose:
+      - 4004
+      - 5050
+      - 8800
+    ports:
+      - "8802:8800"
+    networks:
+      validators:
+        aliases:
+          - ${PREFIX}.validator
+    stop_signal: SIGKILL
+
+  node-api:
+    image: hyperledger/sawtooth-rest-api:1.1.2
+    container_name: ${PREFIX}_node-api
+    volumes:
+      - ./entrypoints/node-api.sh:/node-api.sh
+      - ./entrypoints/utils.sh:/utils.sh
+    environment:
+      VALIDATOR_HOST: ${PREFIX}_validator
+      VALIDATOR_ALIAS: ${PREFIX}.validator
+      VALIDATOR_PORT: 4004
+      API_HOST: ${PREFIX}_node-api
+      API_PORT: 8008
+    command: bash /node-api.sh
+    expose:
+      - 8008
+    networks:
+      - validators
+    stop_signal: SIGKILL
+
+  processor:
+    build:
+      context: ../
+      dockerfile: node/processor/Dockerfile
+    container_name: ${PREFIX}_processor
+    volumes:
+      - ./entrypoints/processor.sh:/processor.sh
+      - ./entrypoints/utils.sh:/utils.sh
+      - ../node/processor:/app
+      - ../protos/py/:/app/protos
+    environment:
+      VALIDATOR_HOST: ${PREFIX}_validator
+      VALIDATOR_ALIAS: ${PREFIX}.validator
+      VALIDATOR_PORT: 4004
+    command: bash /processor.sh
+    expose:
+      - 4004
+    networks:
+      - validators
+    stop_signal: SIGKILL
+
+  settings-tp:
+    image: hyperledger/sawtooth-settings-tp:1.1.2
+    container_name: ${PREFIX}_settings-tp
+    volumes:
+      - ./entrypoints/settings-tp.sh:/settings-tp.sh
+      - ./entrypoints/utils.sh:/utils.sh
+    environment:
+      VALIDATOR_HOST: ${PREFIX}_validator
+      VALIDATOR_ALIAS: ${PREFIX}.validator
+      VALIDATOR_PORT: 4004
+    command: bash /settings-tp.sh
+    expose:
+      - 4004
+    networks:
+      - validators
+    stop_signal: SIGKILL
+
+  poet-engine:
+    image: hyperledger/sawtooth-poet-engine:1.1.2
+    container_name: ${PREFIX}_poet-engine
+    volumes:
+      - poet-shared:/poet-shared
+      - ./entrypoints/poet-engine.sh:/poet-engine.sh
+      - ./entrypoints/utils.sh:/utils.sh
+    environment:
+      PEERS: $PEERS
+      VALIDATOR_HOST: ${PREFIX}_validator
+      VALIDATOR_ALIAS: ${PREFIX}.validator
+      VALIDATOR_PORT: 4004
+    command: bash /poet-engine.sh
+    networks:
+      - validators
+    stop_signal: SIGKILL
+
+  poet-validator-registry-tp:
+    image: hyperledger/sawtooth-poet-validator-registry-tp:1.1.2
+    container_name: ${PREFIX}_poet-validator-registry-tp
+    volumes:
+      - ./entrypoints/poet-validator-registry.sh:/poet-validator-registry.sh
+      - ./entrypoints/utils.sh:/utils.sh
+    environment:
+      VALIDATOR_HOST: ${PREFIX}_validator
+      VALIDATOR_ALIAS: ${PREFIX}.validator
+      VALIDATOR_PORT: 4004
+    command: bash /poet-validator-registry.sh
+    expose:
+      - 4004
+    networks:
+      - validators
+    stop_signal: SIGKILL

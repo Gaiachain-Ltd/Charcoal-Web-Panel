@@ -1,0 +1,58 @@
+{% load i18n %}
+{% load staticfiles %}
+
+<div class="main-content" id="packages"
+    v-if="active_subelement === 'tracability_packages'"
+    v-cloak>
+    <div class="start-content">
+        <div class="search-actions">
+{#            <i class="search-icon"></i>#}
+            <input type="text" v-model="package_keyword"  placeholder="{% trans 'Search' %}..."/>
+        </div>
+        <div class="content-data">
+            <div class="packages-data">
+                <div class="title-block">
+                    <span class="title">{% trans "List of packages" %}</span>
+                    <div class="nav">
+                        <nav class="nav">
+                          <a class="nav-link harvest"
+                             :class="{ 'active': active_package_type == 'harvest' } "
+                             @click.prevent="showPackages('harvest')" href="#">{% trans "Harvest" %}</a>
+                          <a class="nav-link sac"
+                             :class="{ 'active': active_package_type == 'sac' } "
+                             @click.prevent="showPackages('sac')" href="#">{% trans "Sac" %}</a>
+                          <a class="nav-link lot"
+                             :class="{ 'active': active_package_type == 'lot' } "
+                             @click.prevent="showPackages('lot')" href="#">{% trans "Lot" %}</a>
+                        </nav>
+                    </div>
+                </div>
+                <div class="packages">
+                    <div class="package" v-for="(package, key) in packages" v-bind:id="key">
+                        <div class="package-pid">
+                            <div class="pid">
+                                <span @click="getPackageDetails(package.id)" :class="[active_package_type, { 'active-package': opened_package == package.id }]">[[ package.pid ]]</span>
+                                <div class="see-chain" v-if="opened_package === package.id" @click="getPackageChain(package.id)">
+                                    <span>{% trans "See supply chain" %}</span>
+                                    <img src="{% static 'img/see_chain_arrow.png' %}" alt="See supply chain"/>
+                                </div>
+                            </div>
+                            <span class="see-details" v-if="opened_package != package.id" @click="getPackageDetails(package.id)">{% trans "See details" %}</span>
+                            <span class="see-details" v-if="opened_package === package.id "@click="hideDetails()">{% trans "Hide this" %}</span>
+                        </div>
+                        <hr>
+                        <div class="package-details" v-if="package.id === opened_package">
+                            <div class="package-property" v-for="(property, key) in package_properties.properties" :key="key">
+                                <div>
+                                    <span>[[getPropertyKey(property)]]</span>
+                                    <span>[[getPropertyValue(property)]]</span>
+                                </div>
+                                <hr>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

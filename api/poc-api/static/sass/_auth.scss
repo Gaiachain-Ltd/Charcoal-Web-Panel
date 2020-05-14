@@ -1,0 +1,87 @@
+header.auth-header {
+  height: 130px;
+  background-color: $header-bg;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+section.auth-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  div.input-block {
+    margin-top: 130px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    .login-input {
+      position: relative;
+      input {
+        margin-bottom: 20px;
+        padding: 25px 25px 25px 68px;
+        width: 420px;
+        color: $menu-color;
+        border: 1px solid $border-color;
+        border-radius: 5px;
+        font-size: 24px;
+        &::placeholder {
+          opacity: 1;
+        }
+      }
+      i {
+        position: absolute;
+        left: 20px;
+      }
+      .email-icon {
+        background-image: url(../img/icon-email.svg);
+        height: 21px;
+        width: 28px;
+        top: 33px;
+      }
+      .password-icon {
+        background-image: url(../img/icon-password.svg);
+        width: 27px;
+        height: 37px;
+        top: 24px;
+      }
+    }
+  }
+  .buttons-block {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 100px;
+    .login-buttons{
+      width: 420px;
+      height: 74px;
+    }
+    button.primaryAction {
+      background: $submit-color;
+      border-radius: 5px;
+      border: 0;
+      color: $white-color;
+      font-weight: 600;
+      font-size: 24px;
+      letter-spacing: 4.8px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    a.skip-login-button {
+      background: $white-color;
+      border-radius: 5px;
+      border: 1px solid $border-color;;
+      color: $black-color;
+      font-weight: 600;
+      font-size: 24px;
+      letter-spacing: 4.8px;
+      text-transform: uppercase;
+      text-decoration: none;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+}

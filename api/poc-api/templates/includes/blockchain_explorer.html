@@ -1,0 +1,66 @@
+{% load i18n %}
+{% load staticfiles %}
+
+<div class="main-content" id="packages"
+    v-if="active_element === 'blockchain_explorer'"
+    v-cloak>
+    <div class="start-content">
+        <div class="content-data">
+            <div class="packages-data">
+                <div class="packages">
+                    <div class="package" v-for="transaction in transactions">
+                        <div class="package-pid">
+                            <div class="pid">
+                                <span v-if="transaction.header_signature.length<30" :class="active_package_type">[[ transaction.header_signature ]]</span>
+                                <span v-else :class="active_package_type">[[ transaction.header_signature.substring(0, 30) ]]...</span>
+                            </div>
+                            <span class="see-details" v-if="opened_transaction != transaction.header_signature" @click="getTransactionDetails(transaction.header_signature)">{% trans "See details" %}</span>
+                            <span class="see-details" v-if="opened_transaction === transaction.header_signature" @click="hideTransactionDetails()">{% trans "Hide this" %}</span>
+                        </div>
+                        <hr>
+                        <div class="package-details" v-if="transaction.header_signature === opened_transaction">
+                            <div class="package-property" v-for="(property, key) in transaction.header" :key="key">
+                                <div>
+                                    <div class="transaction-property-key">
+                                        <span>[[ key ]]</span>
+                                    </div>
+                                    <div class="transaction-property-value">
+                                        <span>[[ property ]]</span>
+                                    </div>
+                                </div>
+                                <hr>
+                            </div>
+                            <div class="package-property">
+                                <div>
+                                    <div class="transaction-property-key">
+                                        <span>header_signature</span>
+                                    </div>
+                                    <div class="transaction-property-value">
+                                        <span>[[ transaction.header_signature ]]</span>
+                                    </div>
+                                </div>
+                                <hr>
+                            </div>
+                            <div class="package-property">
+                                <div>
+                                    <div class="transaction-property-key">
+                                        <span>payload</span>
+                                    </div>
+                                    <div class="transaction-property-value">
+                                        <span v-html="transaction.payload"></span>
+                                    </div>
+                                </div>
+                                <hr>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="margin: 0 auto">
+                    <a v-if="showTransactionFirstPage" href="#" @click="getTransactions()">First Page</a>
+                    <a v-if="transactions_prev_page !== ''" href="#" @click="getTransactions(transactions_prev_page)">Prev Page</a>
+                    <a v-if="transactions_next_page !== ''" href="#" @click="getTransactions(transactions_next_page)">Next Page</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,43 @@
+{% load i18n %}
+{% load staticfiles %}
+
+<div class="sidebar" id="sidebar" v-cloak>
+    <div id="tracability" class='menu-element'
+         @click="setActiveAction('tracability')"
+         :class="{ 'active-element': active_element =='tracability' }">
+        <i class="tracking-icon"></i>
+        {% trans 'Tracability' %}
+        <i class="show-arrow-icon" :class="{ 'show-arrow-icon-switch': active_element =='tracability' }"></i>
+    </div>
+    <div class="submenu" v-if="show_subelements === true">
+        <div id="tracability_packages" class='submenu-element'
+            :class="{ 'active-element': active_subelement == 'tracability_packages' || active_subelement == 'package_chain' }"
+            @click="showPackages('harvest', 'tracability_packages')">
+            {% trans "List of packages" %}
+        </div>
+        <div id="tracability_transactions" class='submenu-element'
+            :class="{ 'active-element': active_subelement == 'tracability_transactions' }"
+            @click="showRecentTransactions()">
+            {% trans "Recent transactions" %}
+        </div>
+        <div id="tracability_maps" class='submenu-element'
+             :class="{ 'active-element': active_subelement =='tracability_maps' }"
+             @click="active_subelement = 'tracability_maps'"
+{#             @click="openMap()"#}
+        >
+         {% trans "Maps" %}
+        </div>
+    </div>
+{#   <div id="calendar" class='menu-element'#}
+{#           @click="setActiveAction('calendar')"#}
+{#           :class="{ 'active-element': active_element == 'calendar' }">#}
+{#       <i class="calendar-icon"></i>#}
+{#       {% trans 'Calendar' %}#}
+{#    </div>#}
+    <div id="blockchain_explorer" class='menu-element'
+         @click="showBlockchainExplorer()"
+         :class="{ 'active-element': active_element == 'blockchain_explorer' }">
+        <i class="blockchain-icon"></i>
+        {% trans 'Blockchain Explorer' %}
+    </div>
+</div>

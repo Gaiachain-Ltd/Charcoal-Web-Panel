@@ -1,0 +1,114 @@
+.calendar {
+  background-color: var(--white);
+  border-radius: 3px;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  width: 100%;
+  padding: .25rem .5rem 1rem .5rem;
+  //box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+
+  .top {
+    grid-column: 1 / span 7;
+  }
+
+  .header {
+    padding: .75rem;
+    font-size: 1.25rem;
+    grid-column: 1 / span 7;
+
+    span {
+      flex: 1;
+      text-align: center;
+    }
+
+    button {
+      border: none;
+      background: var(--white);
+      margin: 0 1rem;
+      padding: .25rem .5rem;
+
+      &:hover {
+        //background: var(--black-400);
+        transition: background 150ms;
+      }
+      &:focus {
+        outline:none;
+      }
+    }
+
+  }
+
+  * {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+  }
+
+  .day {
+    //color: var(--black-200);
+    font-size: 1rem;
+    border-radius: 2px;
+
+
+    &.selected {
+      border: 2px solid $main-header-border-color;
+      border-radius: 5px;
+    }
+
+    &.current {
+      color: var(--black-100);
+    }
+
+    &::before {
+      content: "";
+      display: inline-block;
+      height: 0;
+      padding-bottom: 100%;
+      width: 1px;
+    }
+
+    button {
+      display: flex;
+      justify-content: flex-start;
+      flex-direction: column;
+      color: inherit;
+      background: transparent;
+      border: none;
+      height: 100%;
+      width: 100%;
+      &:hover {
+        background: var(--black-400);
+        transition: background 150ms;
+      }
+    }
+    .action-dots {
+      .harvest {
+        background-color: $harvest-color
+      }
+      .sac {
+        background-color: $sac-color
+      }
+      .lot {
+        background-color: $lot-color
+      }
+      .action-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 3px;
+        padding-right: 2px;
+        margin: 0 1px;
+      }
+    }
+  }
+
+  .today {
+    background-color: $main-header-bg;
+    border-radius: 2px;
+  }
+}
+
+
+
+.text-center {
+  text-align: center;
+}

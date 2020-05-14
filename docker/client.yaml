@@ -1,0 +1,59 @@
+version: "3"
+
+services:
+  postgis:
+    image: "kartoza/postgis"
+    container_name: ${PREFIX}_postgis
+    environment:
+      - POSTGRES_USER=poc_api_user
+      - POSTGRES_PASSWORD=poc_api_db_1024
+      - POSTGRES_DB=poc_api_db
+    ports:
+      - "5432"
+    volumes:
+      - ./database/${PREFIX}_postgres:/var/lib/postgresql
+    networks:
+      - validators
+    tty: true
+
+  poc-api:
+    build:
+      context: ../
+      dockerfile: api/poc-api/Dockerfile
+    container_name: ${PREFIX}_poc-api
+    environment:
+      ENV: prod
+      API_HOST: ${PREFIX}_node-api
+      API_PORT: 8008
+      POSTGIS_HOST: ${PREFIX}_postgis
+    ports:
+      - "${SERVER_PORT}:8000"
+    depends_on:
+      - postgis
+    volumes:
+      - ./entrypoints/poc-api.sh:/poc-api.sh
+      - ./entrypoints/utils.sh:/utils.sh
+      - ../api/poc-api/:/poc-api/
+      - ../protos/py/:/poc-api/protos
+    networks:
+      - validators
+    command: bash /poc-api.sh
+
+  sync:
+    build:
+      context: ../
+      dockerfile: api/poc-api/Dockerfile
+    container_name: ${PREFIX}_sync
+    environment:
+      VALIDATOR_HOST: ${PREFIX}_validator
+      VALIDATOR_ALIAS: ${PREFIX}.validator
+      VALIDATOR_PORT: 4004
+    depends_on:
+      - postgis
+    volumes:
+      - ./entrypoints/sync.sh:/sync.sh
+      - ./entrypoints/utils.sh:/utils.sh
+      - ../protos/py/:/poc-api/protos
+    networks:
+      - validators
+    command: bash /sync.sh
