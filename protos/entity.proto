@@ -4,61 +4,75 @@ import "agent.proto";
 
 package gaiachain;
 
+
+message Package {
+    string id = 1;
+
+    enum PackageType {
+        ZERO_TYPE = 0; // zero valued enums are not shown in details
+        PLOT = 1;
+        HARVEST = 2;
+        TRUCK = 3;
+    }
+    // Package type of entity
+    PackageType type = 2;
+
+    repeated Entity entities = 3;
+    Package plot = 4;
+    Package harvest = 5;
+
+}
+
 message Entity {
     string id = 1;
 
     uint64 timestamp = 2;
-    Location location = 21;
-    Agent user = 22;
-
-    enum PackageType {
-        ZERO_TYPE = 0; // zero valued enums are not shown in details
-        HARVEST = 1;
-        SAC = 2;
-        LOT = 3;
-    }
-    // Package type of entity
-    PackageType package_type = 3;
-
-    // step 1
-    uint64 harvest_date = 4;
-    string parcel = 5;
-
-    // step 2
-    uint64 breaking_date = 6;
-    uint64 end_fermentation_date = 7;
-    uint64 beans_volume = 8;
-
-    // step 3
-    uint64 reception_date = 9;
-    uint64 transport_date = 10; // also used in step 6
-    string buyer = 11;
-
-    repeated Entity entities = 12;
 
     enum Status {
         ZERO_STATUS = 0; // zero valued enums are not shown in details
-        HARVESTING = 1;
-        GRAIN_PROCESSING = 2;
-        SECTION_RECEPTION = 3;
-        BAGGING = 4;
-        LOT_CREATION = 5;
-        WAREHOUSE_TRANSPORT = 6;
-        EXPORT_RECEPTION = 7;
+        LOGGING_BEGINNING = 1;
+        LOGGING_ENDING = 2;
+        CARBONIZATION_BEGINNING = 3;
+        CARBONIZATION_ENDING = 4;
+        LOADING_TRANSPORT = 5;
+        RECEPTION = 6;
     }
-    Status status = 14;
+    Status status = 5;
 
+    // step 1
+    uint64 beginning_date = 7; // also used at step 3
+    string parcel = 8;
+    string village = 9;
+    string tree_specie = 10;
+
+    // step 2
+    uint64 ending_date = 11;
+    uint64 number_of_trees = 12;
+
+    // step 3
+    string oven = 15;
+    string oven_type = 16;
+    uint64 oven_height = 17;
+    uint64 oven_width = 18;
+    uint64 oven_length = 19;
+
+    // repeated Entity entities = 12;
     // step 4
-    string sac_id = 15;
-    uint64 weight = 16; // also used in step 7
+    repeated string ovens = 20;
+    uint64 end_date = 21;
 
     // step 5
-    string lot_id = 17;
-    string notes = 18;
+    uint64 loading_date = 22;
+    string plate_number = 23;
+    string destination = 24;
+    repeated string bags = 26; // also used at step 6
 
     // step 6
-    string transporter = 19;
-    string destination = 20;
+    repeated string documents_photos = 29;
+    repeated string receipt_photos = 30;
+
+    Location location = 31;
+    Agent user = 32;
 
 }
 

@@ -4,6 +4,7 @@ from django.core.management.base import BaseCommand
 
 from apps.blockchain.handlers.agent import AgentHandler
 from apps.blockchain.handlers.entity import EntityHandler
+from apps.blockchain.handlers.package import PackageHandler
 # from apps.blockchain.handlers.entity_batch import EntityBatchHandler
 from apps.blockchain.processor import SyncProcessor
 
@@ -18,6 +19,7 @@ class Command(BaseCommand):
             processor = SyncProcessor(url=options['connect'])
             processor.add_handler(AgentHandler)
             processor.add_handler(EntityHandler)
+            processor.add_handler(PackageHandler)
             # processor.add_handler(EntityBatchHandler)
             processor.start()
         except KeyboardInterrupt:

@@ -1,7 +1,7 @@
 import logging
 
 from protos.agent_pb2 import Agent, AgentContainer
-from protos.entity_pb2 import Entity, EntityBatch
+from protos.entity_pb2 import Entity, EntityBatch, Package
 from protos.enums import Namespaces
 
 LOG = logging.getLogger(__name__)
@@ -38,21 +38,21 @@ class State:
 
         return container.entries.pop(0)
 
-    def set_entity(self, entity: Entity):
-        address = Namespaces.get_address(entity.id, subnamespace=Namespaces.ENTITY)
-        self._context.set_state({address: entity.SerializeToString()})
+    def set_package(self, package: Package):
+        address = Namespaces.get_address(package.id, subnamespace=Namespaces.ENTITY)
+        self._context.set_state({address: package.SerializeToString()})
 
-    def get_entity(self, entity_id: str):
-        address = Namespaces.get_address(entity_id, subnamespace=Namespaces.ENTITY)
-        entities_list = self._context.get_state([address])
+    def get_package(self, package_id: str):
+        address = Namespaces.get_address(package_id, subnamespace=Namespaces.ENTITY)
+        package_list = self._context.get_state([address])
 
-        if not entities_list:
-            LOG.warning("No entities found.")
+        if not package_list:
+            LOG.warning("No packages found.")
             return
 
-        entity = Entity()
-        entity.ParseFromString(entities_list[0].data)
-        return entity
+        package = Package()
+        package.ParseFromString(package_list[0].data)
+        return package
 
     def set_entity_batch(self, entity_batch: EntityBatch):
         address = Namespaces.get_address(

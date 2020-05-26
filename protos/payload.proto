@@ -8,10 +8,10 @@ import "entity.proto";
 message SCPayload {
     enum Action {
         CREATE_AGENT = 0;
-        CREATE_ENTITY = 1;
+        CREATE_PACKAGE = 1;
         CREATE_ENTITY_BATCH = 2;
         MOVE_ENTITY_BATCH = 3;
-        MOVE_ENTITY = 4;
+        UPDATE_PACKAGE = 4;
     }
 
     Action action = 1;
@@ -23,10 +23,10 @@ message SCPayload {
     // The transaction handler will read from just one of these fields
     // according to the Action.
     CreateAgentAction create_agent = 3;
-    CreateEntityAction create_entity = 4;
+    CreatePackageAction create_package = 4;
     CreateEntityBatchAction create_entity_batch = 5;
     MoveEntityBatchAction move_entity_batch = 6;
-    MoveEntityAction move_entity = 7;
+    UpdatePackageAction update_package = 7;
 }
 
 
@@ -34,8 +34,13 @@ message CreateAgentAction {
     Agent agent = 1;
 }
 
-message CreateEntityAction {
-    Entity entity = 1;
+message CreatePackageAction {
+    Package package = 1;
+}
+
+message UpdatePackageAction {
+    string id = 1;
+    Entity entity = 2;
 }
 
 message CreateEntityBatchAction {
@@ -57,26 +62,3 @@ message MoveEntityBatchAction {
     string buyer = 8;
 }
 
-message MoveEntityAction {
-    string id = 1;
-    Entity.Status status = 2;
-
-    // step 2
-    uint64 breaking_date = 3;
-    uint64 end_fermentation_date = 4;
-    uint64 beans_volume = 5;
-
-    // step 3
-    uint64 reception_date = 6;
-    uint64 transport_date = 7; // also used in step 6
-    string buyer = 8;
-
-    // steps 4 & 5 go in CreateEntityAction within Entity itself
-
-    // step 6
-    string transporter = 9;
-    string destination = 10;
-
-    // step 7
-    uint64 weight = 11;
-}

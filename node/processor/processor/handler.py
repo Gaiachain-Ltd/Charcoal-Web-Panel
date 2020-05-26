@@ -5,7 +5,7 @@ from sawtooth_sdk.processor.handler import TransactionHandler
 from processor.payload import Payload
 from processor.state import State
 from protos.agent_pb2 import Agent
-from protos.entity_pb2 import EntityBatch, Entity
+from protos.entity_pb2 import EntityBatch, Entity, Package
 from protos.enums import Gaiachain, Namespaces
 from protos.payload_pb2 import SCPayload
 
@@ -35,14 +35,14 @@ class GaiachainTransactionHandler(TransactionHandler):
     def _apply_action(self, payload: Payload, state: State, signer: str):
         if payload.action == SCPayload.CREATE_AGENT:
             self._create_agent(payload, state, signer)
-        elif payload.action == SCPayload.CREATE_ENTITY:
-            self._create_entity(payload, state, signer)
+        elif payload.action == SCPayload.CREATE_PACKAGE:
+            self._create_package(payload, state, signer)
+        elif payload.action == SCPayload.UPDATE_PACKAGE:
+            self._update_package(payload, state, signer)
         elif payload.action == SCPayload.CREATE_ENTITY_BATCH:
             self._create_entity_batch(payload, state, signer)
         elif payload.action == SCPayload.MOVE_ENTITY_BATCH:
             self._move_entity_batch(payload, state, signer)
-        elif payload.action == SCPayload.MOVE_ENTITY:
-            self._move_entity(payload, state, signer)
 
     def _create_agent(self, payload: Payload, state: State, signer: str):
         agent = payload.data.agent
@@ -51,35 +51,43 @@ class GaiachainTransactionHandler(TransactionHandler):
         LOG.info(f"Create agent: {payload.data.agent.email}")
         state.set_agent(agent)
 
-    def _create_entity(self, payload: Payload, state: State, signer: str):
+    def _create_package(self, payload: Payload, state: State, signer: str):
         agent = state.get_agent(signer)
-
-        entity = payload.data.entity
-        status = entity.status
-        if not self._allowed_to_create_entity(agent, status):
-            LOG.warning(f"This user can't create an entity of type {entity.package_type}.")
+        package = payload.data.package
+        package_type = package.type
+        if not self._allowed_to_create_package(agent, package_type):
+            LOG.warning(f"This user can't create a package of type {package.type}.")
             return
 
-        if status in [Entity.BAGGING, Entity.LOT_CREATION]:
-            entities = []
-            for sub_entity_data in entity.entities:
-                sub_entity = state.get_entity(sub_entity_data.id)
-                if sub_entity:
-                    if status == Entity.BAGGING:
-                        sub_entity.sac_id = entity.id
-                        sub_entity.weight = sub_entity_data.weight
-                    elif status == Entity.LOT_CREATION:
-                        sub_entity.lot_id = entity.id
-                    state.set_entity(sub_entity)
-                    entities.append(sub_entity)
-                else:
-                    LOG.warning(f"Entity {entity.id} SubEntity not found: {sub_entity_data.id}")
-            del entity.entities[:]
-            entity.entities.extend(entities)
-        entity.timestamp = payload.timestamp
-        LOG.info(f"Create entity: {entity.id}")
-        LOG.info(entity)
-        state.set_entity(entity)
+        if package_type == Package.HARVEST:
+            plot = state.get_package(package.plot.id)
+            package.plot.CopyFrom(plot)
+        elif package_type == Package.TRUCK:
+            harvest = state.get_package(package.harvest.id)
+            package.harvest.CopyFrom(harvest)
+        LOG.info(f"Create package: {package.id}")
+        LOG.info(package)
+        state.set_package(package)
+
+    def _update_package(self, payload: Payload, state: State, signer: str):
+        package_id = payload.data.id
+        package = state.get_package(package_id)
+
+        agent = state.get_agent(signer)
+        try:
+            entity = payload.data.entity
+
+            if self._allowed_to_add_entity_to_package(agent, entity.status):
+                entities = [e for e in package.entities]
+                entities.append(entity)
+                del package.entities[:]
+                package.entities.extend(entities)
+                state.set_package(package)
+                LOG.info(f"Update package {package.id}")
+                LOG.info(package)
+                return
+        except AttributeError as e:
+            LOG.info(f"Error {e}")
 
     def _create_entity_batch(self, payload: Payload, state: State, signer: str):
         entities = payload.data.entities
@@ -134,74 +142,33 @@ class GaiachainTransactionHandler(TransactionHandler):
         #     entity_batch.status = new_status
         #     state.set_entity_batch(entity_batch)
 
-    def _move_entity(self, payload: Payload, state: State, signer: str):
-        entity_id = payload.data.id
-        entity = state.get_entity(entity_id)
-
-        agent = state.get_agent(signer)
-        try:
-            status = entity.status
-            new_status = payload.data.status
-
-            if self._allowed_to_change_status(agent, status, new_status):
-                entity.status = new_status
-                entity.timestamp = payload.timestamp
-                keys = []
-                if new_status == Entity.GRAIN_PROCESSING:
-                    keys = ['breaking_date', 'end_fermentation_date', 'beans_volume']
-                elif new_status == Entity.SECTION_RECEPTION:
-                    keys = ['reception_date', 'transport_date', 'buyer']
-                elif new_status == Entity.WAREHOUSE_TRANSPORT:
-                    keys = ['transporter', 'transport_date', 'destination']
-                elif new_status == Entity.EXPORT_RECEPTION:
-                    keys = ['weight']
-                for key in keys:
-                    setattr(entity, key, getattr(payload.data, key))
-                entity.user.CopyFrom(agent)
-                state.set_entity(entity)
-                LOG.info(f"Update entity {entity.id}")
-                LOG.info(entity)
-                return
-        except AttributeError as e:
-            LOG.info(f"Error {e}")
-
-    def _allowed_to_change_status(
+    def _allowed_to_add_entity_to_package(
         self,
         signer: Agent,
         status: Entity.Status,
-        new_status: Entity.Status,
     ):
         if signer is None:
             return False
         return signer.role == Agent.SUPER_USER or (
-            signer.role == Agent.INSPECTOR
-            and status == Entity.HARVESTING
-            and new_status == Entity.GRAIN_PROCESSING
+            signer.role == Agent.CARBONIZER
+            and status in (Entity.LOGGING_ENDING, Entity.CARBONIZATION_BEGINNING, Entity.CARBONIZATION_ENDING)
         ) or (
-            signer.role in (Agent.PCA, Agent.WAREHOUSEMAN)
-            and status == Entity.GRAIN_PROCESSING
-            and new_status == Entity.SECTION_RECEPTION
+            signer.role == Agent.LOGGER
+            and status == Entity.LOGGING_ENDING
         ) or (
-            signer.role == Agent.WAREHOUSEMAN
-            and status == Entity.LOT_CREATION
-            and new_status == Entity.WAREHOUSE_TRANSPORT
-        ) or (
-            signer.role == Agent.COOPERATIVE
-            and status == Entity.WAREHOUSE_TRANSPORT
-            and new_status == Entity.EXPORT_RECEPTION
+            signer.role == Agent.DIRECTOR
+            and status == Entity.RECEPTION
         )
 
-    def _allowed_to_create_entity(
+    def _allowed_to_create_package(
         self,
         signer: Agent,
-        status: Entity.Status,
+        type: Package.Type,
     ):
         if signer is None:
             return False
-        return signer.role == Agent.SUPER_USER or (
-            signer.role == Agent.INSPECTOR
-            and status == Entity.HARVESTING
-        ) or (
-            signer.role in (Agent.PCA, Agent.WAREHOUSEMAN)
-            and status in [Entity.BAGGING, Entity.LOT_CREATION]
+        # CARBONIZER is allowed to create PLOT, HARVEST and TRUCK packages
+        return signer.role in (Agent.SUPER_USER, Agent.CARBONIZER) or (
+            signer.role == Agent.LOGGER
+            and type == Package.PLOT
         )

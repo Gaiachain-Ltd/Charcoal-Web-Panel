@@ -8,9 +8,10 @@ from django.templatetags.static import static
 from rest_framework import serializers
 from rest_framework.exceptions import NotFound
 
+from apps.blockchain.transaction import PayloadFactory
 from apps.entities.models import (
     Entity, Package, LoggingBeginning, LoggingEnding, CarbonizationBeginning, CarbonizationEnding, Oven,
-    Bag, LoadingTransport, Checkpoint, Reception
+    Bag, LoadingTransport, Reception, ReceptionImage
 )
 from apps.additional_data.models import (
     Parcel, Village
@@ -18,8 +19,10 @@ from apps.additional_data.models import (
 from apps.users.serializers import (
     UserSerializer,
 )
+from apps.additional_data.exceptions import InvalidAgentRoleError
 from apps.entities.exceptions import PackageAlreadyExistException, EntityAlreadyExistException
 from apps.entities.utils import unix_to_datetime_tz
+from protos.entity_pb2 import Package as PackageProto
 
 
 class VillageSerializer(serializers.ModelSerializer):
@@ -136,11 +139,9 @@ class PackageSerializer(serializers.ModelSerializer):
 
 class EntitySerializer(serializers.ModelSerializer):
     properties = serializers.JSONField()
-    pid = serializers.CharField(max_length=50, required=False)
-    qr_code = serializers.CharField(max_length=14, required=False)
-    photo = serializers.ImageField(required=False)
-    documents_photo = serializers.ImageField(required=False)
-    receipt_photo = serializers.ImageField(required=False)
+    pid = serializers.CharField(max_length=100, required=False)
+    documents_photos = serializers.ListField(child=serializers.ImageField(), required=False)
+    receipt_photos = serializers.ListField(child=serializers.ImageField(), required=False)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -148,7 +149,7 @@ class EntitySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Entity
-        fields = ('action', 'timestamp', 'properties', 'pid', 'qr_code', 'location', 'photo', 'documents_photo', 'receipt_photo')
+        fields = ('action', 'timestamp', 'properties', 'pid', 'location', 'documents_photos', 'receipt_photos')
 
     def validate_location(self, data):
         if type(data) != dict:
@@ -159,7 +160,6 @@ class EntitySerializer(serializers.ModelSerializer):
     @transaction.atomic
     def create(self, validated_data):
         properties_data = validated_data.pop('properties')
-        qr_code = validated_data.pop('qr_code') if 'qr_code' in validated_data else None
         pid = validated_data.pop('pid') if 'pid' in validated_data else None
         action = validated_data['action']
         if pid and action in [Entity.LOGGING_BEGINNING, Entity.LOGGING_ENDING]:
@@ -167,25 +167,23 @@ class EntitySerializer(serializers.ModelSerializer):
             if action == Entity.LOGGING_ENDING:
                 get_object_or_404(Entity, package=package, action=Entity.LOGGING_BEGINNING)
         elif pid and action in [Entity.CARBONIZATION_BEGINNING, Entity.CARBONIZATION_ENDING]:
-            package, created = Package.objects.get_or_create(pid=pid, type=Package.HARVEST)
+            package_kwargs = {'pid': pid, 'type': Package.HARVEST}
+            if action == Entity.CARBONIZATION_BEGINNING:
+                package_kwargs['plot_id'] = properties_data.pop('plot_id')
+            package, created = Package.objects.get_or_create(**package_kwargs)
             if action == Entity.CARBONIZATION_ENDING:
                 get_list_or_404(Entity, package=package, action=Entity.CARBONIZATION_BEGINNING)
         elif pid and action == Entity.LOADING_TRANSPORT:
-            package, created = Package.objects.get_or_create(pid=pid, type=Package.TRUCK)
-        elif qr_code and action in [Entity.CHECKPOINT_SODEFOR, Entity.CHECKPOINT_FOREST]:
-            try:
-                package = Package.objects.get(package_entities__loadingtransport__bags__qr_code=qr_code)
-                properties_data['qr_code'] = qr_code
-                properties_data['photo'] = validated_data.pop('photo')
-            except Package.DoesNotExist:
-                raise NotFound(detail=f'Truck with this bag ({qr_code}) not found.')
+            harvest_id = properties_data.pop('harvest_id')
+            package, created = Package.objects.get_or_create(pid=pid, type=Package.TRUCK, harvest_id=harvest_id)
         elif action == Entity.RECEPTION:
             try:
+                qr_code = properties_data['bags_qr_codes'][0]
                 package = Package.objects.get(
-                    package_entities__loadingtransport__bags__qr_code=properties_data['bags_qr_codes'][0]
+                    package_entities__loadingtransport__bags__qr_code=qr_code
                 )
-                properties_data['documents_photo'] = validated_data.pop('documents_photo')
-                properties_data['receipt_photo'] = validated_data.pop('receipt_photo')
+                properties_data['documents_photos'] = validated_data.pop('documents_photos')
+                properties_data['receipt_photos'] = validated_data.pop('receipt_photos')
             except Package.DoesNotExist:
                 raise NotFound(detail=f'Truck with this bag ({qr_code}) not found.')
         else:
@@ -209,8 +207,8 @@ class EntitySerializer(serializers.ModelSerializer):
 
     @staticmethod
     def _create_logging_beginning(entity, properties_data):
-        # if not entity.user.is_inspector:
-        #     raise InvalidAgentRoleError("Only Inspector can create harvest.")
+        if not entity.user.is_logger or not entity.user.is_carbonizer or not entity.user.is_superuser_role:
+            raise InvalidAgentRoleError("Only Logger or Carbonizer can add logging beginning.")
         parcel_id = properties_data.pop('parcel')
         village_id = properties_data.pop('village')
         tree_specie_id = properties_data.pop('tree_specie')
@@ -221,103 +219,87 @@ class EntitySerializer(serializers.ModelSerializer):
             tree_specie_id=tree_specie_id,
             **properties_data
         )
-        # if created:
-        #     logging_beginning.add_to_chain()
+        if created:
+            entity.package.add_to_chain(entity.user, PackageProto.PLOT, PayloadFactory.Types.CREATE_PACKAGE)
 
     @staticmethod
     def _create_logging_ending(entity, properties_data):
-        # if not entity.user.is_inspector:
-        #     raise InvalidAgentRoleError("Only Inspector can create harvest.")
+        if not entity.user.is_logger or not entity.user.is_carbonizer or not entity.user.is_superuser_role:
+            raise InvalidAgentRoleError("Only Logger or Carbonizer can add logging ending.")
         logging_ending, created = LoggingEnding.objects.get_or_create(
             entity=entity,
             **properties_data
         )
-        # if created:
-        #     logging_ending.update_in_chain()
+        if created:
+            entity.update_in_chain()
 
     @staticmethod
     def _create_carbonization_beginning(entity, properties_data):
-        # if not entity.user.is_inspector:
-        #     raise InvalidAgentRoleError("Only Inspector can create harvest.")
+        if not entity.user.is_carbonizer or not entity.user.is_superuser_role:
+            raise InvalidAgentRoleError("Only Carbonizer can add carbonization beginning.")
         oven_id = properties_data.pop('oven_id')
-        plot_id = properties_data.pop('plot_id')
         oven_type_id = properties_data.pop('oven_type')
         oven = Oven.objects.create(oven_id=oven_id)
         carbonization_beginning, created = CarbonizationBeginning.objects.get_or_create(
             entity=entity,
             oven=oven,
-            plot_id=plot_id,
             oven_type_id=oven_type_id,
             **properties_data
         )
-        # if created:
-        #     carbonization_beginning.add_to_chain()
+        if created:
+            carbonization_beginning.add_to_chain(entity.user, PackageProto.HARVEST, PayloadFactory.Types.CREATE_PACKAGE)
 
     @staticmethod
     def _create_carbonization_ending(entity, properties_data):
-        # if not entity.user.is_inspector:
-        #     raise InvalidAgentRoleError("Only Inspector can create harvest.")
+        if not entity.user.is_carbonizer or not entity.user.is_superuser_role:
+            raise InvalidAgentRoleError("Only Carbonizer can add carbonization ending.")
         oven_ids = properties_data.pop('oven_ids')
-        harvest_id = properties_data.pop('harvest')
         ovens = Oven.objects.filter(id__in=oven_ids)
         carbonization_ending, created = CarbonizationEnding.objects.get_or_create(
             entity=entity,
-            harvest_id=harvest_id,
             **properties_data
         )
         if created:
             carbonization_ending.ovens.add(*ovens)
-            # carbonization_ending.update_in_chain()
+            entity.update_in_chain()
 
     @staticmethod
     def _create_loading_transport(entity, properties_data):
-        # if not entity.user.is_inspector:
-        #     raise InvalidAgentRoleError("Only Inspector can create harvest.")
+        if not entity.user.is_carbonizer or not entity.user.is_superuser_role:
+            raise InvalidAgentRoleError("Only Carbonizer can add loading transport.")
         bags_qr_codes = properties_data.pop('bags_qr_codes')
-        harvest_id = properties_data.pop('harvest')
         destination_id = properties_data.pop('destination')
         loading_transport, created = LoadingTransport.objects.get_or_create(
             entity=entity,
-            harvest_id=harvest_id,
             destination_id=destination_id,
             **properties_data
         )
-        harvest_pid = loading_transport.harvest.pid
+        harvest_pid = entity.package.harvest.pid
         if created:
             bags = (Bag(pid=f'{harvest_pid}/B{i+1:03d}', qr_code=qr_code, transport_id=loading_transport.id)
                     for i, qr_code in enumerate(bags_qr_codes))
             Bag.objects.bulk_create(bags)
-            # loading_transport.add_to_chain()
-
-    @staticmethod
-    def _create_checkpoint(entity, properties_data):
-        # if not entity.user.is_inspector:
-        #     raise InvalidAgentRoleError("Only Inspector can create harvest.")
-        checkpoint, created = Checkpoint.objects.get_or_create(
-            entity=entity,
-            **properties_data
-        )
-        # if created:
-        #     checkpoint.update_in_chain()
-
-    def _create_checkpoint_eaux_et_forest(self, entity, properties_data):
-        self._create_checkpoint(entity, properties_data)
-
-    def _create_checkpoint_sodefor(self, entity, properties_data):
-        self._create_checkpoint(entity, properties_data)
+            entity.package.add_to_chain(entity.user, PackageProto.TRUCK, PayloadFactory.Types.CREATE_PACKAGE)
 
     @staticmethod
     def _create_reception(entity, properties_data):
-        # if not entity.user.is_inspector:
-        #     raise InvalidAgentRoleError("Only Inspector can create harvest.")
+        if not entity.user.is_director or not entity.user.is_superuser_role:
+            raise InvalidAgentRoleError("Only Director can add reception.")
         bags_qr_codes = properties_data.pop('bags_qr_codes')
+        documents_photos = properties_data.pop('documents_photos')
+        receipt_photos = properties_data.pop('receipt_photos')
         reception, created = Reception.objects.get_or_create(
             entity=entity,
             **properties_data
         )
         if created:
             Bag.objects.filter(qr_code__in=bags_qr_codes).update(reception=reception)
-        #     reception.update_in_chain()
+            photos = [ReceptionImage(image=image, type=ReceptionImage.DOCUMENT, reception_id=reception.id)
+                    for image in documents_photos]
+            photos.extend([ReceptionImage(image=image, type=ReceptionImage.RECEIPT, reception_id=reception.id)
+                    for image in receipt_photos])
+            ReceptionImage.objects.bulk_create(photos)
+            entity.update_in_chain()
 
 
 class PackagePidSerializer(serializers.ModelSerializer):

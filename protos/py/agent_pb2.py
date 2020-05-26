@@ -18,7 +18,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='gaiachain',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=b'\n\x0b\x61gent.proto\x12\tgaiachain\"\xda\x01\n\x05\x41gent\x12\x12\n\npublic_key\x18\x01 \x01(\t\x12\r\n\x05\x65mail\x18\x02 \x01(\t\x12\x14\n\x0c\x63ompany_name\x18\x03 \x01(\t\x12#\n\x04role\x18\x04 \x01(\x0e\x32\x15.gaiachain.Agent.Role\x12\x11\n\ttimestamp\x18\x05 \x01(\x04\"`\n\x04Role\x12\x0e\n\nSUPER_USER\x10\x00\x12\r\n\tINSPECTOR\x10\x01\x12\x07\n\x03PCA\x10\x02\x12\x10\n\x0cWAREHOUSEMAN\x10\x03\x12\x1e\n\x1a\x43OOPERATIVE_REPRESENTATIVE\x10\x04\"3\n\x0e\x41gentContainer\x12!\n\x07\x65ntries\x18\x01 \x03(\x0b\x32\x10.gaiachain.Agentb\x06proto3'
+  serialized_pb=b'\n\x0b\x61gent.proto\x12\tgaiachain\"\xa4\x01\n\x05\x41gent\x12\x12\n\npublic_key\x18\x01 \x01(\t\x12\r\n\x05\x65mail\x18\x02 \x01(\t\x12#\n\x04role\x18\x03 \x01(\x0e\x32\x15.gaiachain.Agent.Role\x12\x11\n\ttimestamp\x18\x04 \x01(\x04\"@\n\x04Role\x12\x0e\n\nSUPER_USER\x10\x00\x12\x0c\n\x08\x44IRECTOR\x10\x01\x12\n\n\x06LOGGER\x10\x02\x12\x0e\n\nCARBONIZER\x10\x03\"3\n\x0e\x41gentContainer\x12!\n\x07\x65ntries\x18\x01 \x03(\x0b\x32\x10.gaiachain.Agentb\x06proto3'
 )
 
 
@@ -34,26 +34,22 @@ _AGENT_ROLE = _descriptor.EnumDescriptor(
       serialized_options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='INSPECTOR', index=1, number=1,
+      name='DIRECTOR', index=1, number=1,
       serialized_options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='PCA', index=2, number=2,
+      name='LOGGER', index=2, number=2,
       serialized_options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='WAREHOUSEMAN', index=3, number=3,
-      serialized_options=None,
-      type=None),
-    _descriptor.EnumValueDescriptor(
-      name='COOPERATIVE_REPRESENTATIVE', index=4, number=4,
+      name='CARBONIZER', index=3, number=3,
       serialized_options=None,
       type=None),
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=149,
-  serialized_end=245,
+  serialized_start=127,
+  serialized_end=191,
 )
 _sym_db.RegisterEnumDescriptor(_AGENT_ROLE)
 
@@ -80,22 +76,15 @@ _AGENT = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='company_name', full_name='gaiachain.Agent.company_name', index=2,
-      number=3, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='role', full_name='gaiachain.Agent.role', index=3,
-      number=4, type=14, cpp_type=8, label=1,
+      name='role', full_name='gaiachain.Agent.role', index=2,
+      number=3, type=14, cpp_type=8, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='timestamp', full_name='gaiachain.Agent.timestamp', index=4,
-      number=5, type=4, cpp_type=4, label=1,
+      name='timestamp', full_name='gaiachain.Agent.timestamp', index=3,
+      number=4, type=4, cpp_type=4, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -114,7 +103,7 @@ _AGENT = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=27,
-  serialized_end=245,
+  serialized_end=191,
 )
 
 
@@ -144,8 +133,8 @@ _AGENTCONTAINER = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=247,
-  serialized_end=298,
+  serialized_start=193,
+  serialized_end=244,
 )
 
 _AGENT.fields_by_name['role'].enum_type = _AGENT_ROLE

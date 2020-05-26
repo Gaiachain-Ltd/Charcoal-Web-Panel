@@ -11,7 +11,7 @@ from sawtooth_sdk.protobuf.transaction_pb2 import TransactionHeader, Transaction
 from sawtooth_signing import CryptoFactory
 
 from protos.agent_pb2 import Agent
-from protos.entity_pb2 import Entity, EntityBatch
+from protos.entity_pb2 import Entity, EntityBatch, Package
 from protos.enums import Gaiachain, Namespaces
 from protos.payload_pb2 import SCPayload
 
@@ -32,9 +32,10 @@ class PayloadFactory:
 
         CREATE_AGENT = "_create_agent_action"
         CREATE_ENTITY = "_create_entity_action"
+        CREATE_PACKAGE = "_create_package_action"
         CREATE_ENTITY_BATCH = "_create_entity_batch_action"
         UPDATE_ENTITY_BATCH = "_update_entity_batch_action"
-        UPDATE_ENTITY = "_update_entity_action"
+        UPDATE_PACKAGE = "_update_package_action"
 
     @staticmethod
     def _create_agent_action(proto: Agent, **kwargs) -> SCPayload:
@@ -44,10 +45,10 @@ class PayloadFactory:
         return payload
 
     @staticmethod
-    def _create_entity_action(proto: Entity, **kwargs) -> SCPayload:
+    def _create_package_action(proto: Package, **kwargs) -> SCPayload:
         payload = PayloadFactory._create_payload()
-        payload.action = SCPayload.CREATE_ENTITY
-        payload.create_entity.entity.CopyFrom(proto)
+        payload.action = SCPayload.CREATE_PACKAGE
+        payload.create_package.package.CopyFrom(proto)
         return payload
 
     @staticmethod
@@ -75,24 +76,11 @@ class PayloadFactory:
         return payload
 
     @staticmethod
-    def _update_entity_action(proto: dict, **kwargs) -> SCPayload:
+    def _update_package_action(proto: dict, **kwargs) -> SCPayload:
         payload = PayloadFactory._create_payload()
-        payload.action = SCPayload.MOVE_ENTITY
-        payload.move_entity.id = proto.get("id")
-        status = proto.get("status")
-        payload.move_entity.status = status
-
-        keys = []
-        if status == Entity.Status.Value('GRAIN_PROCESSING'):
-            keys = ['breaking_date', 'end_fermentation_date', 'beans_volume']
-        elif status == Entity.Status.Value('SECTION_RECEPTION'):
-            keys = ['reception_date', 'transport_date', 'buyer']
-        elif status == Entity.Status.Value('WAREHOUSE_TRANSPORT'):
-            keys = ['transporter', 'transport_date', 'destination']
-        elif status == Entity.Status.Value('EXPORT_RECEPTION'):
-            keys = ['weight']
-        for key in keys:
-            setattr(payload.move_entity, key, proto.get(key))
+        payload.action = SCPayload.UPDATE_PACKAGE
+        payload.update_package.id = proto.get("id")
+        payload.update_package.entity.CopyFrom(proto.get('entity'))
         return payload
 
     @staticmethod

@@ -49,7 +49,7 @@ run () {
             PEER=$( echo $i | awk -F[/:] '{print $4}' )
             PORT=$( echo $i | awk -F[/:] '{print $5}' )
             PEER_IP=$(get_ip ${PEER})
-            OUTPUT=${OUTPUT},tcp://${PEER}:${PORT}
+            OUTPUT=${OUTPUT},tcp://${PEER_IP}:${PORT}
         done
 
         echo ${OUTPUT:1}
@@ -66,7 +66,7 @@ run () {
     PEERS_ARG=$(_get_peers_arg)
 
     # use external IP in case of node per server architecture
-    VALIDATOR_IP=${SERVER_IP:-${VALIDATOR_ALIAS}}
+    VALIDATOR_IP=${SERVER_IP:-$(get_ip ${VALIDATOR_HOST})}
 
     sawtooth-validator -vv \
       --bind network:tcp://eth0:8800 \

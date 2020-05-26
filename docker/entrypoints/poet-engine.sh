@@ -38,5 +38,5 @@ if [[ -z "${PEERS}" ]]; then
     register_poet
 fi
 
-poet-engine -C tcp://${VALIDATOR_ALIAS}:5050 --component tcp://${VALIDATOR_ALIAS}:${VALIDATOR_PORT}
+poet-engine -C tcp://${VALIDATOR_IP}:5050 --component tcp://${VALIDATOR_IP}:${VALIDATOR_PORT}
 

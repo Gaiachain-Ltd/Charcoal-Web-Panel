@@ -19,15 +19,15 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='gaiachain',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=b'\n\x0c\x65ntity.proto\x12\tgaiachain\x1a\x0b\x61gent.proto\"\xf0\x05\n\x06\x45ntity\x12\n\n\x02id\x18\x01 \x01(\t\x12\x11\n\ttimestamp\x18\x02 \x01(\x04\x12%\n\x08location\x18\x15 \x01(\x0b\x32\x13.gaiachain.Location\x12\x1e\n\x04user\x18\x16 \x01(\x0b\x32\x10.gaiachain.Agent\x12\x33\n\x0cpackage_type\x18\x03 \x01(\x0e\x32\x1d.gaiachain.Entity.PackageType\x12\x14\n\x0charvest_date\x18\x04 \x01(\x04\x12\x0e\n\x06parcel\x18\x05 \x01(\t\x12\x15\n\rbreaking_date\x18\x06 \x01(\x04\x12\x1d\n\x15\x65nd_fermentation_date\x18\x07 \x01(\x04\x12\x14\n\x0c\x62\x65\x61ns_volume\x18\x08 \x01(\x04\x12\x16\n\x0ereception_date\x18\t \x01(\x04\x12\x16\n\x0etransport_date\x18\n \x01(\x04\x12\r\n\x05\x62uyer\x18\x0b \x01(\t\x12#\n\x08\x65ntities\x18\x0c \x03(\x0b\x32\x11.gaiachain.Entity\x12(\n\x06status\x18\x0e \x01(\x0e\x32\x18.gaiachain.Entity.Status\x12\x0e\n\x06sac_id\x18\x0f \x01(\t\x12\x0e\n\x06weight\x18\x10 \x01(\x04\x12\x0e\n\x06lot_id\x18\x11 \x01(\t\x12\r\n\x05notes\x18\x12 \x01(\t\x12\x13\n\x0btransporter\x18\x13 \x01(\t\x12\x13\n\x0b\x64\x65stination\x18\x14 \x01(\t\";\n\x0bPackageType\x12\r\n\tZERO_TYPE\x10\x00\x12\x0b\n\x07HARVEST\x10\x01\x12\x07\n\x03SAC\x10\x02\x12\x07\n\x03LOT\x10\x03\"\xa4\x01\n\x06Status\x12\x0f\n\x0bZERO_STATUS\x10\x00\x12\x0e\n\nHARVESTING\x10\x01\x12\x14\n\x10GRAIN_PROCESSING\x10\x02\x12\x15\n\x11SECTION_RECEPTION\x10\x03\x12\x0b\n\x07\x42\x41GGING\x10\x04\x12\x10\n\x0cLOT_CREATION\x10\x05\x12\x17\n\x13WAREHOUSE_TRANSPORT\x10\x06\x12\x14\n\x10\x45XPORT_RECEPTION\x10\x07\"%\n\x08Location\x12\x0b\n\x03lat\x18\x01 \x01(\x01\x12\x0c\n\x04long\x18\x02 \x01(\x01\"P\n\x0b\x45ntityBatch\x12#\n\x08\x65ntities\x18\x01 \x03(\x0b\x32\x11.gaiachain.Entity\x12\x10\n\x08\x66inished\x18\x03 \x01(\x08\x12\n\n\x02id\x18\x04 \x01(\tb\x06proto3'
+  serialized_pb=b'\n\x0c\x65ntity.proto\x12\tgaiachain\x1a\x0b\x61gent.proto\"\xef\x01\n\x07Package\x12\n\n\x02id\x18\x01 \x01(\t\x12,\n\x04type\x18\x02 \x01(\x0e\x32\x1e.gaiachain.Package.PackageType\x12#\n\x08\x65ntities\x18\x03 \x03(\x0b\x32\x11.gaiachain.Entity\x12 \n\x04plot\x18\x04 \x01(\x0b\x32\x12.gaiachain.Package\x12#\n\x07harvest\x18\x05 \x01(\x0b\x32\x12.gaiachain.Package\">\n\x0bPackageType\x12\r\n\tZERO_TYPE\x10\x00\x12\x08\n\x04PLOT\x10\x01\x12\x0b\n\x07HARVEST\x10\x02\x12\t\n\x05TRUCK\x10\x03\"\xb9\x05\n\x06\x45ntity\x12\n\n\x02id\x18\x01 \x01(\t\x12\x11\n\ttimestamp\x18\x02 \x01(\x04\x12(\n\x06status\x18\x05 \x01(\x0e\x32\x18.gaiachain.Entity.Status\x12\x16\n\x0e\x62\x65ginning_date\x18\x07 \x01(\x04\x12\x0e\n\x06parcel\x18\x08 \x01(\t\x12\x0f\n\x07village\x18\t \x01(\t\x12\x13\n\x0btree_specie\x18\n \x01(\t\x12\x13\n\x0b\x65nding_date\x18\x0b \x01(\x04\x12\x17\n\x0fnumber_of_trees\x18\x0c \x01(\x04\x12\x0c\n\x04oven\x18\x0f \x01(\t\x12\x11\n\toven_type\x18\x10 \x01(\t\x12\x13\n\x0boven_height\x18\x11 \x01(\x04\x12\x12\n\noven_width\x18\x12 \x01(\x04\x12\x13\n\x0boven_length\x18\x13 \x01(\x04\x12\r\n\x05ovens\x18\x14 \x03(\t\x12\x10\n\x08\x65nd_date\x18\x15 \x01(\x04\x12\x14\n\x0cloading_date\x18\x16 \x01(\x04\x12\x14\n\x0cplate_number\x18\x17 \x01(\t\x12\x13\n\x0b\x64\x65stination\x18\x18 \x01(\t\x12\x0c\n\x04\x62\x61gs\x18\x1a \x03(\t\x12\x18\n\x10\x64ocuments_photos\x18\x1d \x03(\t\x12\x16\n\x0ereceipt_photos\x18\x1e \x03(\t\x12%\n\x08location\x18\x1f \x01(\x0b\x32\x13.gaiachain.Location\x12\x1e\n\x04user\x18  \x01(\x0b\x32\x10.gaiachain.Agent\"\xa1\x01\n\x06Status\x12\x0f\n\x0bZERO_STATUS\x10\x00\x12\x15\n\x11LOGGING_BEGINNING\x10\x01\x12\x12\n\x0eLOGGING_ENDING\x10\x02\x12\x1b\n\x17\x43\x41RBONIZATION_BEGINNING\x10\x03\x12\x18\n\x14\x43\x41RBONIZATION_ENDING\x10\x04\x12\x15\n\x11LOADING_TRANSPORT\x10\x05\x12\r\n\tRECEPTION\x10\x06\"%\n\x08Location\x12\x0b\n\x03lat\x18\x01 \x01(\x01\x12\x0c\n\x04long\x18\x02 \x01(\x01\"P\n\x0b\x45ntityBatch\x12#\n\x08\x65ntities\x18\x01 \x03(\x0b\x32\x11.gaiachain.Entity\x12\x10\n\x08\x66inished\x18\x03 \x01(\x08\x12\n\n\x02id\x18\x04 \x01(\tb\x06proto3'
   ,
   dependencies=[agent__pb2.DESCRIPTOR,])
 
 
 
-_ENTITY_PACKAGETYPE = _descriptor.EnumDescriptor(
+_PACKAGE_PACKAGETYPE = _descriptor.EnumDescriptor(
   name='PackageType',
-  full_name='gaiachain.Entity.PackageType',
+  full_name='gaiachain.Package.PackageType',
   filename=None,
   file=DESCRIPTOR,
   values=[
@@ -36,24 +36,24 @@ _ENTITY_PACKAGETYPE = _descriptor.EnumDescriptor(
       serialized_options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='HARVEST', index=1, number=1,
+      name='PLOT', index=1, number=1,
       serialized_options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='SAC', index=2, number=2,
+      name='HARVEST', index=2, number=2,
       serialized_options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='LOT', index=3, number=3,
+      name='TRUCK', index=3, number=3,
       serialized_options=None,
       type=None),
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=567,
-  serialized_end=626,
+  serialized_start=218,
+  serialized_end=280,
 )
-_sym_db.RegisterEnumDescriptor(_ENTITY_PACKAGETYPE)
+_sym_db.RegisterEnumDescriptor(_PACKAGE_PACKAGETYPE)
 
 _ENTITY_STATUS = _descriptor.EnumDescriptor(
   name='Status',
@@ -66,40 +66,96 @@ _ENTITY_STATUS = _descriptor.EnumDescriptor(
       serialized_options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='HARVESTING', index=1, number=1,
+      name='LOGGING_BEGINNING', index=1, number=1,
       serialized_options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='GRAIN_PROCESSING', index=2, number=2,
+      name='LOGGING_ENDING', index=2, number=2,
       serialized_options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='SECTION_RECEPTION', index=3, number=3,
+      name='CARBONIZATION_BEGINNING', index=3, number=3,
       serialized_options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='BAGGING', index=4, number=4,
+      name='CARBONIZATION_ENDING', index=4, number=4,
       serialized_options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='LOT_CREATION', index=5, number=5,
+      name='LOADING_TRANSPORT', index=5, number=5,
       serialized_options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='WAREHOUSE_TRANSPORT', index=6, number=6,
-      serialized_options=None,
-      type=None),
-    _descriptor.EnumValueDescriptor(
-      name='EXPORT_RECEPTION', index=7, number=7,
+      name='RECEPTION', index=6, number=6,
       serialized_options=None,
       type=None),
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=629,
-  serialized_end=793,
+  serialized_start=819,
+  serialized_end=980,
 )
 _sym_db.RegisterEnumDescriptor(_ENTITY_STATUS)
+
+
+_PACKAGE = _descriptor.Descriptor(
+  name='Package',
+  full_name='gaiachain.Package',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='id', full_name='gaiachain.Package.id', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='type', full_name='gaiachain.Package.type', index=1,
+      number=2, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='entities', full_name='gaiachain.Package.entities', index=2,
+      number=3, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='plot', full_name='gaiachain.Package.plot', index=3,
+      number=4, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='harvest', full_name='gaiachain.Package.harvest', index=4,
+      number=5, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+    _PACKAGE_PACKAGETYPE,
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=41,
+  serialized_end=280,
+)
 
 
 _ENTITY = _descriptor.Descriptor(
@@ -124,135 +180,156 @@ _ENTITY = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='location', full_name='gaiachain.Entity.location', index=2,
-      number=21, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='user', full_name='gaiachain.Entity.user', index=3,
-      number=22, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='package_type', full_name='gaiachain.Entity.package_type', index=4,
-      number=3, type=14, cpp_type=8, label=1,
+      name='status', full_name='gaiachain.Entity.status', index=2,
+      number=5, type=14, cpp_type=8, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='harvest_date', full_name='gaiachain.Entity.harvest_date', index=5,
-      number=4, type=4, cpp_type=4, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='parcel', full_name='gaiachain.Entity.parcel', index=6,
-      number=5, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='breaking_date', full_name='gaiachain.Entity.breaking_date', index=7,
-      number=6, type=4, cpp_type=4, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='end_fermentation_date', full_name='gaiachain.Entity.end_fermentation_date', index=8,
+      name='beginning_date', full_name='gaiachain.Entity.beginning_date', index=3,
       number=7, type=4, cpp_type=4, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='beans_volume', full_name='gaiachain.Entity.beans_volume', index=9,
-      number=8, type=4, cpp_type=4, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='reception_date', full_name='gaiachain.Entity.reception_date', index=10,
-      number=9, type=4, cpp_type=4, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='transport_date', full_name='gaiachain.Entity.transport_date', index=11,
-      number=10, type=4, cpp_type=4, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='buyer', full_name='gaiachain.Entity.buyer', index=12,
-      number=11, type=9, cpp_type=9, label=1,
+      name='parcel', full_name='gaiachain.Entity.parcel', index=4,
+      number=8, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='entities', full_name='gaiachain.Entity.entities', index=13,
-      number=12, type=11, cpp_type=10, label=3,
-      has_default_value=False, default_value=[],
+      name='village', full_name='gaiachain.Entity.village', index=5,
+      number=9, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='status', full_name='gaiachain.Entity.status', index=14,
-      number=14, type=14, cpp_type=8, label=1,
+      name='tree_specie', full_name='gaiachain.Entity.tree_specie', index=6,
+      number=10, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='ending_date', full_name='gaiachain.Entity.ending_date', index=7,
+      number=11, type=4, cpp_type=4, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='sac_id', full_name='gaiachain.Entity.sac_id', index=15,
+      name='number_of_trees', full_name='gaiachain.Entity.number_of_trees', index=8,
+      number=12, type=4, cpp_type=4, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='oven', full_name='gaiachain.Entity.oven', index=9,
       number=15, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='weight', full_name='gaiachain.Entity.weight', index=16,
-      number=16, type=4, cpp_type=4, label=1,
+      name='oven_type', full_name='gaiachain.Entity.oven_type', index=10,
+      number=16, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='oven_height', full_name='gaiachain.Entity.oven_height', index=11,
+      number=17, type=4, cpp_type=4, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='lot_id', full_name='gaiachain.Entity.lot_id', index=17,
-      number=17, type=9, cpp_type=9, label=1,
+      name='oven_width', full_name='gaiachain.Entity.oven_width', index=12,
+      number=18, type=4, cpp_type=4, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='oven_length', full_name='gaiachain.Entity.oven_length', index=13,
+      number=19, type=4, cpp_type=4, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='ovens', full_name='gaiachain.Entity.ovens', index=14,
+      number=20, type=9, cpp_type=9, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='end_date', full_name='gaiachain.Entity.end_date', index=15,
+      number=21, type=4, cpp_type=4, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='loading_date', full_name='gaiachain.Entity.loading_date', index=16,
+      number=22, type=4, cpp_type=4, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='plate_number', full_name='gaiachain.Entity.plate_number', index=17,
+      number=23, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='notes', full_name='gaiachain.Entity.notes', index=18,
-      number=18, type=9, cpp_type=9, label=1,
+      name='destination', full_name='gaiachain.Entity.destination', index=18,
+      number=24, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='transporter', full_name='gaiachain.Entity.transporter', index=19,
-      number=19, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
+      name='bags', full_name='gaiachain.Entity.bags', index=19,
+      number=26, type=9, cpp_type=9, label=3,
+      has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='destination', full_name='gaiachain.Entity.destination', index=20,
-      number=20, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
+      name='documents_photos', full_name='gaiachain.Entity.documents_photos', index=20,
+      number=29, type=9, cpp_type=9, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='receipt_photos', full_name='gaiachain.Entity.receipt_photos', index=21,
+      number=30, type=9, cpp_type=9, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='location', full_name='gaiachain.Entity.location', index=22,
+      number=31, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='user', full_name='gaiachain.Entity.user', index=23,
+      number=32, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
@@ -261,7 +338,6 @@ _ENTITY = _descriptor.Descriptor(
   ],
   nested_types=[],
   enum_types=[
-    _ENTITY_PACKAGETYPE,
     _ENTITY_STATUS,
   ],
   serialized_options=None,
@@ -270,8 +346,8 @@ _ENTITY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=41,
-  serialized_end=793,
+  serialized_start=283,
+  serialized_end=980,
 )
 
 
@@ -308,8 +384,8 @@ _LOCATION = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=795,
-  serialized_end=832,
+  serialized_start=982,
+  serialized_end=1019,
 )
 
 
@@ -353,22 +429,32 @@ _ENTITYBATCH = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=834,
-  serialized_end=914,
+  serialized_start=1021,
+  serialized_end=1101,
 )
 
+_PACKAGE.fields_by_name['type'].enum_type = _PACKAGE_PACKAGETYPE
+_PACKAGE.fields_by_name['entities'].message_type = _ENTITY
+_PACKAGE.fields_by_name['plot'].message_type = _PACKAGE
+_PACKAGE.fields_by_name['harvest'].message_type = _PACKAGE
+_PACKAGE_PACKAGETYPE.containing_type = _PACKAGE
+_ENTITY.fields_by_name['status'].enum_type = _ENTITY_STATUS
 _ENTITY.fields_by_name['location'].message_type = _LOCATION
 _ENTITY.fields_by_name['user'].message_type = agent__pb2._AGENT
-_ENTITY.fields_by_name['package_type'].enum_type = _ENTITY_PACKAGETYPE
-_ENTITY.fields_by_name['entities'].message_type = _ENTITY
-_ENTITY.fields_by_name['status'].enum_type = _ENTITY_STATUS
-_ENTITY_PACKAGETYPE.containing_type = _ENTITY
 _ENTITY_STATUS.containing_type = _ENTITY
 _ENTITYBATCH.fields_by_name['entities'].message_type = _ENTITY
+DESCRIPTOR.message_types_by_name['Package'] = _PACKAGE
 DESCRIPTOR.message_types_by_name['Entity'] = _ENTITY
 DESCRIPTOR.message_types_by_name['Location'] = _LOCATION
 DESCRIPTOR.message_types_by_name['EntityBatch'] = _ENTITYBATCH
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
+
+Package = _reflection.GeneratedProtocolMessageType('Package', (_message.Message,), {
+  'DESCRIPTOR' : _PACKAGE,
+  '__module__' : 'entity_pb2'
+  # @@protoc_insertion_point(class_scope:gaiachain.Package)
+  })
+_sym_db.RegisterMessage(Package)
 
 Entity = _reflection.GeneratedProtocolMessageType('Entity', (_message.Message,), {
   'DESCRIPTOR' : _ENTITY,

@@ -1,10 +1,10 @@
 from django.contrib.gis.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from apps.entities.utils import unix_to_datetime_tz
+from apps.additional_data.models import OvenType
 from apps.blockchain.transaction import PayloadFactory, BlockTransactionFactory
 
-from protos.entity_pb2 import Entity as EntityProto
+from protos.entity_pb2 import Entity as EntityProto, Package as PackageProto
 
 
 class Entity(models.Model):
@@ -14,8 +14,6 @@ class Entity(models.Model):
     CARBONIZATION_BEGINNING = 'CB'
     CARBONIZATION_ENDING = 'CE'
     LOADING_TRANSPORT = 'TR'
-    CHECKPOINT_FOREST = 'CF'
-    CHECKPOINT_SODEFOR = 'CS'
     RECEPTION = 'RE'
     ACTIONS = [
         (INITIAL, 'Initial'),
@@ -24,8 +22,6 @@ class Entity(models.Model):
         (CARBONIZATION_BEGINNING, 'Carbonization Beginning'),
         (CARBONIZATION_ENDING, 'Carbonization Ending'),
         (LOADING_TRANSPORT, 'Loading & Transport'),
-        (CHECKPOINT_FOREST, 'Checkpoint Eaux Et Forest'),
-        (CHECKPOINT_SODEFOR, 'Checkpoint Sodefor'),
         (RECEPTION, 'Reception')
     ]
     CHILD_MODEL_NAMES = {
@@ -34,8 +30,6 @@ class Entity(models.Model):
         CARBONIZATION_BEGINNING: 'carbonizationbeginning',
         CARBONIZATION_ENDING: 'carbonizationending',
         LOADING_TRANSPORT: 'loadingtransport',
-        CHECKPOINT_FOREST: 'checkpoint',
-        CHECKPOINT_SODEFOR: 'checkpoint',
         RECEPTION: 'reception',
     }
 
@@ -56,34 +50,17 @@ class Entity(models.Model):
             return "{}-{}-{}-{}".format(self.package.pid, self.action, self.timestamp, self.user)
         return "{}-{}-{}".format(self.action, self.timestamp, self.user)
 
-    def _build_proto(self, package_type, status, **kwargs):
-        """Build entity proto.
-
-        Returns:
-            Entity proto.
-        """
-        proto_kwargs = {
-            'id': str(self.package.pid),
-            'package_type': package_type,
-            'status': status,
+    def build_proto(self):
+        return EntityProto(**{
+            'status': getattr(self, self.CHILD_MODEL_NAMES[self.action]).get_proto_status(),
+            'timestamp': self.timestamp,
             'location': {
                 'lat': self.location.y,
                 'long': self.location.x,
             },
             'user': self.user.get_proto(),
-        }
-        if status == EntityProto.HARVESTING:
-            proto_kwargs['parcel'] = kwargs.pop('parcel')
-            proto_kwargs['harvest_date'] = kwargs.pop('harvest_date')
-        elif status == EntityProto.BAGGING:
-            proto_kwargs['entities'] = [EntityProto(id=k, weight=int(v)) for k, v in kwargs.pop('harvest_data').items()]
-        elif status == EntityProto.LOT_CREATION:
-            proto_kwargs['entities'] = [
-                EntityProto(id=sac_id) for sac_id in self.package.package_sacs.values_list('pid', flat=True)
-            ]
-            proto_kwargs['notes'] = kwargs.pop('notes')
-        proto = EntityProto(**proto_kwargs)
-        return proto
+            **getattr(self, self.CHILD_MODEL_NAMES[self.action]).get_proto_data()
+        })
 
     def add_to_chain(self, package_type, status, payload_type, **kwargs):
         proto = self._build_proto(package_type, status, **kwargs)
@@ -94,20 +71,11 @@ class Entity(models.Model):
         )
         return self
 
-    def update_in_chain(self, new_state, data):
+    def update_in_chain(self):
         """
-            Update Entity state.
+            Update Package entities.
         """
-        data.update({
-            'id': self.package.pid,
-            'status': new_state,
-            'user': self.user.get_proto()
-        })
-        return BlockTransactionFactory.send(
-            protos=[data],
-            signer_key=self.user.private_key,
-            payload_type=PayloadFactory.Types.UPDATE_ENTITY,
-        )
+        self.package.update_in_chain(self.user, self.build_proto())
 
     class Meta:
         ordering = ('-timestamp',)
@@ -123,11 +91,20 @@ class Package(models.Model):
         (HARVEST, 'Harvest'),
         (TRUCK, 'Truck'),
     ]
-    pid = models.CharField(verbose_name=_('Pid'), null=True, max_length=50)
+    pid = models.CharField(verbose_name=_('Pid'), null=True, max_length=100)
     type = models.CharField(verbose_name=_('Type'), choices=PACKAGES, default=PLOT, max_length=30)
     last_action = models.OneToOneField(
         'entities.Entity', verbose_name=_('Last action'), on_delete=models.CASCADE,
         null=True, blank=True, related_name='package_last_action'
+    )
+
+    plot = models.OneToOneField(
+        'entities.Package', verbose_name='Plot ID', related_name='plot_harvest',
+        on_delete=models.CASCADE, null=True, blank=True
+    )
+    harvest = models.ForeignKey(
+        'entities.Package', verbose_name='Harvest ID', related_name='trucks',
+        on_delete=models.CASCADE, null=True, blank=True
     )
 
     def __str__(self):
@@ -135,6 +112,47 @@ class Package(models.Model):
             return self.pid or ''
         except AttributeError:
             return str(self.id)
+
+    def _build_proto(self, package_type, **kwargs):
+        """Build package proto.
+
+        Returns:
+            Package proto.
+        """
+        proto_kwargs = {
+            'id': self.pid,
+            'type': package_type,
+            'entities': [x.build_proto() for x in self.package_entities.all()]
+        }
+        if self.plot:
+            proto_kwargs['plot'] = PackageProto(id=self.plot.pid)
+        if self.harvest:
+            proto_kwargs['harvest'] = PackageProto(id=self.harvest.pid)
+        proto = PackageProto(**proto_kwargs)
+        return proto
+
+    def add_to_chain(self, user, package_type, payload_type, **kwargs):
+        proto = self._build_proto(package_type, **kwargs)
+        BlockTransactionFactory.send(
+            protos=[proto],
+            signer_key=user.private_key,
+            payload_type=payload_type,
+        )
+        return self
+
+    def update_in_chain(self, user, entity):
+        """
+            Update Package entities.
+        """
+        data = {
+            'id': self.pid,
+            'entity': entity
+        }
+        return BlockTransactionFactory.send(
+            protos=[data],
+            signer_key=user.private_key,
+            payload_type=PayloadFactory.Types.UPDATE_PACKAGE,
+        )
 
 
 class ActionAbstract(models.Model):
@@ -167,11 +185,16 @@ class LoggingBeginning(ActionAbstract):
     )
     beginning_date = models.PositiveIntegerField(verbose_name=_('Beginning date'))
 
-    # def add_to_chain(self):
-    #     return self.entity.add_to_chain(
-    #         EntityProto.HARVEST, EntityProto.HARVESTING, PayloadFactory.Types.CREATE_ENTITY,
-    #         parcel=str(self.parcel), harvest_date=self.harvest_date
-    #     )
+    def get_proto_status(self):
+        return EntityProto.LOGGING_BEGINNING
+
+    def get_proto_data(self):
+        return {
+            'parcel': str(self.parcel),
+            'beginning_date': self.beginning_date,
+            'village': str(self.village),
+            'tree_specie': str(self.tree_specie)
+        }
 
     @property
     def short_description(self):
@@ -186,13 +209,14 @@ class LoggingEnding(ActionAbstract):
     def short_description(self):
         return _("Logging ending | Plot ID updated.")
 
-    # def update_in_chain(self):
-    #     data = {
-    #         'transporter': str(self.transporter),
-    #         'transport_date': self.transport_date or 0,
-    #         'destination': str(self.destination),
-    #     }
-    #     return self.entity.update_in_chain(EntityProto.WAREHOUSE_TRANSPORT, data)
+    def get_proto_status(self):
+        return EntityProto.LOGGING_ENDING
+
+    def get_proto_data(self):
+        return {
+            'ending_date': self.ending_date,
+            'number_of_trees': self.number_of_trees,
+        }
 
 
 class Oven(models.Model):
@@ -203,10 +227,6 @@ class CarbonizationBeginning(ActionAbstract):
     oven = models.OneToOneField(
         Oven, verbose_name=_('Oven'),
         related_name='carbonization_beginning', on_delete=models.CASCADE
-    )
-    plot = models.ForeignKey(
-        Package, verbose_name='Plot ID', related_name='carbonization_beginnings',
-        on_delete=models.CASCADE
     )
     beginning_date = models.PositiveIntegerField(verbose_name=_('Beginning date'))
     oven_type = models.ForeignKey(
@@ -221,32 +241,49 @@ class CarbonizationBeginning(ActionAbstract):
     def short_description(self):
         return _("Carbonization beginning | Oven ID created. Harvest ID created.")
 
-    # def add_to_chain(self):
-    #     return self.entity.add_to_chain(
-    #         EntityProto.HARVEST, EntityProto.HARVESTING, PayloadFactory.Types.CREATE_ENTITY,
-    #         parcel=str(self.parcel), harvest_date=self.harvest_date
-    #     )
+    def get_proto_status(self):
+        return EntityProto.CARBONIZATION_BEGINNING
+
+    def get_proto_data(self):
+        proto_data = {
+            'beginning_date': self.beginning_date,
+            'oven': self.oven.oven_id,
+            'oven_type': str(self.oven_type),
+        }
+        if self.oven_height and self.oven_length and self.oven_width:
+            proto_data.update({
+                'oven_height': self.oven_height,
+                'oven_width': self.oven_width,
+                'oven_length': self.oven_length,
+            })
+        else:
+            proto_data.update(
+                **OvenType.objects.filter(id=self.oven_type_id).values('oven_height', 'oven_width', 'oven_length')[0]
+            )
+        return proto_data
+
+    def add_to_chain(self, *args):
+        if self.entity.package.package_entities.count() == 1:
+            return self.entity.package.add_to_chain(*args)
+        return self.entity.update_in_chain()
 
 
 class CarbonizationEnding(ActionAbstract):
     ovens = models.ManyToManyField(Oven, verbose_name=_('Ovens'), related_name='carbonization_endings')
     end_date = models.PositiveIntegerField(verbose_name=_('End date'))
-    harvest = models.ForeignKey(
-        Package, verbose_name=_('Harvest'), related_name='carbonization_endings',
-        null=True, on_delete=models.SET_NULL
-    )
 
     @property
     def short_description(self):
         return _("Carbonization ending | Harvest ID updated.")
 
-    # def update_in_chain(self):
-    #     data = {
-    #         'transporter': str(self.transporter),
-    #         'transport_date': self.transport_date or 0,
-    #         'destination': str(self.destination),
-    #     }
-    #     return self.entity.update_in_chain(EntityProto.WAREHOUSE_TRANSPORT, data)
+    def get_proto_status(self):
+        return EntityProto.CARBONIZATION_ENDING
+
+    def get_proto_data(self):
+        return {
+            'end_date': self.end_date,
+            'ovens': list(self.ovens.values_list('oven_id', flat=True))
+        }
 
 
 class Bag(models.Model):
@@ -263,50 +300,55 @@ class Bag(models.Model):
 
 
 class LoadingTransport(ActionAbstract):
-    harvest = models.ForeignKey(
-        'entities.Package', verbose_name=_('Harvest ID'), on_delete=models.CASCADE,
-        related_name='transports', null=True
-    )
-    truck_id = models.CharField(max_length=16, verbose_name=_('Truck ID'))
+    plate_number = models.CharField(max_length=16, verbose_name=_('Truck ID'))
     loading_date = models.PositiveIntegerField(verbose_name=_('Loading date'))
     destination = models.ForeignKey(
         'additional_data.Destination', verbose_name=_('Destination'), on_delete=models.CASCADE,
         related_name='transports', null=True, blank=True
     )
 
-    def update_in_chain(self):
-        data = {
-            'transporter': str(self.transporter),
-            'transport_date': self.transport_date or 0,
+    def get_proto_status(self):
+        return EntityProto.LOADING_TRANSPORT
+
+    def get_proto_data(self):
+        return {
             'destination': str(self.destination),
+            'loading_date': self.loading_date,
+            'plate_number': self.plate_number,
+            'bags': list(self.bags.values_list('qr_code', flat=True))
         }
-        return self.entity.update_in_chain(EntityProto.WAREHOUSE_TRANSPORT, data)
 
     @property
     def short_description(self):
         return _("Transport created | Truck ID created.")
 
 
-class Checkpoint(ActionAbstract):
-    qr_code = models.CharField(verbose_name=_('QR Code'), null=True, blank=True, max_length=14)
-    photo = models.ImageField(verbose_name='Photo of document')
-
-    @property
-    def short_description(self):
-        return _("Checkpoint created | Truck ID updated.")
+class ReceptionImage(models.Model):
+    DOCUMENT = 'document'
+    RECEIPT = 'receipt'
+    TYPE_CHOICES = (
+        (DOCUMENT, 'Document'),
+        (RECEIPT, 'Receipt'),
+    )
+    type = models.CharField(verbose_name=_('Type'), max_length=8, choices=TYPE_CHOICES)
+    image = models.ImageField(verbose_name='Image', upload_to='photos/%Y/%m/%d')
+    reception = models.ForeignKey(
+        'entities.Reception', verbose_name=_('Reception'),
+        on_delete=models.CASCADE, related_name='images'
+    )
 
 
 class Reception(ActionAbstract):
-    documents_photo = models.ImageField(verbose_name='Photo of documents', null=True)
-    receipt_photo = models.ImageField(verbose_name='Photo of receipt', null=True)
 
-    def update_in_chain(self):
-        data = {
-            'reception_date': self.reception_date,
-            'transport_date': self.transport_date or 0,
-            'buyer': str(self.buyer)
+    def get_proto_status(self):
+        return EntityProto.RECEPTION
+
+    def get_proto_data(self):
+        return {
+            'documents_photos': list(self.images.filter(type=ReceptionImage.DOCUMENT).values_list('image', flat=True)),
+            'receipt_photos': list(self.images.filter(type=ReceptionImage.RECEIPT).values_list('image', flat=True)),
+            'bags': list(self.bags.values_list('qr_code', flat=True))
         }
-        return self.entity.update_in_chain(EntityProto.SECTION_RECEPTION, data)
 
     @property
     def short_description(self):

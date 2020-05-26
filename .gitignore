@@ -236,3 +236,5 @@ fabric.properties
 /api/server/protos
 /api/poc-api/database
 /docker/database
+api/poc-api/media
+*.py-r

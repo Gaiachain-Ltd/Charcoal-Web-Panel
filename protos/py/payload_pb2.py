@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='gaiachain',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=b'\n\rpayload.proto\x12\tgaiachain\x1a\x0b\x61gent.proto\x1a\x0c\x65ntity.proto\"\xd5\x03\n\tSCPayload\x12+\n\x06\x61\x63tion\x18\x01 \x01(\x0e\x32\x1b.gaiachain.SCPayload.Action\x12\x11\n\ttimestamp\x18\x02 \x01(\x04\x12\x32\n\x0c\x63reate_agent\x18\x03 \x01(\x0b\x32\x1c.gaiachain.CreateAgentAction\x12\x34\n\rcreate_entity\x18\x04 \x01(\x0b\x32\x1d.gaiachain.CreateEntityAction\x12?\n\x13\x63reate_entity_batch\x18\x05 \x01(\x0b\x32\".gaiachain.CreateEntityBatchAction\x12;\n\x11move_entity_batch\x18\x06 \x01(\x0b\x32 .gaiachain.MoveEntityBatchAction\x12\x30\n\x0bmove_entity\x18\x07 \x01(\x0b\x32\x1b.gaiachain.MoveEntityAction\"n\n\x06\x41\x63tion\x12\x10\n\x0c\x43REATE_AGENT\x10\x00\x12\x11\n\rCREATE_ENTITY\x10\x01\x12\x17\n\x13\x43REATE_ENTITY_BATCH\x10\x02\x12\x15\n\x11MOVE_ENTITY_BATCH\x10\x03\x12\x0f\n\x0bMOVE_ENTITY\x10\x04\"4\n\x11\x43reateAgentAction\x12\x1f\n\x05\x61gent\x18\x01 \x01(\x0b\x32\x10.gaiachain.Agent\"7\n\x12\x43reateEntityAction\x12!\n\x06\x65ntity\x18\x01 \x01(\x0b\x32\x11.gaiachain.Entity\">\n\x17\x43reateEntityBatchAction\x12#\n\x08\x65ntities\x18\x01 \x03(\x0b\x32\x11.gaiachain.Entity\"\xbb\x01\n\x15MoveEntityBatchAction\x12\x17\n\x0f\x65ntity_batch_id\x18\x01 \x01(\t\x12\x15\n\rbreaking_date\x18\x03 \x01(\x04\x12\x1d\n\x15\x65nd_fermentation_date\x18\x04 \x01(\x04\x12\x14\n\x0c\x62\x65\x61ns_volume\x18\x05 \x01(\x04\x12\x16\n\x0ereception_date\x18\x06 \x01(\x04\x12\x16\n\x0etransport_date\x18\x07 \x01(\x04\x12\r\n\x05\x62uyer\x18\x08 \x01(\t\"\x8d\x02\n\x10MoveEntityAction\x12\n\n\x02id\x18\x01 \x01(\t\x12(\n\x06status\x18\x02 \x01(\x0e\x32\x18.gaiachain.Entity.Status\x12\x15\n\rbreaking_date\x18\x03 \x01(\x04\x12\x1d\n\x15\x65nd_fermentation_date\x18\x04 \x01(\x04\x12\x14\n\x0c\x62\x65\x61ns_volume\x18\x05 \x01(\x04\x12\x16\n\x0ereception_date\x18\x06 \x01(\x04\x12\x16\n\x0etransport_date\x18\x07 \x01(\x04\x12\r\n\x05\x62uyer\x18\x08 \x01(\t\x12\x13\n\x0btransporter\x18\t \x01(\t\x12\x13\n\x0b\x64\x65stination\x18\n \x01(\t\x12\x0e\n\x06weight\x18\x0b \x01(\x04\x62\x06proto3'
+  serialized_pb=b'\n\rpayload.proto\x12\tgaiachain\x1a\x0b\x61gent.proto\x1a\x0c\x65ntity.proto\"\xe1\x03\n\tSCPayload\x12+\n\x06\x61\x63tion\x18\x01 \x01(\x0e\x32\x1b.gaiachain.SCPayload.Action\x12\x11\n\ttimestamp\x18\x02 \x01(\x04\x12\x32\n\x0c\x63reate_agent\x18\x03 \x01(\x0b\x32\x1c.gaiachain.CreateAgentAction\x12\x36\n\x0e\x63reate_package\x18\x04 \x01(\x0b\x32\x1e.gaiachain.CreatePackageAction\x12?\n\x13\x63reate_entity_batch\x18\x05 \x01(\x0b\x32\".gaiachain.CreateEntityBatchAction\x12;\n\x11move_entity_batch\x18\x06 \x01(\x0b\x32 .gaiachain.MoveEntityBatchAction\x12\x36\n\x0eupdate_package\x18\x07 \x01(\x0b\x32\x1e.gaiachain.UpdatePackageAction\"r\n\x06\x41\x63tion\x12\x10\n\x0c\x43REATE_AGENT\x10\x00\x12\x12\n\x0e\x43REATE_PACKAGE\x10\x01\x12\x17\n\x13\x43REATE_ENTITY_BATCH\x10\x02\x12\x15\n\x11MOVE_ENTITY_BATCH\x10\x03\x12\x12\n\x0eUPDATE_PACKAGE\x10\x04\"4\n\x11\x43reateAgentAction\x12\x1f\n\x05\x61gent\x18\x01 \x01(\x0b\x32\x10.gaiachain.Agent\":\n\x13\x43reatePackageAction\x12#\n\x07package\x18\x01 \x01(\x0b\x32\x12.gaiachain.Package\"D\n\x13UpdatePackageAction\x12\n\n\x02id\x18\x01 \x01(\t\x12!\n\x06\x65ntity\x18\x02 \x01(\x0b\x32\x11.gaiachain.Entity\">\n\x17\x43reateEntityBatchAction\x12#\n\x08\x65ntities\x18\x01 \x03(\x0b\x32\x11.gaiachain.Entity\"\xbb\x01\n\x15MoveEntityBatchAction\x12\x17\n\x0f\x65ntity_batch_id\x18\x01 \x01(\t\x12\x15\n\rbreaking_date\x18\x03 \x01(\x04\x12\x1d\n\x15\x65nd_fermentation_date\x18\x04 \x01(\x04\x12\x14\n\x0c\x62\x65\x61ns_volume\x18\x05 \x01(\x04\x12\x16\n\x0ereception_date\x18\x06 \x01(\x04\x12\x16\n\x0etransport_date\x18\x07 \x01(\x04\x12\r\n\x05\x62uyer\x18\x08 \x01(\tb\x06proto3'
   ,
   dependencies=[agent__pb2.DESCRIPTOR,entity__pb2.DESCRIPTOR,])
 
@@ -37,7 +37,7 @@ _SCPAYLOAD_ACTION = _descriptor.EnumDescriptor(
       serialized_options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='CREATE_ENTITY', index=1, number=1,
+      name='CREATE_PACKAGE', index=1, number=1,
       serialized_options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
@@ -49,14 +49,14 @@ _SCPAYLOAD_ACTION = _descriptor.EnumDescriptor(
       serialized_options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='MOVE_ENTITY', index=4, number=4,
+      name='UPDATE_PACKAGE', index=4, number=4,
       serialized_options=None,
       type=None),
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=415,
-  serialized_end=525,
+  serialized_start=423,
+  serialized_end=537,
 )
 _sym_db.RegisterEnumDescriptor(_SCPAYLOAD_ACTION)
 
@@ -90,7 +90,7 @@ _SCPAYLOAD = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='create_entity', full_name='gaiachain.SCPayload.create_entity', index=3,
+      name='create_package', full_name='gaiachain.SCPayload.create_package', index=3,
       number=4, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
@@ -111,7 +111,7 @@ _SCPAYLOAD = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='move_entity', full_name='gaiachain.SCPayload.move_entity', index=6,
+      name='update_package', full_name='gaiachain.SCPayload.update_package', index=6,
       number=7, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
@@ -131,7 +131,7 @@ _SCPAYLOAD = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=56,
-  serialized_end=525,
+  serialized_end=537,
 )
 
 
@@ -161,20 +161,20 @@ _CREATEAGENTACTION = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=527,
-  serialized_end=579,
+  serialized_start=539,
+  serialized_end=591,
 )
 
 
-_CREATEENTITYACTION = _descriptor.Descriptor(
-  name='CreateEntityAction',
-  full_name='gaiachain.CreateEntityAction',
+_CREATEPACKAGEACTION = _descriptor.Descriptor(
+  name='CreatePackageAction',
+  full_name='gaiachain.CreatePackageAction',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='entity', full_name='gaiachain.CreateEntityAction.entity', index=0,
+      name='package', full_name='gaiachain.CreatePackageAction.package', index=0,
       number=1, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
@@ -192,8 +192,46 @@ _CREATEENTITYACTION = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=581,
-  serialized_end=636,
+  serialized_start=593,
+  serialized_end=651,
+)
+
+
+_UPDATEPACKAGEACTION = _descriptor.Descriptor(
+  name='UpdatePackageAction',
+  full_name='gaiachain.UpdatePackageAction',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='id', full_name='gaiachain.UpdatePackageAction.id', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='entity', full_name='gaiachain.UpdatePackageAction.entity', index=1,
+      number=2, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=653,
+  serialized_end=721,
 )
 
 
@@ -223,8 +261,8 @@ _CREATEENTITYBATCHACTION = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=638,
-  serialized_end=700,
+  serialized_start=723,
+  serialized_end=785,
 )
 
 
@@ -296,128 +334,27 @@ _MOVEENTITYBATCHACTION = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=703,
-  serialized_end=890,
-)
-
-
-_MOVEENTITYACTION = _descriptor.Descriptor(
-  name='MoveEntityAction',
-  full_name='gaiachain.MoveEntityAction',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='id', full_name='gaiachain.MoveEntityAction.id', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='status', full_name='gaiachain.MoveEntityAction.status', index=1,
-      number=2, type=14, cpp_type=8, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='breaking_date', full_name='gaiachain.MoveEntityAction.breaking_date', index=2,
-      number=3, type=4, cpp_type=4, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='end_fermentation_date', full_name='gaiachain.MoveEntityAction.end_fermentation_date', index=3,
-      number=4, type=4, cpp_type=4, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='beans_volume', full_name='gaiachain.MoveEntityAction.beans_volume', index=4,
-      number=5, type=4, cpp_type=4, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='reception_date', full_name='gaiachain.MoveEntityAction.reception_date', index=5,
-      number=6, type=4, cpp_type=4, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='transport_date', full_name='gaiachain.MoveEntityAction.transport_date', index=6,
-      number=7, type=4, cpp_type=4, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='buyer', full_name='gaiachain.MoveEntityAction.buyer', index=7,
-      number=8, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='transporter', full_name='gaiachain.MoveEntityAction.transporter', index=8,
-      number=9, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='destination', full_name='gaiachain.MoveEntityAction.destination', index=9,
-      number=10, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='weight', full_name='gaiachain.MoveEntityAction.weight', index=10,
-      number=11, type=4, cpp_type=4, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=893,
-  serialized_end=1162,
+  serialized_start=788,
+  serialized_end=975,
 )
 
 _SCPAYLOAD.fields_by_name['action'].enum_type = _SCPAYLOAD_ACTION
 _SCPAYLOAD.fields_by_name['create_agent'].message_type = _CREATEAGENTACTION
-_SCPAYLOAD.fields_by_name['create_entity'].message_type = _CREATEENTITYACTION
+_SCPAYLOAD.fields_by_name['create_package'].message_type = _CREATEPACKAGEACTION
 _SCPAYLOAD.fields_by_name['create_entity_batch'].message_type = _CREATEENTITYBATCHACTION
 _SCPAYLOAD.fields_by_name['move_entity_batch'].message_type = _MOVEENTITYBATCHACTION
-_SCPAYLOAD.fields_by_name['move_entity'].message_type = _MOVEENTITYACTION
+_SCPAYLOAD.fields_by_name['update_package'].message_type = _UPDATEPACKAGEACTION
 _SCPAYLOAD_ACTION.containing_type = _SCPAYLOAD
 _CREATEAGENTACTION.fields_by_name['agent'].message_type = agent__pb2._AGENT
-_CREATEENTITYACTION.fields_by_name['entity'].message_type = entity__pb2._ENTITY
+_CREATEPACKAGEACTION.fields_by_name['package'].message_type = entity__pb2._PACKAGE
+_UPDATEPACKAGEACTION.fields_by_name['entity'].message_type = entity__pb2._ENTITY
 _CREATEENTITYBATCHACTION.fields_by_name['entities'].message_type = entity__pb2._ENTITY
-_MOVEENTITYACTION.fields_by_name['status'].enum_type = entity__pb2._ENTITY_STATUS
 DESCRIPTOR.message_types_by_name['SCPayload'] = _SCPAYLOAD
 DESCRIPTOR.message_types_by_name['CreateAgentAction'] = _CREATEAGENTACTION
-DESCRIPTOR.message_types_by_name['CreateEntityAction'] = _CREATEENTITYACTION
+DESCRIPTOR.message_types_by_name['CreatePackageAction'] = _CREATEPACKAGEACTION
+DESCRIPTOR.message_types_by_name['UpdatePackageAction'] = _UPDATEPACKAGEACTION
 DESCRIPTOR.message_types_by_name['CreateEntityBatchAction'] = _CREATEENTITYBATCHACTION
 DESCRIPTOR.message_types_by_name['MoveEntityBatchAction'] = _MOVEENTITYBATCHACTION
-DESCRIPTOR.message_types_by_name['MoveEntityAction'] = _MOVEENTITYACTION
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 SCPayload = _reflection.GeneratedProtocolMessageType('SCPayload', (_message.Message,), {
@@ -434,12 +371,19 @@ CreateAgentAction = _reflection.GeneratedProtocolMessageType('CreateAgentAction'
   })
 _sym_db.RegisterMessage(CreateAgentAction)
 
-CreateEntityAction = _reflection.GeneratedProtocolMessageType('CreateEntityAction', (_message.Message,), {
-  'DESCRIPTOR' : _CREATEENTITYACTION,
+CreatePackageAction = _reflection.GeneratedProtocolMessageType('CreatePackageAction', (_message.Message,), {
+  'DESCRIPTOR' : _CREATEPACKAGEACTION,
   '__module__' : 'payload_pb2'
-  # @@protoc_insertion_point(class_scope:gaiachain.CreateEntityAction)
+  # @@protoc_insertion_point(class_scope:gaiachain.CreatePackageAction)
   })
-_sym_db.RegisterMessage(CreateEntityAction)
+_sym_db.RegisterMessage(CreatePackageAction)
+
+UpdatePackageAction = _reflection.GeneratedProtocolMessageType('UpdatePackageAction', (_message.Message,), {
+  'DESCRIPTOR' : _UPDATEPACKAGEACTION,
+  '__module__' : 'payload_pb2'
+  # @@protoc_insertion_point(class_scope:gaiachain.UpdatePackageAction)
+  })
+_sym_db.RegisterMessage(UpdatePackageAction)
 
 CreateEntityBatchAction = _reflection.GeneratedProtocolMessageType('CreateEntityBatchAction', (_message.Message,), {
   'DESCRIPTOR' : _CREATEENTITYBATCHACTION,
@@ -454,13 +398,6 @@ MoveEntityBatchAction = _reflection.GeneratedProtocolMessageType('MoveEntityBatc
   # @@protoc_insertion_point(class_scope:gaiachain.MoveEntityBatchAction)
   })
 _sym_db.RegisterMessage(MoveEntityBatchAction)
-
-MoveEntityAction = _reflection.GeneratedProtocolMessageType('MoveEntityAction', (_message.Message,), {
-  'DESCRIPTOR' : _MOVEENTITYACTION,
-  '__module__' : 'payload_pb2'
-  # @@protoc_insertion_point(class_scope:gaiachain.MoveEntityAction)
-  })
-_sym_db.RegisterMessage(MoveEntityAction)
 
 
 # @@protoc_insertion_point(module_scope)

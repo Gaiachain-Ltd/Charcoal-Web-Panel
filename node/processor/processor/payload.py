@@ -23,11 +23,11 @@ class Payload:
     def data(self):
         if self.action == SCPayload.CREATE_AGENT:
             return self._payload.create_agent
-        if self.action == SCPayload.CREATE_ENTITY:
-            return self._payload.create_entity
+        if self.action == SCPayload.CREATE_PACKAGE:
+            return self._payload.create_package
+        if self.action == SCPayload.UPDATE_PACKAGE:
+            return self._payload.update_package
         if self.action == SCPayload.CREATE_ENTITY_BATCH:
             return self._payload.create_entity_batch
         if self.action == SCPayload.MOVE_ENTITY_BATCH:
             return self._payload.move_entity_batch
-        if self.action == SCPayload.MOVE_ENTITY:
-            return self._payload.move_entity

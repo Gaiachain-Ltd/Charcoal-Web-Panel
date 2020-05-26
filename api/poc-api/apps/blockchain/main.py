@@ -8,6 +8,7 @@ import yaml
 
 from apps.blockchain.handlers.agent import AgentHandler
 from apps.blockchain.handlers.entity import EntityHandler
+from apps.blockchain.handlers.package import PackageHandler
 from apps.blockchain.handlers.entity_batch import EntityBatchHandler
 from apps.blockchain.processor import SyncProcessor
 
@@ -29,6 +30,7 @@ def main(args=None):
         processor.add_handler(AgentHandler)
         processor.add_handler(EntityHandler)
         processor.add_handler(EntityBatchHandler)
+        processor.add_handler(PackageHandler)
         processor.start()
     except KeyboardInterrupt:
         pass
