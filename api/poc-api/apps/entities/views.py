@@ -482,12 +482,11 @@ class PackageViewSet(ViewSet, MultiSerializerMixin):
         """
         type = request.GET.get('type')
         filter_kwargs = self._filter_entities(request)
-        if type:
-            queryset = self.queryset.filter(
-                type=type.upper()[:3], **filter_kwargs
-            ).exclude(last_action__action=Entity.INITIAL)
-        else:
-            queryset = self.queryset.exclude(last_action__action=Entity.INITIAL)
+        if type and type.lower() != 'all':
+            filter_kwargs['type'] = type.upper()
+        queryset = self.queryset.filter(
+            **filter_kwargs
+        ).exclude(last_action__action=Entity.INITIAL)
         page = self.paginator.paginate_queryset(queryset=queryset, request=request)
         if page is not None:
             serializer = self.get_serializer(page, many=True)

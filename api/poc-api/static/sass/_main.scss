@@ -1,39 +1,58 @@
 header.main-header {
-  height: 130px;
-  background-color: $header-bg;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 30px;
+  height: 120px;
+  background: transparent linear-gradient(270deg, $main-header-bg 0%, $white-color 100%) 0% 0% no-repeat padding-box;
+  border-bottom: 1px solid $main-header-border-color;
+  position: absolute;
+  width: 100%;
+  z-index: 2;
+  .logo {
+    width: 305px;
+    height: 120px;
+    display: inline-block;
+    img {
+      padding-top: 30px;
+      padding-left: 30px;
+    }
+  }
   .current-page-name {
-    font-size: 32px;
-    color: $white-color;
+    color: $black-color;
     margin: 0;
+    display: inline-block;
+    vertical-align: bottom;
+    padding-left: 32px;
+    padding-bottom: 20px;
+    h1 {
+      font-size: 28px;
+      margin: 0;
+    }
   }
   .header-right {
-    display: flex;
+    display: inline-block;
+    float: right;
+    padding-top: 82px;
+    padding-right: 40px;
+    font-size: 16px;
     .corporate-name {
-      font-size: 24px;
-      color: $white-color;
+      color: $black-color;
+      font-weight: 100;
       min-width: 200px;
-      display: flex;
+      //display: flex;
       padding: 5px;
-      justify-content: flex-end;
+      //justify-content: flex-end;
     }
     .logout {
       text-decoration: none;
       cursor: pointer;
-      margin-left: 30px;
-      font-size: 20px;
+      margin-left: 18px;
       font-weight: 600;
-      color: #FFFFFF;
-      display: flex;
+      color: $black-color;
+      //display: flex;
       align-items: center;
-      justify-content: center;
-      background-color: $main-header-bg;
+      //justify-content: center;
       border: 1px solid $main-header-border-color;
-      padding: 5px 10px;
-      border-radius: 5px;
+      padding: 17px 33px;
+      border-radius: 5px 5px 0 0;
+      border-bottom: none;
     }
   }
 
@@ -46,14 +65,13 @@ section.main-section {
   bottom: 0;
   right: 0;
   .sidebar {
-    background-color: $sidebar-bg;
+    background: transparent linear-gradient(180deg, $sidebar-bg 0%, $white-color 100%) 0% 0% no-repeat padding-box;
     width: 305px;
-    padding: 125px 0;
-    //position: fixed;
+    position: fixed;
     display: flex;
     flex-direction: column;
     height: 100%;
-    border: 1px solid $main-header-border-color;
+    border-right: 2px solid $sidebar-bg;
     .submenu {
       display: flex;
       flex-direction: column;
@@ -77,45 +95,97 @@ section.main-section {
       }
     }
     .menu-element {
-      margin-right: 30px;
-      width: 285px;
-      height: 75px;
+      height: 92px;
       display: flex;
       justify-content: flex-start;
       align-items: center;
-      background: transparent linear-gradient(90deg, $sidebar-bg 0%, $sidebar-gradient 100%);
-      border: 1px solid #CDDCCF;
-      border-radius: 0 5px 5px 0;
-      margin-bottom: 20px;
+      background: transparent;
       font-size: 20px;
       font-weight: 600;
       letter-spacing: -0.5px;
-      color: $menu-color;
+      color: $black-color;
       text-transform: capitalize;
-      padding-left: 60px;
+      padding-left: 80px;
       position: relative;
       cursor: pointer;
+      &:first-child {
+        margin-top: 120px;
+      }
+      &:not(:first-child) {
+        border-top: 1px solid $main-header-border-color;
+      }
+      &#settings {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+      }
       i {
         position: absolute;
         left: 20px;
       }
-      .tracking-icon {
-        background-image: url(../img/icon-tracking.svg);
-        height: 30px;
-        width: 22px;
-        top: 20px;
+      .tracability-icon {
+        background-image: url(../img/icon-traceability_dark.png);
+        background-image:
+          -webkit-image-set(
+            url(../img/icon-traceability_dark.png) 1x,
+            url(../img/icon-traceability_dark@2x.png) 2x
+        );
+        background-image:
+          image-set(
+            url(../img/icon-traceability_dark.png) 1x,
+            url(../img/icon-traceability_dark@2x.png) 2x
+        );
+        height: 36px;
+        width: 37px;
+        top: 26px;
       }
       .calendar-icon {
-        background-image: url(../img/icon-calendar.svg);
-        height: 30px;
-        width: 28px;
+        background-image: url(../img/calendar-icon_dark.png);
+        background-image:
+          -webkit-image-set(
+            url(../img/calendar-icon_dark.png) 1x,
+            url(../img/calendar-icon_dark@2x.png) 2x
+        );
+        background-image:
+          image-set(
+            url(../img/calendar-icon_dark.png) 1x,
+            url(../img/calendar-icon_dark@2x.png) 2x
+        );
+        height: 44px;
+        width: 44px;
+        top: 23px;
+      }
+      .replantation-icon {
+        background-image: url(../img/replantation-icon_dark.png);
+        background-image:
+          -webkit-image-set(
+            url(../img/replantation-icon_dark.png) 1x,
+            url(../img/replantation-icon_dark@2x.png) 2x
+        );
+        background-image:
+          image-set(
+            url(../img/replantation-icon_dark.png) 1x,
+            url(../img/replantation-icon_dark@2x.png) 2x
+        );
+        height: 49px;
+        width: 38px;
         top: 20px;
       }
-      .blockchain-icon {
-        background-image: url(../img/icon-blockchain.svg);
-        height: 31px;
-        width: 30px;
-        top: 20px;
+      .settings-icon {
+        background-image: url(../img/icon-settings_dark.png);
+        background-image:
+          -webkit-image-set(
+            url(../img/icon-settings_dark.png) 1x,
+            url(../img/icon-settings_dark@2x.png) 2x
+        );
+        background-image:
+          image-set(
+            url(../img/icon-settings_dark.png) 1x,
+            url(../img/icon-settings_dark@2x.png) 2x
+        );
+        height: 40px;
+        width: 40px;
+        top: 26px;
       }
       .show-arrow-icon {
         background-image: url(../img/show-arrow.svg);
@@ -129,38 +199,123 @@ section.main-section {
       }
     }
     .active-element {
-      background: transparent linear-gradient(90deg, $sidebar-bg 0%, $white-color 100%) !important;
+      background: transparent linear-gradient(107deg, $sidebar-active-bg-from 0%, $sidebar-active-bg-to 100%) 0% 0% no-repeat padding-box;
       font-weight: 700 !important;
+      color: $white-color;
+      .tracability-icon {
+        background-image: url(../img/icon-traceability.png);
+        background-image:
+          -webkit-image-set(
+            url(../img/icon-traceability.png) 1x,
+            url(../img/icon-traceability@2x.png) 2x
+        );
+        background-image:
+          image-set(
+            url(../img/icon-traceability.png) 1x,
+            url(../img/icon-traceability@2x.png) 2x
+        );
+      }
+      .calendar-icon {
+        background-image: url(../img/calendar-icon.png);
+        background-image:
+          -webkit-image-set(
+            url(../img/calendar-icon.png) 1x,
+            url(../img/calendar-icon@2x.png) 2x
+        );
+        background-image:
+          image-set(
+            url(../img/calendar-icon.png) 1x,
+            url(../img/calendar-icon@2x.png) 2x
+        );
+      }
+      .replantation-icon {
+        background-image: url(../img/replantation-icon.png);
+        background-image:
+          -webkit-image-set(
+            url(../img/replantation-icon.png) 1x,
+            url(../img/replantation-icon@2x.png) 2x
+        );
+        background-image:
+          image-set(
+            url(../img/replantation-icon.png) 1x,
+            url(../img/replantation-icon@2x.png) 2x
+        );
+      }
+      .settings-icon {
+        background-image: url(../img/icon-settings.png);
+        background-image:
+          -webkit-image-set(
+            url(../img/icon-settings.png) 1x,
+            url(../img/icon-settings@2x.png) 2x
+        );
+        background-image:
+          image-set(
+            url(../img/icon-settings.png) 1x,
+            url(../img/icon-settings@2x.png) 2x
+        );
+      }
     }
   }
   .main-content {
-    padding: 30px;
+    padding: 40px;
+    padding-top: 160px;
+    padding-left: 340px;
     width: 100%;
     //margin-left: 304px;
     .start-content {
       display: flex;
       flex-direction: column;
+      .nav-search {
+        display: flex;
+        flex-direction: row;
+        border-bottom: 1px solid $active-tab-bg;
+        .nav-tabs {
+          border: none;
+          flex-grow: 1;
+          .nav-item {
+            margin-right: 10px;
+            .nav-link {
+              color: $tab-color;
+              text-transform: uppercase;
+              border-color: $main-header-border-color;
+              font-weight: 100;
+              border-bottom: none;
+              &.active {
+                background-color: $active-tab-bg;
+                border-color: $active-tab-bg;
+                color: white;
+                font-weight: 500;
+              }
+            }
+          }
+        }
+      }
       .search-actions {
+        flex-grow: 1;
+        position: relative;
         .search-icon {
           background-image: url(../img/icon_search.png);
           height: 25px;
           width: 25px;
           position: absolute;
-          right: 50px;
-          top: 50px;
+          right: 20px;
+          top: 9px;
         }
         input {
-          background: $main-header-bg;
+          background: $white-color;
           border: 1px solid $main-header-border-color;
-          border-radius: 10px;
-          height: 63px;
+          border-top-left-radius: .25rem;
+          border-top-right-radius: .25rem;
+          height: 41px;
           width: 100%;
           color: $black-color;
-          font-size: 24px;
-          font-weight: 700;
+          font-size: 16px;
+          font-weight: 100;
           padding: 15px;
+          border-bottom: none;
           &::placeholder {
             opacity: 1;
+            color: $black-color;
           }
         }
       }
@@ -168,7 +323,6 @@ section.main-section {
     .content-data {
       display: flex;
       justify-content: space-between;
-      margin-top: 30px;
       .title-block {
           padding: 20px 17px;
           background-color: $main-header-bg;
@@ -214,14 +368,14 @@ section.main-section {
                 font-size: 20px;
                 font-weight: 600;
               }
+              .plot {
+                color: $plot-color
+              }
               .harvest {
                 color: $harvest-color
               }
-              .sac {
-                color: $sac-color
-              }
-              .lot {
-                color: $lot-color
+              .truck {
+                color: $truck-color
               }
             }
             hr {
@@ -242,18 +396,15 @@ section.main-section {
         flex-direction: column;
         height: 100%;
         background-color: $white-color;
-        border-bottom: 1px solid $main-header-bg;
-        border: 1px solid $main-header-border-color;
-        border-radius: 10px;
         width: 100%;
+        .plot {
+          color: $plot-color
+        }
         .harvest {
           color: $harvest-color
         }
-        .sac {
-          color: $sac-color
-        }
-        .lot {
-          color: $lot-color
+        .truck {
+          color: $truck-color
         }
         .title-block {
           justify-content: flex-start;
@@ -274,14 +425,14 @@ section.main-section {
               a.active {
                 font-weight: 700;
               }
+              a.active.plot {
+                border-bottom: 4px solid $plot-color;
+              }
               a.active.harvest {
                 border-bottom: 4px solid $harvest-color;
               }
-              a.active.sac {
-                border-bottom: 4px solid $sac-color;
-              }
-              a.active.lot {
-                border-bottom: 4px solid $lot-color;
+              a.active.truck {
+                border-bottom: 4px solid $truck-color;
               }
             }
           }
@@ -291,7 +442,7 @@ section.main-section {
           display: flex;
           flex-direction: column;
           .package {
-            padding: 20px 20px 0 20px;
+            padding-top: 30px;
             font-size: 20px;
             font-weight: 600;
             .package-pid {
@@ -320,11 +471,23 @@ section.main-section {
               }
             }
             .package-details {
-              .package-property {
+              margin-top: 10px;
+              .package-entity {
                 div {
                   display: flex;
                   align-items: center;
                   justify-content: space-between;
+                }
+                .description {
+                  font-weight: 100;
+                }
+                .timestamp {
+                  font-weight: 500;
+                  .timezone {
+                    color: $timezone-color;
+                    font-size: 16px;
+                    font-weight: 100;
+                  }
                 }
               }
               .transaction-property-key {width: 30%}

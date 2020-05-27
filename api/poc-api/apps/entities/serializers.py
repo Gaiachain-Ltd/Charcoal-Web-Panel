@@ -1,9 +1,13 @@
 import json
+import pytz
+
+from datetime import datetime
 
 from django.shortcuts import get_object_or_404, get_list_or_404
 from django.db import transaction
 from django.contrib.gis.geos import Point
 from django.templatetags.static import static
+from django.conf import settings
 
 from rest_framework import serializers
 from rest_framework.exceptions import NotFound
@@ -376,7 +380,7 @@ class EntityBatchListSerializer(serializers.ModelSerializer):
         return obj.package.pid
 
     def get_qr_code(self, obj):
-        return obj.package.qr_code
+        return ""
 
     def get_properties(self, obj):
         try:
@@ -425,10 +429,32 @@ class HarvestsSerializer(serializers.Serializer):
     last_action = serializers.ChoiceField(choices=ACTIONS, required=False)
 
 
+class SimpleEntitySerializer(serializers.ModelSerializer):
+    timestamp_display = serializers.SerializerMethodField()
+    description = serializers.CharField(source='web_description')
+    timezone = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Entity
+        fields = ('description', 'timestamp_display', 'timezone')
+
+    def get_timezone(self, obj):
+        return datetime.fromtimestamp(obj.timestamp, tz=pytz.timezone(settings.TIME_ZONE)).strftime('%Z%z')
+
+    def get_timestamp_display(self, obj):
+        return datetime.fromtimestamp(obj.timestamp, tz=pytz.timezone(settings.TIME_ZONE)).strftime('%d/%m/%Y %H:%S')
+
+
 class PackagesSerializer(serializers.ModelSerializer):
+    type_display = serializers.SerializerMethodField()
+    entities = SimpleEntitySerializer(many=True, source='package_entities')
+
     class Meta:
         model = Package
-        fields = ('id', 'pid', 'type')
+        fields = ('id', 'pid', 'type', 'type_display', 'entities')
+
+    def get_type_display(self, obj):
+        return obj.get_type_display().lower()
 
 
 class HarvestPackageSerializer(serializers.ModelSerializer):

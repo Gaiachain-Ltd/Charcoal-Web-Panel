@@ -5,18 +5,22 @@
 
 {% block content %}
     <header class="main-header">
-        <img width="205" src="{% static 'img/logo.png' %}"/>
-        <h1 class="current-page-name">{% trans "Dashboard" %}</h1>
+        <div class="logo">
+            <img width="205" srcset="{% static 'img/logo_dark.png' %} 1x, {% static 'img/logo_dark@2x.png' %} 2x"/>
+        </div>
+        <div class="current-page-name">
+            <h1 id="current-page-name">{% trans "Dashboard" %}</h1>
+        </div>
         <div class="header-right">
-            <span class="corporate-name">{{ company_name }}</span>
             {% if request.user.is_authenticated %}
+                <span class="corporate-name">{{ user.email }}</span>
                 <a href={% url "account_logout" %} class="logout">{% trans 'Logout' %}</a>
             {% endif %}
         </div>
     </header>
     <section class="main-section" id="dashboard-main" >
         {% include 'includes/sidebar.html' %}
-        {% include 'includes/dashboard.html' %}
+        {% include 'includes/calendar.html' %}
         {% include 'includes/packages.html' %}
         {% include 'includes/chain.html' %}
         {% include 'includes/map-chain.html' %}
@@ -33,6 +37,6 @@
 {% block extra_js %}
     {{ block.super }}
     <script type="application/javascript">
-        window.active_element = "";
+        window.active_element = "tracability";
     </script>
 {% endblock extra_js %}

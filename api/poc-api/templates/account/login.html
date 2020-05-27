@@ -7,30 +7,30 @@
 
 
 {% block content %}
-<header class="auth-header">
-    <img width="205" src="{% static 'img/logo.png' %}"/>
-</header>
-<section class="auth-section">
-    <form class="login" method="POST" action="{% url 'account_login' %}">
-        {% csrf_token %}
-        <div class="input-block">
-            <div class="login-input">
-                <i class="input-icon email-icon"></i>
-                <input type="email" name="login" placeholder="{% trans "E-mail address" %}" autofocus="autofocus" required="" id="id_login">
+    <header class="auth-header">
+        <img width="205" srcset="{% static 'img/logo.png' %} 1x, {% static 'img/logo@2x.png' %} 2x"/>
+    </header>
+    <section class="auth-section">
+        <form class="login" method="POST" action="{% url 'account_login' %}">
+            {% csrf_token %}
+            <div class="input-block">
+                <div class="login-input">
+                    <i class="input-icon email-icon"></i>
+                    <input type="email" name="login" placeholder="{% trans "E-mail address" %}" autofocus="autofocus"
+                           required="" id="id_login">
+                </div>
+                <div class="login-input">
+                    <i class="input-icon password-icon"></i>
+                    <input type="password" name="password" placeholder="{% trans "Password" %}" required=""
+                           id="id_password">
+                </div>
             </div>
-            <div class="login-input">
-                <i class="input-icon password-icon"></i>
-                <input type="password" name="password" placeholder="{% trans "Password" %}" required="" id="id_password">
+            <div class="buttons-block">
+                {% if redirect_field_value %}
+                    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+                {% endif %}
+                <button class="login-buttons primaryAction" type="submit">{% trans "CONNECTION" %}</button>
             </div>
-        </div>
-        <div class="buttons-block">
-             {% if redirect_field_value %}
-              <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-              {% endif %}
-              {#      <a class="button secondaryAction" href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>#}
-              <button class="login-buttons primaryAction" type="submit">{% trans "CONNECTION" %}</button>
-              <a href="{% url 'web-panel' %}" class="login-buttons skip-login-button">{% trans "SKIP" %}</a>
-        </div>
-    </form>
-</section>
+        </form>
+    </section>
 {% endblock %}

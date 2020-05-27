@@ -1,5 +1,5 @@
 $(document).ready(function() {
-const DAY_LABELS = ['S', 'M', 'T', 'W', 'Th', 'F', 'S'];
+const DAY_LABELS = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
 const MONTH_LABELS = [
         "January", "February", "March",
         "April", "May", "June",
@@ -10,9 +10,9 @@ const Calendar = Vue.component('calendar', {
   template: `
     <div class="calendar">
       <header class="header">
-        <button @click="previousMonth">&lt;&lt;</button>
         <span>{{ currentMonthLabel }} {{ currentYear }}</span>
-        <button @click="nextMonth">&gt;&gt;</button>
+        <button @click="previousMonth">&lt;</button>
+        <button @click="nextMonth">&gt;</button>
       </header>
       <div class="headings" v-for="dayLabel in dayLabels">
         {{ dayLabel }}
@@ -212,26 +212,28 @@ const app = new Vue(
         },
         mounted: function () {
             this.loading = true;
-            this.getActions("?limit=5");
-            this.getActionTypes()
+            this.showPackages('all');
+            document.getElementById('current-page-name').innerHTML = 'Traceability'
         },
         methods: {
-            setActiveAction: function(el) {
+            setActiveAction: function(el, title = "") {
                 let previous_element = this.active_element;
                 this.active_element = el;
-                if (el === 'tracability') {
-                    if (previous_element === 'tracability') {
-                        this.active_element = '';
-                        this.show_subelements = false;
-                    } else {
-                        this.show_subelements = true;
-                    }
-                    this.active_subelement = '';
-                } else {
-                    this.show_subelements = false;
-                    this.active_subelement = '';
-                    this.active_package_type = '';
-                }
+                // if (el === 'tracability') {
+                //     if (previous_element === 'tracability') {
+                //         this.active_element = '';
+                //         this.show_subelements = false;
+                //     } else {
+                //         this.show_subelements = true;
+                //     }
+                //     this.active_subelement = '';
+                // } else {
+                //     this.show_subelements = false;
+                //     this.active_subelement = '';
+                //     this.active_package_type = '';
+                // }
+                if (title)
+                    document.getElementById('current-page-name').innerHTML = title;
                 this.loading = false;
             },
             getActionTypes: function () {
@@ -285,7 +287,7 @@ const app = new Vue(
                 }
                 return color_class
             },
-            getPackages: function (type, args="", search=false) {
+            getPackages: function (type, args = "", search = false) {
                 if (!search) {
                     this.loading = true;
                 }
@@ -293,20 +295,19 @@ const app = new Vue(
                 if (args.length > 0) {
                     url += args
                 }
-                this.$http.get(url).then(function (response){
-                        this.packages = response.data.results;
-                        this.opened_package = '';
-                        this.loading = false;
-                    }).catch(function(err) {
-                        this.loading = false;
-                        this.opened_package = '';
-                        console.log(err);
-                    })
+                this.$http.get(url).then(function (response) {
+                    this.packages = response.data.results;
+                    console.log(response.data)
+                    this.opened_package = '';
+                    this.loading = false;
+                }).catch(function (err) {
+                    this.loading = false;
+                    this.opened_package = '';
+                    console.log(err);
+                })
             },
-            showPackages: function (type, active_sub=false) {
-                if (active_sub) {
-                    this.active_subelement = active_sub;
-                }
+            showPackages: function (type) {
+                this.setActiveAction('tracability', 'Tracability');
                 this.active_package_type = type;
                 this.package_keyword = "";
                 this.getPackages(type)
@@ -395,8 +396,12 @@ const app = new Vue(
                 }, 1000);
                 this.loading = false;
             },
+            showCalendar: function () {
+                this.setActiveAction('calendar', 'Calendar');
+
+            },
             showBlockchainExplorer: function () {
-                this.getTransactions();
+                // this.getTransactions();
                 this.setActiveAction('blockchain_explorer');
 
             },

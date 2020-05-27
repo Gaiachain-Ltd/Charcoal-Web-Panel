@@ -2,15 +2,16 @@
 {% load staticfiles %}
 
 <div class="main-content" id="dashboard"
-     v-if="active_element === 'tracability' && active_subelement === '' || active_element === '' && active_subelement === ''"
+     v-if="active_element === 'calendar'"
      v-cloak>
     <div class="start-content">
-        <div class="search-actions">
-{#            <i class="search-icon"></i>#}
-            <input type="text" v-model="keyword" placeholder="{% trans 'Search' %}..."/>
-        </div>
         <div class="content-data">
             <div class="actions-data left-block">
+                <div class="calendar-block">
+                    <calendar v-model="curr" />
+                </div>
+            </div>
+            <div class="actions-data right-block">
                 <div class="title-block">
                     <span class="title">{% trans "Recent transactions" %}</span>
                     <div class="more" @click="showRecentTransactions()">
@@ -27,19 +28,6 @@
                         <span class="direction">[[action.properties.short_description]]</span>
                         <hr>
                     </div>
-                </div>
-            </div>
-            <div class="actions-data right-block">
-                <div class="title-block">
-                    <span class="title">{% trans "Calendar" %}</span>
-{#                    <div class="more">#}
-{#                        <span>{% trans "More" %}</span>#}
-{#                        <i class="right-arrow-icon"></i>#}
-{#                        <img src="{% static 'img/icons_right_arrow.png' %}"/>#}
-{#                    </div>#}
-                </div>
-                <div class="calendar-block">
-                    <calendar v-model="curr" />
                 </div>
             </div>
         </div>

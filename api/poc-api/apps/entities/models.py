@@ -50,6 +50,12 @@ class Entity(models.Model):
             return "{}-{}-{}-{}".format(self.package.pid, self.action, self.timestamp, self.user)
         return "{}-{}-{}".format(self.action, self.timestamp, self.user)
 
+    def web_description(self):
+        try:
+            return getattr(self, self.CHILD_MODEL_NAMES[self.action]).web_description
+        except:
+            return _('Entity not found')
+
     def build_proto(self):
         return EntityProto(**{
             'status': getattr(self, self.CHILD_MODEL_NAMES[self.action]).get_proto_status(),
@@ -200,6 +206,10 @@ class LoggingBeginning(ActionAbstract):
     def short_description(self):
         return _("Logging beginning | Plot ID created.")
 
+    @property
+    def web_description(self):
+        return _('Logging has begun')
+
 
 class LoggingEnding(ActionAbstract):
     ending_date = models.PositiveIntegerField(verbose_name=_('Ending date'))
@@ -208,6 +218,10 @@ class LoggingEnding(ActionAbstract):
     @property
     def short_description(self):
         return _("Logging ending | Plot ID updated.")
+
+    @property
+    def web_description(self):
+        return _('Logging has ended')
 
     def get_proto_status(self):
         return EntityProto.LOGGING_ENDING
@@ -240,6 +254,10 @@ class CarbonizationBeginning(ActionAbstract):
     @property
     def short_description(self):
         return _("Carbonization beginning | Oven ID created. Harvest ID created.")
+
+    @property
+    def web_description(self):
+        return _(f'Oven {self.oven.oven_id} - Carbonization has begun')
 
     def get_proto_status(self):
         return EntityProto.CARBONIZATION_BEGINNING
@@ -276,6 +294,11 @@ class CarbonizationEnding(ActionAbstract):
     def short_description(self):
         return _("Carbonization ending | Harvest ID updated.")
 
+    @property
+    def web_description(self):
+        ovens_ids = ', '.join(list(self.ovens.values_list('oven_id', flat=True)))
+        return _(f'Oven{"s" if self.ovens.count() > 1 else ""} {ovens_ids} - Carbonization has ended')
+
     def get_proto_status(self):
         return EntityProto.CARBONIZATION_ENDING
 
@@ -306,6 +329,10 @@ class LoadingTransport(ActionAbstract):
         'additional_data.Destination', verbose_name=_('Destination'), on_delete=models.CASCADE,
         related_name='transports', null=True, blank=True
     )
+
+    @property
+    def web_description(self):
+        return _(f'Bags have been loaded on truck {self.plate_number}')
 
     def get_proto_status(self):
         return EntityProto.LOADING_TRANSPORT
@@ -353,3 +380,7 @@ class Reception(ActionAbstract):
     @property
     def short_description(self):
         return _("Received at the reception")
+
+    @property
+    def web_description(self):
+        return _('Reception at storage facility')

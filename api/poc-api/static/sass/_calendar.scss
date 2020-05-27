@@ -47,12 +47,11 @@
   .day {
     //color: var(--black-200);
     font-size: 1rem;
-    border-radius: 2px;
+    border: 1px solid gray;
 
 
     &.selected {
       border: 2px solid $main-header-border-color;
-      border-radius: 5px;
     }
 
     &.current {
@@ -85,11 +84,11 @@
       .harvest {
         background-color: $harvest-color
       }
-      .sac {
-        background-color: $sac-color
+      .plot {
+        background-color: $plot-color
       }
-      .lot {
-        background-color: $lot-color
+      .truck {
+        background-color: $truck-color
       }
       .action-dot {
         width: 6px;
