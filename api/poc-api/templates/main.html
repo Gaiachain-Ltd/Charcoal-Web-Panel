@@ -20,13 +20,16 @@
     </header>
     <section class="main-section" id="dashboard-main" >
         {% include 'includes/sidebar.html' %}
-        {% include 'includes/calendar.html' %}
-        {% include 'includes/packages.html' %}
-        {% include 'includes/chain.html' %}
-        {% include 'includes/map-chain.html' %}
-        {% include 'includes/transactions.html' %}
-        {% include 'includes/blockchain_explorer.html' %}
-        {% include 'includes/map.html' %}
+        <div class="main-content">
+            <router-view></router-view>
+        </div>
+{#        {% include 'includes/calendar.html' %}#}
+{#        {% include 'includes/packages.html' %}#}
+{#        {% include 'includes/chain.html' %}#}
+{#        {% include 'includes/map-chain.html' %}#}
+{#        {% include 'includes/transactions.html' %}#}
+{#        {% include 'includes/blockchain_explorer.html' %}#}
+{#        {% include 'includes/map.html' %}#}
         <div id="loading-overlay" class="loading-overlay" v-if="loading===true">
             {% trans 'Loading' %}&#8230;
             <img src="{% static 'img/loading.svg' %}">
@@ -36,7 +39,4 @@
 
 {% block extra_js %}
     {{ block.super }}
-    <script type="application/javascript">
-        window.active_element = "tracability";
-    </script>
 {% endblock extra_js %}

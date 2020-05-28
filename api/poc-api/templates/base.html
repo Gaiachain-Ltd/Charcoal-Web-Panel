@@ -20,6 +20,7 @@
 
 <body>
     {% block content %}{% endblock %}
+    <script>window.staticPrefix = '{% static '' %}'</script>
     <script src="{% static 'lib/jquery.min.js' %}"></script>
 {#    <script src="{% static 'lib/jquery-ui.min.js' %}"></script>#}
     <script src="{% static 'lib/bootstrap/js/bootstrap.min.js' %}"></script>
@@ -29,7 +30,11 @@
     crossorigin=""></script>
     <script src="{% static 'vue/vue.js' %}"></script>
     <script src="{% static 'vue/vue-resource.js' %}"></script>
+    <script src="{% static 'vue/vue-i18n.js' %}"></script>
+    <script src="{% static 'vue/vue-router.js' %}"></script>
     <script src="{% static 'lib/date_fns.min.js' %}"></script>
+    <script src="{% static 'js/components/calendar.js' %}"></script>
+    <script src="{% static 'js/components/packages.js' %}"></script>
     <script src="{% static 'js/main.js' %}"></script>
     {% block extra_js %}{% endblock %}
 </body>

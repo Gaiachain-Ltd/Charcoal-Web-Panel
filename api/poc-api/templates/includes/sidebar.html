@@ -2,53 +2,61 @@
 {% load staticfiles %}
 
 <div class="sidebar" id="sidebar" v-cloak>
-    <div id="tracability" class='menu-element'
-         @click="showPackages('all')"
-         :class="{ 'active-element': active_element == 'tracability' }">
-        <i class="tracability-icon"></i>
-        {% trans 'TRACABILITY' %}
-    </div>
-    <div id="calendar" class='menu-element'
-         @click="showCalendar()"
-         :class="{ 'active-element': active_element == 'calendar' }">
-        <i class="calendar-icon"></i>
-        {% trans 'CALENDAR' %}
-    </div>
-{#    <div class="submenu" v-if="show_subelements === true">#}
-{#        <div id="tracability_packages" class='submenu-element'#}
-{#            :class="{ 'active-element': active_subelement == 'tracability_packages' || active_subelement == 'package_chain' }"#}
-{#            @click="showPackages('harvest', 'tracability_packages')">#}
-{#            {% trans "List of packages" %}#}
-{#        </div>#}
-{#        <div id="tracability_transactions" class='submenu-element'#}
-{#            :class="{ 'active-element': active_subelement == 'tracability_transactions' }"#}
-{#            @click="showRecentTransactions()">#}
-{#            {% trans "Recent transactions" %}#}
-{#        </div>#}
-{#        <div id="tracability_maps" class='submenu-element'#}
-{#             :class="{ 'active-element': active_subelement =='tracability_maps' }"#}
-{#             @click="active_subelement = 'tracability_maps'"#}
-{#             @click="openMap()"#}
-{#        >#}
-{#         {% trans "Maps" %}#}
-{#        </div>#}
-{#    </div>#}
-{#   <div id="calendar" class='menu-element'#}
-{#           @click="setActiveAction('calendar')"#}
-{#           :class="{ 'active-element': active_element == 'calendar' }">#}
-{#       <i class="calendar-icon"></i>#}
-{#       {% trans 'Calendar' %}#}
-{#    </div>#}
-    <div id="replantation" class='menu-element'
-         @click="showBlockchainExplorer()"
-         :class="{ 'active-element': active_element == 'replantation' }">
-        <i class="replantation-icon"></i>
-        {% trans 'REPLANTATION' %}
-    </div>
-    <div id="settings" class='menu-element'
-         @click="showBlockchainExplorer()"
-         :class="{ 'active-element': active_element == 'settings' }">
-        <i class="settings-icon"></i>
-        {% trans 'SETTINGS' %}
-    </div>
+    <router-link to="/traceability" v-slot="{ href, route, navigate, isActive, isExactActive }">
+        <div id="tracability" class='menu-element'
+             @click="navigate"
+             :class="{ 'active-element': isActive }">
+            <i class="tracability-icon"></i>
+            {% trans 'TRACABILITY' %}
+        </div>
+    </router-link>
+    <router-link to="/calendar" v-slot="{ href, route, navigate, isActive, isExactActive }">
+        <div id="calendar" class='menu-element'
+             @click="navigate"
+             :class="{ 'active-element': isActive }">
+            <i class="calendar-icon"></i>
+            {% trans 'CALENDAR' %}
+        </div>
+    </router-link>
+    {#    <div class="submenu" v-if="show_subelements === true">#}
+    {#        <div id="tracability_packages" class='submenu-element'#}
+    {#            :class="{ 'active-element': active_subelement == 'tracability_packages' || active_subelement == 'package_chain' }"#}
+    {#            @click="showPackages('harvest', 'tracability_packages')">#}
+    {#            {% trans "List of packages" %}#}
+    {#        </div>#}
+    {#        <div id="tracability_transactions" class='submenu-element'#}
+    {#            :class="{ 'active-element': active_subelement == 'tracability_transactions' }"#}
+    {#            @click="showRecentTransactions()">#}
+    {#            {% trans "Recent transactions" %}#}
+    {#        </div>#}
+    {#        <div id="tracability_maps" class='submenu-element'#}
+    {#             :class="{ 'active-element': active_subelement =='tracability_maps' }"#}
+    {#             @click="active_subelement = 'tracability_maps'"#}
+    {#             @click="openMap()"#}
+    {#        >#}
+    {#         {% trans "Maps" %}#}
+    {#        </div>#}
+    {#    </div>#}
+    {#   <div id="calendar" class='menu-element'#}
+    {#           @click="setActiveAction('calendar')"#}
+    {#           :class="{ 'active-element': active_element == 'calendar' }">#}
+    {#       <i class="calendar-icon"></i>#}
+    {#       {% trans 'Calendar' %}#}
+    {#    </div>#}
+    <router-link to="/foo" v-slot="{ href, route, navigate, isActive, isExactActive }">
+        <div id="replantation" class='menu-element'
+             @click="navigate"
+             :class="{ 'active-element': isActive }">
+            <i class="replantation-icon"></i>
+            {% trans 'REPLANTATION' %}
+        </div>
+    </router-link>
+    <router-link to="/bar" v-slot="{ href, route, navigate, isActive, isExactActive }">
+        <div id="settings" class='menu-element'
+             @click="navigate"
+             :class="{ 'active-element': isActive }">
+            <i class="settings-icon"></i>
+            {% trans 'SETTINGS' %}
+        </div>
+    </router-link>
 </div>
