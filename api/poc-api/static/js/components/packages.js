@@ -36,7 +36,10 @@ let Packages = Vue.component('packages', {
                         <div class="package" v-for="(package, key) in packages" v-bind:id="key">
                             <div class="package-pid">
                                 <div class="pid">
-                                    <span :class="[package.type_display]">[[ package.pid ]]</span>
+                                    <router-link :to="{ path: '/traceability/' + package.id }"
+                                                 v-slot="{ href, route, navigate, isActive, isExactActive }">
+                                        <span @click="navigate" :class="[package.type_display]">[[ package.pid ]]</span>
+                                    </router-link>
                                 </div>
                             </div>
                             <div class="package-details">

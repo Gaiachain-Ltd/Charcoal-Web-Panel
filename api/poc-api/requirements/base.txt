@@ -12,7 +12,7 @@ ipython==7.9.0
 django-unixdatetimefield==1.0.3
 PyYAML==5.1.2
 django-allauth==0.41.0
-Pillow
+Pillow==7.1.2
 
 # Tests
 factory-boy==2.12.0

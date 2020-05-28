@@ -12,7 +12,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from apps.entities.models import Entity,  Package, Oven
 from apps.entities.serializers import (
     EntitySerializer, PackagePidSerializer, EntityListSerializer, EntityBatchSerializer, EntityBatchListSerializer,
-    PackagesSerializer, PackageDetailsSerializer, ChainSeriazlier, OvenSerializer
+    PackagesSerializer, PackageDetailsSerializer, ChainSeriazlier, OvenSimpleSerializer
 )
 from apps.additional_data.mixins import MultiSerializerMixin
 from apps.entities.utils import unix_to_datetime_tz
@@ -64,11 +64,6 @@ class EntityViewSet(ViewSet, MultiSerializerMixin):
             location: form
             type: string
         -
-            name: qr_code
-            required: false
-            location: form
-            type: string
-        -
             name: timestamp
             required: true
             location: form
@@ -79,10 +74,15 @@ class EntityViewSet(ViewSet, MultiSerializerMixin):
             location: form
             type: object
         -
-            name: photo/documents_photo/receipt_photo
+            name: documents_photos/receipt_photos
             required: false
             location: form
             type: image
+        -
+            name: location
+            required: true
+            location: form
+            type: object
         ---
         """
         ser = self.get_serializer(data=request.data, context={'request': request})
@@ -166,9 +166,9 @@ class EntityViewSet(ViewSet, MultiSerializerMixin):
         ).distinct()
         page = self.paginator.paginate_queryset(queryset=queryset, request=request)
         if page is not None:
-            serializer = OvenSerializer(page, many=True)
+            serializer = OvenSimpleSerializer(page, many=True)
             return self.paginator.get_paginated_response(serializer.data)
-        serializer = OvenSerializer(queryset, many=True)
+        serializer = OvenSimpleSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @action(methods=['get'], detail=True, lookup_field='qr_code')

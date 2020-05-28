@@ -299,11 +299,18 @@ section.main-section .main-content .start-content .nav-search {
   flex-direction: row;
   border-bottom: 1px solid #667176;
 }
+section.main-section .main-content .start-content .nav-search.nav-sub {
+  margin-top: 20px;
+}
+section.main-section .main-content .start-content .nav-search.nav-sub .nav-tabs .nav-item .nav-link {
+  text-transform: none;
+}
 section.main-section .main-content .start-content .nav-search .nav-tabs {
   border: none;
   flex-grow: 1;
 }
 section.main-section .main-content .start-content .nav-search .nav-tabs .nav-item {
+  margin-bottom: 0;
   margin-right: 10px;
 }
 section.main-section .main-content .start-content .nav-search .nav-tabs .nav-item .nav-link {
@@ -312,12 +319,30 @@ section.main-section .main-content .start-content .nav-search .nav-tabs .nav-ite
   border-color: #E8EBF1;
   font-weight: 100;
   border-bottom: none;
+  font-size: 18px;
 }
 section.main-section .main-content .start-content .nav-search .nav-tabs .nav-item .nav-link.active {
   background-color: #667176;
   border-color: #667176;
   color: white;
   font-weight: 500;
+}
+section.main-section .main-content .start-content .nav-search .nav-tabs .nav-item .nav-link.active .gps-pin-icon {
+  background-image: url(../img/GPS-pin-icon.png);
+  background-image: -webkit-image-set(url(../img/GPS-pin-icon.png) 1x, url(../img/GPS-pin-icon@2x.png) 2x);
+  background-image: image-set(url(../img/GPS-pin-icon.png) 1x, url(../img/GPS-pin-icon@2x.png) 2x);
+}
+section.main-section .main-content .start-content .nav-search .nav-tabs .nav-item .nav-link .gps-pin-icon {
+  position: relative;
+  display: inline-block;
+  top: 3px;
+  left: 4px;
+  width: 14px;
+  height: 20px;
+  background-size: 14px 20px;
+  background-image: url(../img/GPS-pin-icon_dark.png);
+  background-image: -webkit-image-set(url(../img/GPS-pin-icon_dark.png) 1x, url(../img/GPS-pin-icon_dark@2x.png) 2x);
+  background-image: image-set(url(../img/GPS-pin-icon_dark.png) 1x, url(../img/GPS-pin-icon_dark@2x.png) 2x);
 }
 section.main-section .main-content .start-content .search-actions {
   flex-grow: 1;
@@ -336,7 +361,7 @@ section.main-section .main-content .start-content .search-actions input {
   border: 1px solid #E8EBF1;
   border-top-left-radius: 0.25rem;
   border-top-right-radius: 0.25rem;
-  height: 41px;
+  height: 44px;
   width: 100%;
   color: #000000;
   font-size: 16px;
@@ -347,6 +372,45 @@ section.main-section .main-content .start-content .search-actions input {
 section.main-section .main-content .start-content .search-actions input::placeholder {
   opacity: 1;
   color: #000000;
+}
+section.main-section .main-content .start-content.package-details.transport .nav-search:not(.nav-sub) {
+  border-color: #FF70F1;
+}
+section.main-section .main-content .start-content.package-details.transport .nav-search:not(.nav-sub) .nav-link.active {
+  background-color: #FF70F1;
+  border-color: #FF70F1;
+}
+section.main-section .main-content .start-content.package-details.transport .entity-header {
+  border-color: #FF70F1;
+}
+section.main-section .main-content .start-content.package-details.transport .entity-action {
+  color: #FF70F1;
+}
+section.main-section .main-content .start-content.package-details.harvest .nav-search:not(.nav-sub) {
+  border-color: #65CB00;
+}
+section.main-section .main-content .start-content.package-details.harvest .nav-search:not(.nav-sub) .nav-link.active {
+  background-color: #65CB00;
+  border-color: #65CB00;
+}
+section.main-section .main-content .start-content.package-details.harvest .entity-header {
+  border-color: #65CB00;
+}
+section.main-section .main-content .start-content.package-details.harvest .entity-action {
+  color: #65CB00;
+}
+section.main-section .main-content .start-content.package-details.plot .nav-search {
+  border-color: #2581EB;
+}
+section.main-section .main-content .start-content.package-details.plot .nav-search .nav-link.active {
+  background-color: #2581EB;
+  border-color: #2581EB;
+}
+section.main-section .main-content .start-content.package-details.plot .entity-header {
+  border-color: #2581EB;
+}
+section.main-section .main-content .start-content.package-details.plot .entity-action {
+  color: #2581EB;
 }
 section.main-section .main-content .content-data {
   display: flex;
@@ -407,7 +471,7 @@ section.main-section .main-content .content-data .left-block .actions .action .a
 section.main-section .main-content .content-data .left-block .actions .action .action-name-date .harvest {
   color: #65CB00;
 }
-section.main-section .main-content .content-data .left-block .actions .action .action-name-date .truck {
+section.main-section .main-content .content-data .left-block .actions .action .action-name-date .transport {
   color: #FF70F1;
 }
 section.main-section .main-content .content-data .left-block .actions .action hr {
@@ -433,7 +497,7 @@ section.main-section .main-content .content-data .packages-data .plot {
 section.main-section .main-content .content-data .packages-data .harvest {
   color: #65CB00;
 }
-section.main-section .main-content .content-data .packages-data .truck {
+section.main-section .main-content .content-data .packages-data .transport {
   color: #FF70F1;
 }
 section.main-section .main-content .content-data .packages-data .title-block {
@@ -462,7 +526,7 @@ section.main-section .main-content .content-data .packages-data .title-block .na
 section.main-section .main-content .content-data .packages-data .title-block .nav nav a.active.harvest {
   border-bottom: 4px solid #65CB00;
 }
-section.main-section .main-content .content-data .packages-data .title-block .nav nav a.active.truck {
+section.main-section .main-content .content-data .packages-data .title-block .nav nav a.active.transport {
   border-bottom: 4px solid #FF70F1;
 }
 section.main-section .main-content .content-data .packages {
@@ -589,6 +653,67 @@ section.main-section .main-content .content-data .chain-data .actions .action .a
 section.main-section .main-content .content-data .chain-data .actions .action .action-row .action-position .position-coordinates {
   width: 100px;
   margin-left: 10px;
+}
+section.main-section .main-content .content-data .entity {
+  flex: 0 0 50%;
+}
+section.main-section .main-content .content-data .entity:nth-child(1) {
+  padding-right: 25px;
+}
+section.main-section .main-content .content-data .entity:nth-child(2) {
+  padding-left: 25px;
+}
+section.main-section .main-content .content-data .entity .entity-header {
+  font-size: 20px;
+  padding-top: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #000000;
+}
+section.main-section .main-content .content-data .entity .entity-header .entity-action, section.main-section .main-content .content-data .entity .entity-header .entity-timestamp {
+  display: inline-block;
+}
+section.main-section .main-content .content-data .entity .entity-header .entity-action {
+  text-transform: uppercase;
+}
+section.main-section .main-content .content-data .entity .entity-header .entity-timestamp {
+  float: right;
+}
+section.main-section .main-content .content-data .entity .entity-details .entity-property {
+  position: relative;
+  padding-top: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #D6D6D6;
+}
+section.main-section .main-content .content-data .entity .entity-details .entity-property.col:first-child {
+  margin-right: 10px;
+}
+section.main-section .main-content .content-data .entity .entity-details .entity-property.col:last-child {
+  margin-left: 10px;
+}
+section.main-section .main-content .content-data .entity .entity-details .entity-property.no-border {
+  border: none;
+}
+section.main-section .main-content .content-data .entity .entity-details .entity-property .entity-property-name {
+  font-weight: bold;
+}
+section.main-section .main-content .content-data .entity .entity-details .entity-property .entity-property-name img {
+  border-radius: 5px;
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
+section.main-section .main-content .content-data .entity .entity-details .entity-property .entity-property-value {
+  color: #0D0D0D;
+  opacity: 0.5;
+}
+section.main-section .main-content .content-data .entity .entity-details .entity-property .entity-property-icon-warning {
+  width: 32px;
+  height: 28px;
+  position: absolute;
+  top: 23px;
+  right: 0;
+  background-image: url(../img/icon-warning.png);
+  background-image: -webkit-image-set(url(../img/icon-warning.png) 1x, url(../img/icon-warning@2x.png) 2x);
+  background-image: image-set(url(../img/icon-warning.png) 1x, url(../img/icon-warning@2x.png) 2x);
 }
 
 #mapid {

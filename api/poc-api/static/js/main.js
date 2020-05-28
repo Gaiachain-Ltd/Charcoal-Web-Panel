@@ -1,6 +1,7 @@
 const router = new VueRouter({
     routes: [
         {path: '/traceability', component: Packages},
+        {path: '/traceability/:id', component: PackageDetails},
         {path: '/calendar', component: Calendar},
         {path: '/', redirect: '/traceability'}
     ]
@@ -13,6 +14,8 @@ const messages = {
         recent_transactions: 'Recent transactions',
         calendar: 'Calendar',
         more: 'More',
+        back: 'Back',
+        map: 'Map',
         package: {
             types: {
                 all: 'All',
@@ -20,7 +23,31 @@ const messages = {
                 harvest: 'Harvest',
                 transport: 'Transport',
             }
-        }
+        },
+        beginning_date: 'Beginning date',
+        ending_date: 'Ending date',
+        gps_coordinates: 'GPS coordinates',
+        user_id: 'User ID',
+        village: 'Village',
+        tree_specie: 'Tree specie',
+        number_of_trees_cut: 'Number of trees cut',
+        details: 'details',
+        loading_transport: 'Loading and transport',
+        reception: 'Reception',
+        plate_number: 'Plate Number',
+        loading_date: 'Loading date',
+        scanned_bags: 'Scanned bags',
+        reception_date: 'Reception date',
+        documents: 'Documents',
+        receipt: 'Receipt',
+        oven: 'Oven',
+        oven_type: 'Oven type',
+        oven_measurements: 'Oven measurements',
+        height: 'Height',
+        length: 'Length',
+        width: 'Width',
+        carbonizer_id: 'Carbonizer\'s ID',
+        timber_volume: 'Timber volume',
     },
 };
 

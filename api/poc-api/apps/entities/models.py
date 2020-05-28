@@ -95,7 +95,7 @@ class Package(models.Model):
     PACKAGES = [
         (PLOT, 'Plot'),
         (HARVEST, 'Harvest'),
-        (TRUCK, 'Truck'),
+        (TRUCK, 'Transport'),
     ]
     pid = models.CharField(verbose_name=_('Pid'), null=True, max_length=100)
     type = models.CharField(verbose_name=_('Type'), choices=PACKAGES, default=PLOT, max_length=30)
@@ -235,6 +235,10 @@ class LoggingEnding(ActionAbstract):
 
 class Oven(models.Model):
     oven_id = models.CharField(max_length=1, verbose_name=_('Oven ID'))
+    carbonization_ending = models.ForeignKey(
+        'entities.CarbonizationEnding', verbose_name=_('Carbonization Ending'),
+        on_delete=models.CASCADE, null=True, related_name='ovens'
+    )
 
 
 class CarbonizationBeginning(ActionAbstract):
@@ -262,22 +266,24 @@ class CarbonizationBeginning(ActionAbstract):
     def get_proto_status(self):
         return EntityProto.CARBONIZATION_BEGINNING
 
+    @property
+    def oven_measurements(self):
+        if self.oven_height and self.oven_length and self.oven_width:
+            return {
+                'oven_height': self.oven_height,
+                'oven_width': self.oven_width,
+                'oven_length': self.oven_length,
+            }
+        else:
+            return OvenType.objects.filter(id=self.oven_type_id).values('oven_height', 'oven_width', 'oven_length')[0]
+
     def get_proto_data(self):
         proto_data = {
             'beginning_date': self.beginning_date,
             'oven': self.oven.oven_id,
             'oven_type': str(self.oven_type),
         }
-        if self.oven_height and self.oven_length and self.oven_width:
-            proto_data.update({
-                'oven_height': self.oven_height,
-                'oven_width': self.oven_width,
-                'oven_length': self.oven_length,
-            })
-        else:
-            proto_data.update(
-                **OvenType.objects.filter(id=self.oven_type_id).values('oven_height', 'oven_width', 'oven_length')[0]
-            )
+        proto_data.update(**self.oven_measurements)
         return proto_data
 
     def add_to_chain(self, *args):
@@ -287,7 +293,6 @@ class CarbonizationBeginning(ActionAbstract):
 
 
 class CarbonizationEnding(ActionAbstract):
-    ovens = models.ManyToManyField(Oven, verbose_name=_('Ovens'), related_name='carbonization_endings')
     end_date = models.PositiveIntegerField(verbose_name=_('End date'))
 
     @property

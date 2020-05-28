@@ -269,10 +269,21 @@ section.main-section {
         display: flex;
         flex-direction: row;
         border-bottom: 1px solid $active-tab-bg;
+        &.nav-sub {
+          margin-top: 20px;
+          .nav-tabs {
+            .nav-item {
+              .nav-link {
+                text-transform: none;
+              }
+            }
+          }
+        }
         .nav-tabs {
           border: none;
           flex-grow: 1;
           .nav-item {
+            margin-bottom: 0;
             margin-right: 10px;
             .nav-link {
               color: $tab-color;
@@ -280,11 +291,45 @@ section.main-section {
               border-color: $main-header-border-color;
               font-weight: 100;
               border-bottom: none;
+              font-size: 18px;
               &.active {
                 background-color: $active-tab-bg;
                 border-color: $active-tab-bg;
                 color: white;
                 font-weight: 500;
+                .gps-pin-icon {
+                  background-image: url(../img/GPS-pin-icon.png);
+                  background-image:
+                    -webkit-image-set(
+                      url(../img/GPS-pin-icon.png) 1x,
+                      url(../img/GPS-pin-icon@2x.png) 2x
+                  );
+                  background-image:
+                    image-set(
+                      url(../img/GPS-pin-icon.png) 1x,
+                      url(../img/GPS-pin-icon@2x.png) 2x
+                  );
+                }
+              }
+              .gps-pin-icon {
+                position: relative;
+                display: inline-block;
+                top: 3px;
+                left: 4px;
+                width: 14px;
+                height: 20px;
+                background-size: 14px 20px;
+                background-image: url(../img/GPS-pin-icon_dark.png);
+                background-image:
+                  -webkit-image-set(
+                    url(../img/GPS-pin-icon_dark.png) 1x,
+                    url(../img/GPS-pin-icon_dark@2x.png) 2x
+                );
+                background-image:
+                  image-set(
+                    url(../img/GPS-pin-icon_dark.png) 1x,
+                    url(../img/GPS-pin-icon_dark@2x.png) 2x
+                );
               }
             }
           }
@@ -306,7 +351,7 @@ section.main-section {
           border: 1px solid $main-header-border-color;
           border-top-left-radius: .25rem;
           border-top-right-radius: .25rem;
-          height: 41px;
+          height: 44px;
           width: 100%;
           color: $black-color;
           font-size: 16px;
@@ -316,6 +361,53 @@ section.main-section {
           &::placeholder {
             opacity: 1;
             color: $black-color;
+          }
+        }
+      }
+      &.package-details {
+        &.transport {
+          .nav-search:not(.nav-sub) {
+            border-color: $truck-color;
+            .nav-link.active {
+              background-color: $truck-color;
+              border-color: $truck-color;
+            }
+          }
+          .entity-header {
+            border-color: $truck-color;
+          }
+          .entity-action {
+            color: $truck-color;
+          }
+        }
+        &.harvest {
+          .nav-search:not(.nav-sub) {
+            border-color: $harvest-color;
+            .nav-link.active {
+              background-color: $harvest-color;
+              border-color: $harvest-color;
+            }
+          }
+          .entity-header {
+            border-color: $harvest-color;
+          }
+          .entity-action {
+            color: $harvest-color;
+          }
+        }
+        &.plot {
+          .nav-search {
+            border-color: $plot-color;
+            .nav-link.active {
+              background-color: $plot-color;
+              border-color: $plot-color;
+            }
+          }
+          .entity-header {
+            border-color: $plot-color;
+          }
+          .entity-action {
+            color: $plot-color;
           }
         }
       }
@@ -374,7 +466,7 @@ section.main-section {
               .harvest {
                 color: $harvest-color
               }
-              .truck {
+              .transport {
                 color: $truck-color
               }
             }
@@ -403,7 +495,7 @@ section.main-section {
         .harvest {
           color: $harvest-color
         }
-        .truck {
+        .transport {
           color: $truck-color
         }
         .title-block {
@@ -431,7 +523,7 @@ section.main-section {
               a.active.harvest {
                 border-bottom: 4px solid $harvest-color;
               }
-              a.active.truck {
+              a.active.transport {
                 border-bottom: 4px solid $truck-color;
               }
             }
@@ -558,6 +650,79 @@ section.main-section {
                   margin-left: 10px;
                 }
               }
+            }
+          }
+        }
+      }
+      .entity {
+        flex: 0 0 50%;
+        &:nth-child(1) {
+          padding-right: 25px;
+        }
+        &:nth-child(2) {
+          padding-left: 25px;
+        }
+        .entity-header {
+          font-size: 20px;
+          padding-top: 30px;
+          padding-bottom: 20px;
+          border-bottom: 1px solid $black-color;
+          .entity-action, .entity-timestamp {
+            display: inline-block;
+          }
+          .entity-action {
+            text-transform: uppercase;
+          }
+          .entity-timestamp {
+            float: right;
+          }
+        }
+        .entity-details {
+          .entity-property {
+            position: relative;
+            padding-top: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid $border-color;
+            &.col {
+              &:first-child {
+                margin-right: 10px;
+              }
+              &:last-child {
+                margin-left: 10px;
+              }
+            }
+            &.no-border {
+              border: none;
+            }
+            .entity-property-name {
+              font-weight: bold;
+              img {
+                border-radius: 5px;
+                margin-top: 5px;
+                margin-bottom: 10px;
+              }
+            }
+            .entity-property-value {
+              color: $menu-color;
+              opacity: 0.5;
+            }
+            .entity-property-icon-warning {
+              width: 32px;
+              height: 28px;
+              position: absolute;
+              top: 23px;
+              right: 0;
+              background-image: url(../img/icon-warning.png);
+              background-image:
+                -webkit-image-set(
+                  url(../img/icon-warning.png) 1x,
+                  url(../img/icon-warning@2x.png) 2x
+              );
+              background-image:
+                image-set(
+                  url(../img/icon-warning.png) 1x,
+                  url(../img/icon-warning@2x.png) 2x
+              );
             }
           }
         }

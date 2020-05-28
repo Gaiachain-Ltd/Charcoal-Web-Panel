@@ -163,7 +163,7 @@ class GaiachainTransactionHandler(TransactionHandler):
     def _allowed_to_create_package(
         self,
         signer: Agent,
-        type: Package.Type,
+        type: Package.PackageType,
     ):
         if signer is None:
             return False

@@ -5,6 +5,7 @@ from datetime import datetime
 
 from django.shortcuts import get_object_or_404, get_list_or_404
 from django.db import transaction
+from django.db.models import Q
 from django.contrib.gis.geos import Point
 from django.templatetags.static import static
 from django.conf import settings
@@ -48,91 +49,11 @@ class ParcelSerializer(serializers.ModelSerializer):
         super().__init__(*args, **kwargs)
         self.fields['id'].read_only = False
 
-class OvenSerializer(serializers.ModelSerializer):
+class OvenSimpleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Oven
         fields = ('id', 'oven_id')
-# class HarvestSerializer(serializers.ModelSerializer):
-#     village = VillageSerializer(required=False)
-#     short_description = serializers.SerializerMethodField()
-#
-#     class Meta:
-#         model = Harvest
-#         fields = ('parcel', 'producer', 'village', 'harvest_date', 'short_description',)
-#
-#     def get_short_description(self, obj):
-#         return obj.short_description
-#
-#
-# class BreakingSerializer(serializers.ModelSerializer):
-#     short_description = serializers.SerializerMethodField()
-#
-#     class Meta:
-#         model = Breaking
-#         fields = ('breaking_date', 'end_fermentation_date', 'beans_volume', 'short_description',)
-#
-#     def get_short_description(self, obj):
-#         return obj.short_description
-#
-#
-# class ReceptionSerializer(serializers.ModelSerializer):
-#     short_description = serializers.SerializerMethodField()
-#
-#     class Meta:
-#         model = Reception
-#         fields = ('reception_date', 'transport_date', 'buyer', 'short_description',)
-#
-#     def get_short_description(self, obj):
-#         return obj.short_description
-#
-#
-# class BaggingSerializer(serializers.ModelSerializer):
-#     harvest_weights = serializers.SerializerMethodField(read_only=True)
-#     short_description = serializers.SerializerMethodField()
-#
-#     class Meta:
-#         model = Bagging
-#         fields = ('harvest_weights', 'short_description',)
-#
-#     def get_harvest_weights(self, obj):
-#         return Package.objects.filter(type=Package.HARVEST, sac=obj.entity.package).values('pid', 'weight')
-#
-#     def get_short_description(self, obj):
-#         return obj.short_description
-#
-#
-# class LotCreationSerializer(serializers.ModelSerializer):
-#     short_description = serializers.SerializerMethodField()
-#
-#     class Meta:
-#         model = LotCreation
-#         fields = ('notes', 'short_description',)
-#
-#     def get_short_description(self, obj):
-#         return obj.short_description
-#
-#
-# class TransportSerializer(serializers.ModelSerializer):
-#     short_description = serializers.SerializerMethodField()
-#
-#     class Meta:
-#         model = Transport
-#         fields = ('transporter', 'transport_date', 'destination', 'short_description',)
-#
-#     def get_short_description(self, obj):
-#         return obj.short_description
-#
-#
-# class LotReceptionSerializer(serializers.ModelSerializer):
-#     short_description = serializers.SerializerMethodField()
-#
-#     class Meta:
-#         model = LotReception
-#         fields = ('weight', 'short_description',)
-#
-#     def get_short_description(self, obj):
-#         return obj.short_description
 
 
 class PackageSerializer(serializers.ModelSerializer):
@@ -211,7 +132,7 @@ class EntitySerializer(serializers.ModelSerializer):
 
     @staticmethod
     def _create_logging_beginning(entity, properties_data):
-        if not entity.user.is_logger or not entity.user.is_carbonizer or not entity.user.is_superuser_role:
+        if not (entity.user.is_logger or entity.user.is_carbonizer or entity.user.is_superuser_role):
             raise InvalidAgentRoleError("Only Logger or Carbonizer can add logging beginning.")
         parcel_id = properties_data.pop('parcel')
         village_id = properties_data.pop('village')
@@ -228,7 +149,7 @@ class EntitySerializer(serializers.ModelSerializer):
 
     @staticmethod
     def _create_logging_ending(entity, properties_data):
-        if not entity.user.is_logger or not entity.user.is_carbonizer or not entity.user.is_superuser_role:
+        if not (entity.user.is_logger or entity.user.is_carbonizer or entity.user.is_superuser_role):
             raise InvalidAgentRoleError("Only Logger or Carbonizer can add logging ending.")
         logging_ending, created = LoggingEnding.objects.get_or_create(
             entity=entity,
@@ -239,7 +160,7 @@ class EntitySerializer(serializers.ModelSerializer):
 
     @staticmethod
     def _create_carbonization_beginning(entity, properties_data):
-        if not entity.user.is_carbonizer or not entity.user.is_superuser_role:
+        if not (entity.user.is_carbonizer or entity.user.is_superuser_role):
             raise InvalidAgentRoleError("Only Carbonizer can add carbonization beginning.")
         oven_id = properties_data.pop('oven_id')
         oven_type_id = properties_data.pop('oven_type')
@@ -255,21 +176,21 @@ class EntitySerializer(serializers.ModelSerializer):
 
     @staticmethod
     def _create_carbonization_ending(entity, properties_data):
-        if not entity.user.is_carbonizer or not entity.user.is_superuser_role:
+        if not (entity.user.is_carbonizer or entity.user.is_superuser_role):
             raise InvalidAgentRoleError("Only Carbonizer can add carbonization ending.")
         oven_ids = properties_data.pop('oven_ids')
-        ovens = Oven.objects.filter(id__in=oven_ids)
+
         carbonization_ending, created = CarbonizationEnding.objects.get_or_create(
             entity=entity,
             **properties_data
         )
         if created:
-            carbonization_ending.ovens.add(*ovens)
+            Oven.objects.filter(id__in=oven_ids).update(carbonization_ending_id=carbonization_ending.id)
             entity.update_in_chain()
 
     @staticmethod
     def _create_loading_transport(entity, properties_data):
-        if not entity.user.is_carbonizer or not entity.user.is_superuser_role:
+        if not (entity.user.is_carbonizer or entity.user.is_superuser_role):
             raise InvalidAgentRoleError("Only Carbonizer can add loading transport.")
         bags_qr_codes = properties_data.pop('bags_qr_codes')
         destination_id = properties_data.pop('destination')
@@ -287,7 +208,7 @@ class EntitySerializer(serializers.ModelSerializer):
 
     @staticmethod
     def _create_reception(entity, properties_data):
-        if not entity.user.is_director or not entity.user.is_superuser_role:
+        if not (entity.user.is_director or entity.user.is_superuser_role):
             raise InvalidAgentRoleError("Only Director can add reception.")
         bags_qr_codes = properties_data.pop('bags_qr_codes')
         documents_photos = properties_data.pop('documents_photos')
@@ -457,160 +378,215 @@ class PackagesSerializer(serializers.ModelSerializer):
         return obj.get_type_display().lower()
 
 
+class EntityDetailsSerializer(SimpleEntitySerializer):
+    location_display = serializers.SerializerMethodField()
+    action_display = serializers.CharField(source='get_action_display')
+
+    class Meta:
+        model = Entity
+        fields = ('description', 'timestamp_display', 'timezone', 'action_display', 'user_id', 'location_display')
+
+    def get_location_display(self, obj):
+        # TODO: add degree minute second format
+        return f'{obj.location.x}, {obj.location.y}'
+
+
+class BaseEntityActionSerializer(serializers.Serializer):
+    entity = EntityDetailsSerializer()
+
+    def parse_timestamp_to_str_date(self, timestamp):
+        return datetime.fromtimestamp(timestamp, tz=pytz.timezone(settings.TIME_ZONE)).strftime('%d/%m/%Y')
+
+
+class LoggingBeginningSerializer(BaseEntityActionSerializer, serializers.ModelSerializer):
+    beginning_date_display = serializers.SerializerMethodField()
+    village = serializers.CharField(source='village.name')
+    tree_specie = serializers.CharField(source='tree_specie.name')
+
+    class Meta:
+        model = LoggingBeginning
+        fields = ('entity', 'beginning_date_display', 'village', 'tree_specie')
+
+    def get_beginning_date_display(self, obj):
+        return self.parse_timestamp_to_str_date(obj.beginning_date)
+
+
+class LoggingEndingSerializer(BaseEntityActionSerializer, serializers.ModelSerializer):
+    ending_date_display = serializers.SerializerMethodField()
+
+    class Meta:
+        model = LoggingEnding
+        fields = ('entity', 'ending_date_display', 'number_of_trees')
+
+    def get_ending_date_display(self, obj):
+        return self.parse_timestamp_to_str_date(obj.ending_date)
+
+
+class BagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Bag
+        fields = ('pid', 'qr_code')
+
+
+class LoadingTransportSerializer(BaseEntityActionSerializer, serializers.ModelSerializer):
+    loading_date_display = serializers.SerializerMethodField()
+    bags = BagSerializer(many=True)
+    scanned_bags = serializers.SerializerMethodField()
+
+    class Meta:
+        model = LoadingTransport
+        fields = ('entity', 'plate_number', 'loading_date_display', 'bags', 'scanned_bags')
+
+    def get_scanned_bags(self, obj):
+        return obj.bags.count()
+
+    def get_loading_date_display(self, obj):
+        return self.parse_timestamp_to_str_date(obj.loading_date)
+
+
+class ReceptionImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ReceptionImage
+        fields = ('image',)
+
+
+class ReceptionSerializer(BaseEntityActionSerializer, serializers.ModelSerializer):
+    bags = BagSerializer(many=True)
+    scanned_bags = serializers.SerializerMethodField()
+    documents_photos = serializers.SerializerMethodField()
+    receipt_photos = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Reception
+        fields = ('entity', 'bags', 'scanned_bags', 'documents_photos', 'receipt_photos')
+
+    def get_scanned_bags(self, obj):
+        return obj.bags.count()
+
+    def get_documents_photos(self, obj):
+        return ReceptionImageSerializer(obj.images.filter(type=ReceptionImage.DOCUMENT), many=True).data
+
+    def get_receipt_photos(self, obj):
+        return ReceptionImageSerializer(obj.images.filter(type=ReceptionImage.RECEIPT), many=True).data
+
+
+class CarbonizationBeginningSerializer(BaseEntityActionSerializer, serializers.ModelSerializer):
+    beginning_date_display = serializers.SerializerMethodField()
+    oven_type_display = serializers.CharField(source='oven_type.name')
+    timber_volume = serializers.SerializerMethodField()
+
+    class Meta:
+        model = CarbonizationBeginning
+        fields = ('entity', 'beginning_date_display', 'oven_type_display', 'oven_measurements', 'timber_volume')
+
+    def get_timber_volume(self, obj):
+        result = 1
+        measurements = obj.oven_measurements
+        for key in measurements:
+            result *= measurements[key]
+        return result
+
+    def get_beginning_date_display(self, obj):
+        return self.parse_timestamp_to_str_date(obj.beginning_date)
+
+
+class CarbonizationEndingSerializer(BaseEntityActionSerializer, serializers.ModelSerializer):
+
+    class Meta:
+        model = CarbonizationEnding
+        fields = '__all__'
+
+
+class PackageOvenSerializer(serializers.ModelSerializer):
+    carbonization_beginning = serializers.SerializerMethodField()
+    carbonization_ending = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Oven
+        fields = ('oven_id', 'carbonization_beginning', 'carbonization_ending')
+
+    def get_carbonization_beginning(self, obj):
+        if obj.carbonization_beginning:
+            return CarbonizationBeginningSerializer(obj.carbonization_beginning).data
+        return {}
+
+    def get_carbonization_ending(self, obj):
+        if obj.carbonization_ending:
+            return CarbonizationEndingSerializer(obj.carbonization_ending).data
+        return {}
+
+
+class PlotPackageSerializer(serializers.ModelSerializer):
+    logging_beginning = serializers.SerializerMethodField()
+    logging_ending = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Package
+        fields = (
+            'logging_beginning', 'logging_ending'
+        )
+
+    def get_logging_beginning(self, obj):
+        try:
+            return LoggingBeginningSerializer(
+                obj.package_entities.get(action=Entity.LOGGING_BEGINNING).loggingbeginning).data
+        except Entity.DoesNotExist:
+            return {}
+
+    def get_logging_ending(self, obj):
+        try:
+            return LoggingEndingSerializer(obj.package_entities.get(action=Entity.LOGGING_ENDING).loggingending).data
+        except Entity.DoesNotExist:
+            return {}
+
+
 class HarvestPackageSerializer(serializers.ModelSerializer):
-    producer_name = serializers.SerializerMethodField()
-    producer_pid = serializers.SerializerMethodField()
-    village = serializers.SerializerMethodField()
-    harvest_date = serializers.SerializerMethodField()
-    breaking_date = serializers.SerializerMethodField()
-    weight = serializers.SerializerMethodField()
+    ovens = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Package
+        fields = ('ovens',)
+
+    def get_ovens(self, obj):
+        return PackageOvenSerializer(Oven.objects.filter(
+            Q(carbonization_beginning__entity__package_id=obj.id) |
+            Q(carbonization_ending__entity__package_id=obj.id)
+        ).order_by('oven_id'), many=True).data
+
+
+class TruckPackageSerializer(serializers.ModelSerializer):
+    loading_transport = serializers.SerializerMethodField()
+    reception = serializers.SerializerMethodField()
 
     class Meta:
         model = Package
         fields = (
-            'producer_name', 'producer_pid', 'village', 'harvest_date', 'breaking_date', 'weight',
+            'loading_transport', 'reception'
         )
 
-    def get_weight(self, obj):
-        weight = "{} kg".format(obj.weight) if obj.weight else ""
-        return {"Estimated volume on fresh beans kg": weight}
-
-    def get_producer_name(self, obj):
+    def get_loading_transport(self, obj):
         try:
-            return {"Producer name": obj.package_entities.get(action=Entity.HARVEST).harvest.producer.name}
+            return LoadingTransportSerializer(obj.package_entities.get(action=Entity.LOADING_TRANSPORT).loadingtransport).data
         except Entity.DoesNotExist:
-            return {"Producer name": ""}
+            return {}
 
-    def get_producer_pid(self, obj):
+    def get_reception(self, obj):
         try:
-            return {"Producer ID": obj.package_entities.get(action=Entity.HARVEST).harvest.producer.pid}
+            return ReceptionSerializer(obj.package_entities.filter(action=Entity.RECEPTION)[2].reception).data
         except Entity.DoesNotExist:
-            return {"Producer ID": ""}
-
-    def get_village(self, obj):
-        try:
-            return {'Village': obj.package_entities.get(action=Entity.HARVEST).harvest.producer.village.name}
-        except Entity.DoesNotExist:
-            return {'Village': ""}
-
-    def get_harvest_date(self, obj):
-        try:
-            unix_date = obj.package_entities.get(action=Entity.HARVEST).harvest.harvest_date
-            date = unix_to_datetime_tz(unix_date).strftime('%d/%m/%Y') if unix_date else ""
-            return {'Harvest date': date}
-        except Entity.DoesNotExist:
-            return {'Harvest date': ""}
-
-    def get_breaking_date(self, obj):
-        try:
-            unix_date = obj.package_entities.get(action=Entity.BREAKING).breaking.breaking_date
-            date = unix_to_datetime_tz(unix_date).strftime('%d/%m/%Y') if unix_date else ""
-            return {'Breaking date': date}
-        except Entity.DoesNotExist:
-            return {'Breaking date': ""}
-
-
-class SacPackageSerializer(serializers.ModelSerializer):
-    cooperative_name = serializers.SerializerMethodField()
-    harvests = serializers.SerializerMethodField()
-    location = serializers.SerializerMethodField()
-    creation_date = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Package
-        fields = (
-            'cooperative_name', 'harvests', 'location', 'creation_date',
-        )
-
-    def get_cooperative_name(self, obj):
-        try:
-            user = obj.package_entities.get(action=Entity.BAGGING).user
-        except Entity.DoesNotExist:
-            return {'Cooperative name': ""}
-        company_name = user.company.name if user and user.company else {'Cooperative name': ""}
-        return {'Cooperative name': company_name}
-
-    def get_harvests(self, obj):
-        pids = ','.join(list(obj.package_harvests.values_list('pid', flat=True)))
-        return {'Harvest IDs included': pids}
-
-    def get_location(self, obj):
-        try:
-            location = obj.package_entities.get(action=Entity.BAGGING).location
-        except Entity.DoesNotExist:
-            return {'Created location': ""}
-        else:
-            return {'Created location': "{}, {}".format(location.x, location.y)} \
-                if location else {'Created location': ""}
-
-    def get_creation_date(self, obj):
-        try:
-            unix_date = obj.package_entities.get(action=Entity.BAGGING).timestamp
-            creation_date = unix_to_datetime_tz(unix_date).strftime('%d/%m/%Y') if unix_date else ""
-        except Entity.DoesNotExist:
-            return {'Creation date': ""}
-        else:
-            return {'Creation date': creation_date}
-
-
-class LotPackageSerializer(serializers.ModelSerializer):
-    sac_ids = serializers.SerializerMethodField()
-    transporter = serializers.SerializerMethodField()
-    transport_date = serializers.SerializerMethodField()
-    location = serializers.SerializerMethodField()
-    creation_date = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Package
-        fields = (
-            'sac_ids', 'transporter', 'location', 'creation_date', 'transport_date'
-        )
-
-    def get_sac_ids(self, obj):
-        sacs = list(obj.package_sacs.values_list('pid', flat=True).order_by('id'))
-        return {'SAC ID included': "{} to {}".format(sacs[0], sacs[-1])} if sacs else {'SAC ID included': ""}
-
-    def get_transporter(self, obj):
-        try:
-            transporter = obj.package_entities.get(action=Entity.TRANSPORT).transport.transporter
-        except Entity.DoesNotExist:
-            return {'Organic cocoa transporter': ""}
-        return {'Organic cocoa transporter': transporter.name} if transporter else {'Organic cocoa transporter': ""}
-
-    def get_location(self, obj):
-        try:
-            location = obj.package_entities.get(action=Entity.CREATION).location
-        except Entity.DoesNotExist:
-            return {'Created location': ""}
-        else:
-            return {'Created location': "{}, {}".format(location.x, location.y)} \
-                if location else {'Created location': ""}
-
-    def get_creation_date(self, obj):
-        try:
-            unix_date = obj.package_entities.get(action=Entity.CREATION).timestamp
-            creation_date = unix_to_datetime_tz(unix_date).strftime('%d/%m/%Y') if unix_date else ""
-        except Entity.DoesNotExist:
-            return {'Creation date': ""}
-        else:
-            return {'Creation date': creation_date}
-
-    def get_transport_date(self, obj):
-        try:
-            unix_date = obj.package_entities.get(action=Entity.TRANSPORT).transport.transport_date
-            creation_date = unix_to_datetime_tz(unix_date).strftime('%d/%m/%Y') if unix_date else ""
-        except Entity.DoesNotExist:
-            return {'Transport date': ""}
-        else:
-            return {'Transport date': creation_date}
+            return {}
 
 
 class PackageDetailsSerializer(serializers.ModelSerializer):
+    type_display = serializers.SerializerMethodField()
     properties = serializers.SerializerMethodField()
 
     class Meta:
         model = Package
-        fields = ('id', 'pid', 'properties')
+        fields = ('id', 'pid', 'type_display', 'properties')
+
+    def get_type_display(self, obj):
+        return obj.get_type_display().lower()
 
     def get_properties(self, obj):
         try:
@@ -621,16 +597,16 @@ class PackageDetailsSerializer(serializers.ModelSerializer):
         return properties(obj)
 
     @staticmethod
+    def _plot_properties(obj):
+        return PlotPackageSerializer(obj).data
+
+    @staticmethod
     def _harvest_properties(obj):
         return HarvestPackageSerializer(obj).data
 
     @staticmethod
-    def _sac_properties(obj):
-        return SacPackageSerializer(obj).data
-
-    @staticmethod
-    def _lot_properties(obj):
-        return LotPackageSerializer(obj).data
+    def _transport_properties(obj):
+        return TruckPackageSerializer(obj).data
 
 
 class ChainSeriazlier(serializers.ModelSerializer):
