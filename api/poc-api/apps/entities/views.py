@@ -200,8 +200,6 @@ class EntityViewSet(ViewSet, MultiSerializerMixin):
             filter_kwargs['timestamp__lte'] = to_timestamp
         if request and 'keyword' in request.query_params and len(request.query_params['keyword']) > 0:
             filter_kwargs['package__pid__icontains'] = request.query_params['keyword']
-        if request and 'cooperative_id' in request.query_params and len(request.query_params['cooperative_id']) > 0:
-            filter_kwargs['user__company_id'] = request.query_params['cooperative_id']
         if request and 'types' in request.query_params and len(request.query_params['types']) > 0:
             filter_kwargs['package__type__in'] = [t.upper() for t in request.query_params['types'].split(',')]
         filter_kwargs = {**filter_kwargs, **additional_filters}
@@ -362,14 +360,12 @@ class EntityViewSet(ViewSet, MultiSerializerMixin):
         for timestamp in dates:
             start_timestamp = int(timestamp)
             end_timestamp = int(start_timestamp) + 24 * 60 * 60
-            available_actions = []
-            for type in Package.PACKAGES:
-                if Entity.objects.filter(
-                    package__type=type[0], timestamp__range=(start_timestamp, end_timestamp)
-                ).exists():
-                    available_actions.append(type[1].lower())
-            if available_actions:
-                response[start_timestamp] = available_actions
+            available_actions = list(
+                Package.objects.filter(
+                    package_entities__timestamp__range=(start_timestamp, end_timestamp)
+                ).values_list('type').distinct()
+            )
+            response[start_timestamp] = available_actions
         return Response(response, status=status.HTTP_200_OK)
 
 
@@ -450,8 +446,8 @@ class PackageViewSet(ViewSet, MultiSerializerMixin):
     }
 
     def _filter_entities(self, request, additional_filters={}):
-        from_timestamp = unix_to_datetime_tz(request.GET.get('from_timestamp'))
-        to_timestamp = unix_to_datetime_tz(request.GET.get('to_timestamp'))
+        from_timestamp = request.GET.get('from_timestamp')
+        to_timestamp = request.GET.get('to_timestamp')
 
         filter_kwargs = {}
         if from_timestamp and to_timestamp:

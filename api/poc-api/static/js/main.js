@@ -48,6 +48,23 @@ const messages = {
         width: 'Width',
         carbonizer_id: 'Carbonizer\'s ID',
         timber_volume: 'Timber volume',
+        weekday_names: {
+            short: {
+                monday: 'Mon',
+                tuesday: 'Tue',
+                wednesday: 'Wed',
+                thursday: 'Thu',
+                friday: 'Fri',
+                saturday: 'Sat',
+                sunday: 'Sun',
+            }
+        },
+        month_names: {
+            january: 'January', february: 'February', march: 'March',
+            april: 'April', may: 'May', june: 'June',
+            july: 'July', august: 'August', september: 'September',
+            october: 'October', 'november': 'November', december: 'December'
+        }
     },
 };
 

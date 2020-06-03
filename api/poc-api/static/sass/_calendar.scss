@@ -1,112 +1,192 @@
-.calendar {
-  background-color: var(--white);
-  border-radius: 3px;
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  width: 100%;
-  padding: .25rem .5rem 1rem .5rem;
-  //box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-
-  .top {
-    grid-column: 1 / span 7;
-  }
-
-  .header {
-    padding: .75rem;
-    font-size: 1.25rem;
-    grid-column: 1 / span 7;
-
-    span {
-      flex: 1;
-      text-align: center;
+.calendar-block {
+  .nav-search .nav-tabs li.dropdown .dropdown-menu {
+    background-color: $active-tab-bg;
+    border: none;
+    margin-top: 0;
+    .dropdown-item {
+      background-color: $active-tab-bg;
+      color: $white-color;
+      font-weight: 100;
+      i.current {
+        float: right;
+        display: inline-block;
+        width: 22px;
+        height: 22px;
+        -ms-transform: rotate(45deg); /* IE 9 */
+        -webkit-transform: rotate(45deg); /* Chrome, Safari, Opera */
+        transform: rotate(45deg);
+        &:before {
+          content: "";
+          position: absolute;
+          width: 2px;
+          height: 12px;
+          background-color: $white-color;
+          left: 21px;
+          top: -6px;
+        }
+        &:after {
+          content: "";
+          position: absolute;
+          width: 5px;
+          height: 2px;
+          background-color: $white-color;
+          left: 17px;
+          top: 4px;
+        }
+      }
     }
-
-    button {
+  }
+  .calendar {
+    background-color: var(--white);
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    width: 100%;
+    border-top: 1px solid $calendar-border-color;
+    border-left: 1px solid $calendar-border-color;
+    //padding: .25rem .5rem 1rem .5rem;
+    //box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    &.headings {
       border: none;
-      background: var(--white);
-      margin: 0 1rem;
-      padding: .25rem .5rem;
+    }
+    .top {
+      grid-column: 1 / span 7;
+    }
 
-      &:hover {
-        //background: var(--black-400);
-        transition: background 150ms;
+    .headings {
+      padding-top: 25px;
+      padding-bottom: 15px;
+      font-size: 20px;
+      color: $calendar-heading-color;
+      font-weight: 100;
+      text-transform: uppercase;
+    }
+
+    .header {
+      padding: .75rem;
+      font-size: 1.25rem;
+      grid-column: 1 / span 7;
+
+      span {
+        flex: 1;
+        text-align: center;
       }
-      &:focus {
-        outline:none;
+
+      button {
+        border: none;
+        background: var(--white);
+        margin: 0 1rem;
+        padding: .25rem .5rem;
+        outline: none;
+        &:hover {
+          //background: var(--black-400);
+          transition: background 150ms;
+        }
+        &:focus {
+          outline: none;
+        }
       }
+
     }
 
-  }
-
-  * {
-    align-items: center;
-    display: flex;
-    justify-content: center;
-  }
-
-  .day {
-    //color: var(--black-200);
-    font-size: 1rem;
-    border: 1px solid gray;
-
-
-    &.selected {
-      border: 2px solid $main-header-border-color;
-    }
-
-    &.current {
-      color: var(--black-100);
-    }
-
-    &::before {
-      content: "";
-      display: inline-block;
-      height: 0;
-      padding-bottom: 100%;
-      width: 1px;
-    }
-
-    button {
+    * {
+      align-items: center;
       display: flex;
-      justify-content: flex-start;
-      flex-direction: column;
-      color: inherit;
-      background: transparent;
-      border: none;
-      height: 100%;
-      width: 100%;
-      &:hover {
-        background: var(--black-400);
-        transition: background 150ms;
-      }
+      justify-content: center;
     }
-    .action-dots {
-      .harvest {
-        background-color: $harvest-color
-      }
-      .plot {
-        background-color: $plot-color
-      }
-      .truck {
-        background-color: $truck-color
-      }
-      .action-dot {
-        width: 6px;
-        height: 6px;
-        border-radius: 3px;
-        padding-right: 2px;
-        margin: 0 1px;
-      }
-    }
-  }
 
-  .today {
-    background-color: $main-header-bg;
-    border-radius: 2px;
+    .day {
+      //color: var(--black-200);
+      font-size: 1rem;
+      color: $calendar-heading-color;
+      border-bottom: 1px solid $calendar-border-color;
+      border-right: 1px solid $calendar-border-color;
+
+      &.selected {
+        border: 2px solid $harvest-color;
+      }
+
+      &.current {
+        color: $black-color;
+      }
+
+      &::before {
+        content: "";
+        display: inline-block;
+        height: 0;
+        padding-bottom: 100%;
+        width: 1px;
+      }
+
+      button {
+        display: flex;
+        justify-content: flex-start;
+        flex-direction: column;
+        color: inherit;
+        background: transparent;
+        border: none;
+        height: 100%;
+        width: 100%;
+        outline: none;
+        &:hover {
+          background: var(--black-400);
+          transition: background 150ms;
+        }
+      }
+      .action-dots {
+        .HAR {
+          background-color: $harvest-color
+        }
+        .PLT {
+          background-color: $plot-color
+        }
+        .TRK {
+          background-color: $truck-color
+        }
+        .action-dot {
+          width: 6px;
+          height: 6px;
+          border-radius: 3px;
+          padding-right: 2px;
+          margin: 0 1px;
+        }
+      }
+    }
+
+    .today {
+      background-color: $main-header-bg;
+    }
   }
 }
 
-
+.calendar-details {
+  .calendar-details-header {
+    display: flex;
+    flex-direction: row;
+    border-bottom: 1px solid $active-tab-bg;
+    .calendar-details-date {
+      margin-bottom: 0.9rem;
+      font-size: 20px;
+    }
+  }
+  .calendar-details-packages {
+    padding-top: 20px;
+    .start-content .content-data .packages .package {
+      .package-pid {
+        .pid {
+          font-size: 18px
+        }
+      }
+      .package-details .package-entity {
+        .description, .timestamp {
+          display: flex;
+        }
+        .description {
+          flex: 0 0 60%;
+        }
+      }
+    }
+  }
+}
 
 .text-center {
   text-align: center;

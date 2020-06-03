@@ -14,7 +14,7 @@ let PackageDetails = Vue.component('package-details', {
                            @click.prevent="showMap()" href="#">[[ $t("map") ]] <i class="gps-pin-icon"></i></a>
                     </li>
                 </ul>
-                <div class="search-actions">
+                <div class="nav-tabs-right-actions">
                     <ul class="nav nav-tabs float-right">
                         <li class="nav-item m-0">
                             <a class="nav-link transport"
@@ -112,7 +112,7 @@ let PackageDetails = Vue.component('package-details', {
                             </div>
                             <div class="entity-property">
                                 <div class="entity-property-name">[[ $t('timber_volume') ]]</div>
-                                <div class="entity-property-value">[[ oven.carbonization_beginning.timber_volume ]]</div>
+                                <div class="entity-property-value">[[ oven.carbonization_beginning.timber_volume ]] m3</div>
                             </div>
                         </div>
                     </div>

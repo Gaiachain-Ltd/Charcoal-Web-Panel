@@ -25,7 +25,7 @@ let Packages = Vue.component('packages', {
                     </li>
                 </ul>
     
-                <div class="search-actions">
+                <div class="nav-tabs-right-actions" v-if="showSearch">
                     <i class="search-icon"></i>
                     <input type="text" v-model="keyword" v-bind:placeholder="$t('search') + '...'"/>
                 </div>
@@ -47,7 +47,7 @@ let Packages = Vue.component('packages', {
                                      :key="key">
                                     <div>
                                         <span class="description">[[ entity.description ]]</span>
-                                        <span class="timestamp">[[ entity.timestamp_display ]] <span class="timezone">[[ entity.timezone ]]</span></span>
+                                        <span class="timestamp">[[ entity.timestamp_display ]]<span class="timezone" v-if="showTimezone"> [[ entity.timezone ]]</span></span>
                                     </div>
                                     <hr>
                                 </div>
@@ -65,25 +65,45 @@ let Packages = Vue.component('packages', {
             packages: [],
         }
     },
+    props: {
+        date: {
+            type: Date,
+        },
+        showSearch: {
+            type: Boolean,
+            default: true
+        },
+        showTimezone: {
+            type: Boolean,
+            default: true
+        }
+    },
     watch: {
         keyword: function (val) {
-            let args = val ? "&keyword=" + val : '';
-            this.getPackages(this.active_package_type, args, search = true)
+            let args = val ? {keyword: val} : {};
+            this.getPackages(this.active_package_type, args, true)
         },
+        date: function (val) {
+            this.getPackages(this.active_package_type)
+        }
     },
     mounted: function () {
         this.showPackages('all');
         document.getElementById('current-page-name').innerHTML = this.$t('traceability')
     },
     methods: {
-        getPackages: function (type, args = "", search = false) {
+        getPackages: function (type, args = {}, search = false) {
             if (!search) {
                 this.$root.$data.loading = true;
             }
-            let url = '/entities/packages/?type=' + type;
-            if (args.length > 0) {
-                url += args
+            let params = {...{type: type}, ...args};
+            if (this.date) {
+                params = {...params, ...{
+                    from_timestamp: dateFns.startOfDay(this.date).getTime() / 1000 | 0,
+                    to_timestamp: dateFns.endOfDay(this.date).getTime() / 1000 | 0
+                }}
             }
+            let url = '/entities/packages/?' + new URLSearchParams(params).toString();
             this.$http.get(url).then(function (response) {
                 this.packages = response.data.results;
                 this.$root.$data.loading = false;
