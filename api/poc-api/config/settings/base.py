@@ -230,3 +230,4 @@ AUTHENTICATION_BACKENDS = (
 )
 
 ACCOUNT_LOGOUT_ON_GET = True
+SWAGGER_BASE_URL = env('SWAGGER_BASE_URL', default=f'http://localhost:{env("SERVER_PORT")}')

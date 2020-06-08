@@ -22,12 +22,3 @@ class AgentHandler(HandlerBase):
         container.ParseFromString(changes.value)
         agent = container.entries[0]
         LOG.debug(f"Agent: {agent.email} ({agent.company_name})")
-        # r.table(Tbl.AGENTS).insert(
-        #     {
-        #         "email": agent.email,
-        #         "ref": changes.address,
-        #         "public_key": agent.public_key,
-        #         "timestamp": agent.timestamp,
-        #     },
-        #     conflict="update",
-        # ).run()

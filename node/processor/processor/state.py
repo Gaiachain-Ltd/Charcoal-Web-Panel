@@ -1,7 +1,7 @@
 import logging
 
 from protos.agent_pb2 import Agent, AgentContainer
-from protos.entity_pb2 import Entity, EntityBatch, Package
+from protos.entity_pb2 import Entity, EntityBatch, Package, Replantation
 from protos.enums import Namespaces
 
 LOG = logging.getLogger(__name__)
@@ -39,11 +39,11 @@ class State:
         return container.entries.pop(0)
 
     def set_package(self, package: Package):
-        address = Namespaces.get_address(package.id, subnamespace=Namespaces.ENTITY)
+        address = Namespaces.get_address(package.id, subnamespace=Namespaces.PACKAGE)
         self._context.set_state({address: package.SerializeToString()})
 
     def get_package(self, package_id: str):
-        address = Namespaces.get_address(package_id, subnamespace=Namespaces.ENTITY)
+        address = Namespaces.get_address(package_id, subnamespace=Namespaces.PACKAGE)
         package_list = self._context.get_state([address])
 
         if not package_list:
@@ -73,3 +73,7 @@ class State:
         entity_batch = EntityBatch()
         entity_batch.ParseFromString(entity_batches_list[0].data)
         return entity_batch
+
+    def set_replantation(self, replantation: Replantation):
+        address = Namespaces.get_address(str(replantation.id), subnamespace=Namespaces.REPLANTATION)
+        self._context.set_state({address: replantation.SerializeToString()})

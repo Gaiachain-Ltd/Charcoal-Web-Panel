@@ -31,3 +31,5 @@ class Payload:
             return self._payload.create_entity_batch
         if self.action == SCPayload.MOVE_ENTITY_BATCH:
             return self._payload.move_entity_batch
+        if self.action == SCPayload.CREATE_REPLANTATION:
+            return self._payload.create_replantation

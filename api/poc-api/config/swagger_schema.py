@@ -1,7 +1,10 @@
-from django.utils.six.moves.urllib import parse as urlparse
-from rest_framework.schemas import AutoSchema
 import yaml
 import coreapi
+
+from django.utils.six.moves.urllib import parse as urlparse
+from django.conf import settings
+
+from rest_framework.schemas import AutoSchema
 from rest_framework_swagger.views import get_swagger_view
 
 
@@ -70,11 +73,10 @@ class CustomSchema(AutoSchema):
         # else:
         #     encoding = None
 
-        if base_url and path.startswith('/'):
-            path = path[1:]
-
+        # if base_url and path.startswith('/'):
+        #     path = path[1:]
         return coreapi.Link(
-            url=urlparse.urljoin(base_url, path),
+            url=path,
             action=method.lower(),
             encoding=None,
             fields=fields,
@@ -82,4 +84,4 @@ class CustomSchema(AutoSchema):
         )
 
 
-schema_view = get_swagger_view(title='POC API')
+schema_view = get_swagger_view(title='POC API', url=settings.SWAGGER_BASE_URL)

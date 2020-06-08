@@ -30,10 +30,12 @@ class Gaiachain(SimpleEnum):
 
 class Namespaces(SimpleEnum):
     GA_NAMESPACE = hashlib.sha512("gaiachain".encode("utf-8")).hexdigest()[:6]
+    # hex: 0-9 a-f
     AGENT = "ae"
     ENTITY = "e0"
     ENTITY_BATCH = "eb"
-    PACKAGE = "pa"
+    PACKAGE = "ac"
+    REPLANTATION = "ea"
 
     @staticmethod
     def get_prefix(subnamespace: str = ""):
@@ -55,3 +57,4 @@ class Tbl(SimpleEnum):
     ENTITY_BATCHES = "batches"
     ENTITY_EVENTS = "events"
     PACKAGES = "packages"
+    REPLANTATIONS = "replantations"

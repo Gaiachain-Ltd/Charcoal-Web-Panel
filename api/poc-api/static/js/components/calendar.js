@@ -25,17 +25,17 @@ let Calendar = Vue.component('calendar', {
                                 </li>
                             </ul>
                             <div class="nav-tabs-right-actions">
-                            <ul class="nav nav-tabs float-right">
-                                <li class="nav-item m-0">
-                                    <a class="nav-link"
-                                       @click.prevent="previousMonth" href="#">&lt;</a>
-                                </li>
-                                <li class="nav-item m-0">
-                                    <a class="nav-link"
-                                       @click.prevent="nextMonth" href="#">&gt;</a>
-                                </li>
-                            </ul>
-                        </div>
+                                <ul class="nav nav-tabs float-right">
+                                    <li class="nav-item m-0">
+                                        <a class="nav-link"
+                                           @click.prevent="previousMonth" href="#">&lt;</a>
+                                    </li>
+                                    <li class="nav-item m-0">
+                                        <a class="nav-link"
+                                           @click.prevent="nextMonth" href="#">&gt;</a>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                         <div class="calendar headings">
                             <div class="headings">
@@ -143,12 +143,11 @@ let Calendar = Vue.component('calendar', {
         }
     },
     methods: {
-        generateYearsRange(min, max) {
+        generateYearsRange() {
             let arr = [];
             let currentYear = this.today.getFullYear();
             for (let i = currentYear; i >= currentYear - 5; i -= 1) {
                 arr.push(i);
-                console.log(i);
             }
 
             return arr;

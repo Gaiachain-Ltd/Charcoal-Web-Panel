@@ -4,7 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 from apps.additional_data.models import OvenType
 from apps.blockchain.transaction import PayloadFactory, BlockTransactionFactory
 
-from protos.entity_pb2 import Entity as EntityProto, Package as PackageProto
+from protos.entity_pb2 import Entity as EntityProto, Package as PackageProto, Replantation as ReplantationProto
 
 
 class Entity(models.Model):
@@ -389,3 +389,45 @@ class Reception(ActionAbstract):
     @property
     def web_description(self):
         return _('Reception at storage facility')
+
+
+class Replantation(models.Model):
+    plot = models.OneToOneField(
+        'entities.Package', on_delete=models.CASCADE, verbose_name=_('Plot ID'),
+        related_name='replantation'
+    )
+    trees_planted = models.PositiveIntegerField(verbose_name=_('Number of trees planted'))
+    tree_specie = models.ForeignKey(
+        'additional_data.TreeSpecie', on_delete=models.CASCADE, verbose_name=_('Tree specie')
+    )
+    user = models.ForeignKey(
+        'users.User', verbose_name=_('User'), on_delete=models.CASCADE,
+        related_name='replantations'
+    )
+    beginning_date = models.PositiveIntegerField(verbose_name=_('Beginning date'))
+    ending_date = models.PositiveIntegerField(verbose_name=_('Ending date'))
+    location = models.PointField(verbose_name=_('Location'))
+
+    def _build_proto(self):
+        return ReplantationProto(**{
+            'id': self.id,
+            'beginning_date': self.beginning_date,
+            'ending_date': self.ending_date,
+            'trees_planted': self.trees_planted,
+            'tree_specie': str(self.tree_specie),
+            'plot': PackageProto(id=self.plot.pid),
+            'location': {
+                'lat': self.location.y,
+                'long': self.location.x,
+            },
+            'user': self.user.get_proto(),
+        })
+
+    def add_to_chain(self, payload_type):
+        proto = self._build_proto()
+        BlockTransactionFactory.send(
+            protos=[proto],
+            signer_key=self.user.private_key,
+            payload_type=payload_type,
+        )
+        return self

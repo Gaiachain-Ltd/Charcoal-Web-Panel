@@ -5,7 +5,7 @@ from django.contrib.gis.geos import Point
 
 from apps.entities.models import (
     Entity, Package, LoggingBeginning, LoggingEnding, Oven, CarbonizationBeginning, CarbonizationEnding,
-    Bag, LoadingTransport, Reception, ReceptionImage
+    Bag, LoadingTransport, Reception, ReceptionImage, Replantation
 )
 
 
@@ -108,3 +108,4 @@ admin.site.register(LoadingTransport, LoadingTransportAdmin)
 admin.site.register(Reception)
 admin.site.register(ReceptionImage)
 admin.site.register(Package, PackageAdmin)
+admin.site.register(Replantation)

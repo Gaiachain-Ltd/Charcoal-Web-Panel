@@ -282,6 +282,43 @@ section.main-section {
         .nav-tabs {
           border: none;
           flex-grow: 1;
+          li.dropdown .dropdown-menu {
+            background-color: $active-tab-bg;
+            border: none;
+            margin-top: 0;
+            .dropdown-item {
+              background-color: $active-tab-bg;
+              color: $white-color;
+              font-weight: 100;
+              i.current {
+                float: right;
+                display: inline-block;
+                width: 22px;
+                height: 22px;
+                -ms-transform: rotate(45deg); /* IE 9 */
+                -webkit-transform: rotate(45deg); /* Chrome, Safari, Opera */
+                transform: rotate(45deg);
+                &:before {
+                  content: "";
+                  position: absolute;
+                  width: 2px;
+                  height: 12px;
+                  background-color: $white-color;
+                  left: 21px;
+                  top: -6px;
+                }
+                &:after {
+                  content: "";
+                  position: absolute;
+                  width: 5px;
+                  height: 2px;
+                  background-color: $white-color;
+                  left: 17px;
+                  top: 4px;
+                }
+              }
+            }
+          }
           .nav-item {
             margin-bottom: 0;
             margin-right: 10px;
@@ -341,6 +378,8 @@ section.main-section {
         .nav-tabs {
           .nav-link {
             margin-left: 10px;
+            padding-left: 20px;
+            padding-right: 20px;
           }
         }
         .search-icon {
@@ -495,7 +534,7 @@ section.main-section {
         max-width: 415px;
         height: 560px;
       }
-      .packages-data {
+      .packages-data, .replantation-data {
         display: flex;
         flex-direction: column;
         height: 100%;
@@ -542,14 +581,14 @@ section.main-section {
           }
         }
       }
-      .packages {
+      .packages, .replantations {
           display: flex;
           flex-direction: column;
-          .package {
+          .package, .replantation {
             padding-top: 30px;
             font-size: 20px;
             font-weight: 600;
-            .package-pid {
+            .package-pid, .replantation-pid {
               display: flex;
               justify-content: space-between;
               align-items: center;
@@ -574,9 +613,9 @@ section.main-section {
                 cursor: pointer;
               }
             }
-            .package-details {
+            .package-details, .replantation-details {
               margin-top: 10px;
-              .package-entity {
+              .package-entity, .replantation-entity {
                 div {
                   display: flex;
                   align-items: center;
@@ -605,6 +644,54 @@ section.main-section {
 
             }
           }
+      }
+      .replantations {
+        .replantation {
+          .replantation-pid {
+            border-bottom: 1px solid $timezone-color;
+            padding-bottom: 10px;
+            .pid {
+              font-size: 24px;
+              letter-spacing: -0.6px;
+            }
+            .replantation-ending-date {
+              font-size: 20px;
+              letter-spacing: -0.5px;
+              font-weight: 100;
+            }
+          }
+          .replantation-details {
+            .replantation-entity {
+              font-size: 18px;
+              font-weight: 100;
+              .timestamp {
+                font-weight: 100;
+              }
+              div {
+                padding-top: 10px;
+                padding-bottom: 15px;
+                &:nth-child(1) {
+                  border-bottom: 1px solid $sidebar-bg;
+                }
+              }
+            }
+            .replantation-bar {
+              position: relative;
+              border-radius: 9px;
+              height: 18px;
+              background-color: $trees-cut-color;
+              margin-top: 5px;
+              .trees-planted {
+                position: absolute;
+                left: 0;
+                top: 0;
+                border-radius: 9px;
+                height: 18px;
+                background-color: $submit-color;
+              }
+            }
+          }
+        }
       }
       .transactions-data {
         width: 100%;

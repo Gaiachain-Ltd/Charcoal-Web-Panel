@@ -10,6 +10,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView as CoreTokenObtai
 
 from apps.users.serializers import RegistrationSerializer, RoleSerializer, UserSerializer, TokenObtainPairSerializer
 from apps.users.models import Role
+from config.swagger_schema import CustomSchema
 
 User = get_user_model()
 
@@ -18,6 +19,8 @@ class PingAPIView(APIView):
     """
     Endpoint for checking connection with server. Returns 200 status and "OK".
     """
+    schema = CustomSchema()
+
     def get(self, request, format=None):
         return Response("OK", status=status.HTTP_200_OK)
 
@@ -28,6 +31,7 @@ class RoleListAPIView(ListAPIView):
     """
     queryset = Role.objects.all()
     serializer_class = RoleSerializer
+    schema = CustomSchema()
 
 
 class UserListAPIView(ListAPIView):
@@ -36,11 +40,13 @@ class UserListAPIView(ListAPIView):
     """
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    schema = CustomSchema()
 
 
 class RegistrationAPIView(GenericAPIView):
     permission_classes = (AllowAny,)
     serializer_class = RegistrationSerializer
+    schema = CustomSchema()
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data, context={'user': request.user})
@@ -56,3 +62,4 @@ class TokenObtainPairView(CoreTokenObtainPairView):
     token pair to prove the authentication of those credentials.
     """
     serializer_class = TokenObtainPairSerializer
+    schema = CustomSchema()

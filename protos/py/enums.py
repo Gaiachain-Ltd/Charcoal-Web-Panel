@@ -33,7 +33,8 @@ class Namespaces(SimpleEnum):
     AGENT = "ae"
     ENTITY = "e0"
     ENTITY_BATCH = "eb"
-    PACKAGE = "pa"
+    PACKAGE = "ac"
+    REPLANTATION = "ea"
 
     @staticmethod
     def get_prefix(subnamespace: str = ""):
@@ -55,3 +56,4 @@ class Tbl(SimpleEnum):
     ENTITY_BATCHES = "batches"
     ENTITY_EVENTS = "events"
     PACKAGES = "packages"
+    REPLANTATIONS = "replantations"

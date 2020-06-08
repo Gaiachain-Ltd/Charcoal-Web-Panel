@@ -1,18 +1,22 @@
 import json
+import pytz
+from datetime import datetime
 
-from django.utils import timezone
+from django.conf import settings
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
 
-from rest_framework.viewsets import ViewSet
-from rest_framework import status
+from rest_framework.viewsets import ViewSet, GenericViewSet
+from rest_framework import status, mixins
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
-from apps.entities.models import Entity,  Package, Oven
+from apps.entities.models import Entity,  Package, Oven, Replantation
 from apps.entities.serializers import (
     EntitySerializer, PackagePidSerializer, EntityListSerializer, EntityBatchSerializer, EntityBatchListSerializer,
-    PackagesSerializer, PackageDetailsSerializer, ChainSeriazlier, OvenSimpleSerializer
+    PackagesSerializer, PackageDetailsSerializer, ChainSeriazlier, OvenSimpleSerializer, ReplantationSerializer,
+    ReplantationListSerializer
 )
 from apps.additional_data.mixins import MultiSerializerMixin
 from apps.entities.utils import unix_to_datetime_tz
@@ -554,3 +558,74 @@ class PackageViewSet(ViewSet, MultiSerializerMixin):
             for entity in package.package_entities.exclude(action=Entity.INITIAL):
                 chain.append(ChainSeriazlier(entity).data)
         return Response(chain, status=status.HTTP_200_OK)
+
+
+class ReplantationViewSet(mixins.CreateModelMixin,
+                          mixins.ListModelMixin,
+                          GenericViewSet):
+    """
+        Viewset API for Replantations
+    """
+
+    queryset = Replantation.objects.all().order_by('-id')
+    pagination_class = LimitOffsetPagination
+    schema = CustomSchema()
+    permission_classes = [AllowAny]
+
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return ReplantationListSerializer
+        return ReplantationSerializer
+
+    def translate_year_to_timestamp_range(self, year):
+        year_date = pytz.timezone(settings.TIME_ZONE).localize(datetime.strptime(str(year), '%Y'))
+        return year_date.timestamp(), year_date.replace(month=12, day=31).timestamp()
+
+    def _filter_entities(self, request):
+        year = request.GET.get('year')
+
+        filter_q = Q()
+        if year:
+            from_timestamp, to_timestamp = self.translate_year_to_timestamp_range(year)
+            filter_q |= Q(beginning_date__range=(from_timestamp, to_timestamp)) | \
+                        Q(ending_date__range=(from_timestamp, to_timestamp))
+
+        return filter_q
+
+    def list(self, request, *args, **kwargs):
+        """
+        ---
+        desc: List API for replantations
+        ret: List of replantations
+        input:
+        -
+            name: year
+            required: false
+            location: query
+            type: number
+        ---
+        """
+        filter_q = self._filter_entities(request)
+        queryset = self.queryset.filter(filter_q).distinct()
+        page = self.paginator.paginate_queryset(queryset=queryset, request=request)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.paginator.get_paginated_response(serializer.data)
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @action(methods=['get'], detail=False)
+    def plots(self, request):
+        """
+        ---
+        desc: List API for Packages without replantation and with Logging Ending step.
+        ret: List of packages
+        ---
+        """
+        queryset = Package.objects.filter(type=Package.PLOT, last_action__action=Entity.LOGGING_ENDING, replantation__isnull=True).distinct()
+        page = self.paginator.paginate_queryset(queryset=queryset, request=request)
+        if page is not None:
+            serializer = PackagePidSerializer(page, many=True)
+            return self.paginator.get_paginated_response(serializer.data)
+        serializer = PackagePidSerializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

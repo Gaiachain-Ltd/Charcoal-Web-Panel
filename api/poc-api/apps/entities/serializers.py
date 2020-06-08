@@ -16,7 +16,7 @@ from rest_framework.exceptions import NotFound
 from apps.blockchain.transaction import PayloadFactory
 from apps.entities.models import (
     Entity, Package, LoggingBeginning, LoggingEnding, CarbonizationBeginning, CarbonizationEnding, Oven,
-    Bag, LoadingTransport, Reception, ReceptionImage
+    Bag, LoadingTransport, Reception, ReceptionImage, Replantation
 )
 from apps.additional_data.models import (
     Parcel, Village
@@ -48,6 +48,7 @@ class ParcelSerializer(serializers.ModelSerializer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['id'].read_only = False
+
 
 class OvenSimpleSerializer(serializers.ModelSerializer):
 
@@ -232,7 +233,7 @@ class PackagePidSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Package
-        fields = ('pid', 'action')
+        fields = ('pid', 'id', 'action')
 
     def get_action(self, obj):
         return obj.last_action.action if obj.last_action else ""
@@ -338,16 +339,6 @@ class EntityBatchListSerializer(serializers.ModelSerializer):
     @staticmethod
     def _lot_reception_properties(obj):
         return LotReceptionSerializer(obj.lotreception).data
-
-
-class HarvestsSerializer(serializers.Serializer):
-    HARVEST = 'HA'
-    BREAKING = 'BR'
-    ACTIONS = [
-        (HARVEST, 'Harvest'),
-        (BREAKING, 'Breaking'),
-    ]
-    last_action = serializers.ChoiceField(choices=ACTIONS, required=False)
 
 
 class SimpleEntitySerializer(serializers.ModelSerializer):
@@ -669,3 +660,65 @@ class ChainSeriazlier(serializers.ModelSerializer):
 
     def get_location(self, obj):
         return "{}, {}".format(obj.location.y, obj.location.x) if obj.location else ''
+
+
+class ReplantationSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Replantation
+        fields = '__all__'
+
+    def validate_location(self, data):
+        if type(data) != dict:
+            data = json.loads(data)
+        data = Point(data['longitude'], data['latitude'])
+        return data
+
+    def create(self, validated_data):
+        obj = super().create(validated_data)
+        obj.add_to_chain(PayloadFactory.Types.CREATE_REPLANTATION)
+        return obj
+
+
+class ReplantationListSerializer(serializers.ModelSerializer):
+    trees_cut = serializers.SerializerMethodField()
+    trees_planted_dates_display = serializers.SerializerMethodField()
+    trees_cut_dates_display = serializers.SerializerMethodField()
+    ending_date_display = serializers.SerializerMethodField()
+    pid = serializers.CharField(source='plot.pid')
+
+    class Meta:
+        model = Replantation
+        fields = ('pid', 'trees_planted', 'trees_cut', 'ending_date_display', 'trees_cut_dates_display',
+                  'trees_planted_dates_display',)
+
+    def parse_timestamp_to_str_date(self, timestamp):
+        return datetime.fromtimestamp(timestamp, tz=pytz.timezone(settings.TIME_ZONE)).strftime('%d/%m/%Y')
+
+    def get_ending_date_display(self, obj):
+        return datetime.fromtimestamp(obj.ending_date, tz=pytz.timezone(settings.TIME_ZONE)).strftime('%d/%m/%Y %H:%S')
+
+    def get_trees_cut(self, obj):
+        try:
+            return obj.plot.package_entities.get(action=Entity.LOGGING_ENDING).loggingending.number_of_trees
+        except:
+            return 0
+
+    def get_trees_planted_dates_display(self, obj):
+        try:
+            logging_beginning = obj.plot.package_entities.get(action=Entity.LOGGING_BEGINNING).loggingbeginning.beginning_date
+        except:
+            logging_beginning = 0
+        try:
+            logging_ending = obj.plot.package_entities.get(action=Entity.LOGGING_ENDING).loggingending.ending_date
+        except:
+            logging_ending = 0
+        return f'{self.parse_timestamp_to_str_date(logging_beginning)} - {self.parse_timestamp_to_str_date(logging_ending)}'
+
+    def get_trees_cut_dates_display(self, obj):
+        return f'{self.parse_timestamp_to_str_date(obj.beginning_date)} - {self.parse_timestamp_to_str_date(obj.ending_date)}'
+
+    def to_representation(self, instance):
+        repr = super().to_representation(instance)
+        repr['trees_planted_percent'] = instance.trees_planted / (instance.trees_planted + repr['trees_cut']) * 100
+        return repr

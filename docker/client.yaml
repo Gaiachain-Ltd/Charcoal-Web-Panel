@@ -26,6 +26,7 @@ services:
       API_HOST: ${PREFIX}_node-api
       API_PORT: 8008
       POSTGIS_HOST: ${PREFIX}_postgis
+      SERVER_PORT: ${SERVER_PORT}
     ports:
       - "${SERVER_PORT}:8000"
     depends_on:

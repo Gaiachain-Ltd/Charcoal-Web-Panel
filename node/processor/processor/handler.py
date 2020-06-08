@@ -43,6 +43,8 @@ class GaiachainTransactionHandler(TransactionHandler):
             self._create_entity_batch(payload, state, signer)
         elif payload.action == SCPayload.MOVE_ENTITY_BATCH:
             self._move_entity_batch(payload, state, signer)
+        elif payload.action == SCPayload.CREATE_REPLANTATION:
+            self._create_replantation(payload, state, signer)
 
     def _create_agent(self, payload: Payload, state: State, signer: str):
         agent = payload.data.agent
@@ -172,3 +174,11 @@ class GaiachainTransactionHandler(TransactionHandler):
             signer.role == Agent.LOGGER
             and type == Package.PLOT
         )
+
+    def _create_replantation(self, payload: Payload, state: State, signer: str):
+        replantation = payload.data.replantation
+        plot = state.get_package(replantation.plot.id)
+        replantation.plot.CopyFrom(plot)
+        LOG.info(f"Create replantation: {replantation.plot.id}")
+        LOG.info(replantation)
+        state.set_replantation(replantation)

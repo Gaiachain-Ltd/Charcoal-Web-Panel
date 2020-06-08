@@ -11,7 +11,7 @@ from sawtooth_sdk.protobuf.transaction_pb2 import TransactionHeader, Transaction
 from sawtooth_signing import CryptoFactory
 
 from protos.agent_pb2 import Agent
-from protos.entity_pb2 import Entity, EntityBatch, Package
+from protos.entity_pb2 import Entity, EntityBatch, Package, Replantation
 from protos.enums import Gaiachain, Namespaces
 from protos.payload_pb2 import SCPayload
 
@@ -36,12 +36,20 @@ class PayloadFactory:
         CREATE_ENTITY_BATCH = "_create_entity_batch_action"
         UPDATE_ENTITY_BATCH = "_update_entity_batch_action"
         UPDATE_PACKAGE = "_update_package_action"
+        CREATE_REPLANTATION = "_create_replantation_action"
 
     @staticmethod
     def _create_agent_action(proto: Agent, **kwargs) -> SCPayload:
         payload = PayloadFactory._create_payload()
         payload.action = SCPayload.CREATE_AGENT
         payload.create_agent.agent.CopyFrom(proto)
+        return payload
+
+    @staticmethod
+    def _create_replantation_action(proto: Package, **kwargs) -> SCPayload:
+        payload = PayloadFactory._create_payload()
+        payload.action = SCPayload.CREATE_REPLANTATION
+        payload.create_replantation.replantation.CopyFrom(proto)
         return payload
 
     @staticmethod

@@ -309,6 +309,45 @@ section.main-section .main-content .start-content .nav-search .nav-tabs {
   border: none;
   flex-grow: 1;
 }
+section.main-section .main-content .start-content .nav-search .nav-tabs li.dropdown .dropdown-menu {
+  background-color: #667176;
+  border: none;
+  margin-top: 0;
+}
+section.main-section .main-content .start-content .nav-search .nav-tabs li.dropdown .dropdown-menu .dropdown-item {
+  background-color: #667176;
+  color: #FFFFFF;
+  font-weight: 100;
+}
+section.main-section .main-content .start-content .nav-search .nav-tabs li.dropdown .dropdown-menu .dropdown-item i.current {
+  float: right;
+  display: inline-block;
+  width: 22px;
+  height: 22px;
+  -ms-transform: rotate(45deg);
+  /* IE 9 */
+  -webkit-transform: rotate(45deg);
+  /* Chrome, Safari, Opera */
+  transform: rotate(45deg);
+}
+section.main-section .main-content .start-content .nav-search .nav-tabs li.dropdown .dropdown-menu .dropdown-item i.current:before {
+  content: "";
+  position: absolute;
+  width: 2px;
+  height: 12px;
+  background-color: #FFFFFF;
+  left: 21px;
+  top: -6px;
+}
+section.main-section .main-content .start-content .nav-search .nav-tabs li.dropdown .dropdown-menu .dropdown-item i.current:after {
+  content: "";
+  position: absolute;
+  width: 5px;
+  height: 2px;
+  background-color: #FFFFFF;
+  left: 17px;
+  top: 4px;
+}
 section.main-section .main-content .start-content .nav-search .nav-tabs .nav-item {
   margin-bottom: 0;
   margin-right: 10px;
@@ -350,6 +389,8 @@ section.main-section .main-content .start-content .nav-tabs-right-actions {
 }
 section.main-section .main-content .start-content .nav-tabs-right-actions .nav-tabs .nav-link {
   margin-left: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
 }
 section.main-section .main-content .start-content .nav-tabs-right-actions .search-icon {
   background-image: url(../img/icon_search.png);
@@ -490,31 +531,31 @@ section.main-section .main-content .content-data .right-block {
   max-width: 415px;
   height: 560px;
 }
-section.main-section .main-content .content-data .packages-data {
+section.main-section .main-content .content-data .packages-data, section.main-section .main-content .content-data .replantation-data {
   display: flex;
   flex-direction: column;
   height: 100%;
   background-color: #FFFFFF;
   width: 100%;
 }
-section.main-section .main-content .content-data .packages-data .plot {
+section.main-section .main-content .content-data .packages-data .plot, section.main-section .main-content .content-data .replantation-data .plot {
   color: #2581EB;
 }
-section.main-section .main-content .content-data .packages-data .harvest {
+section.main-section .main-content .content-data .packages-data .harvest, section.main-section .main-content .content-data .replantation-data .harvest {
   color: #65CB00;
 }
-section.main-section .main-content .content-data .packages-data .transport {
+section.main-section .main-content .content-data .packages-data .transport, section.main-section .main-content .content-data .replantation-data .transport {
   color: #FF70F1;
 }
-section.main-section .main-content .content-data .packages-data .title-block {
+section.main-section .main-content .content-data .packages-data .title-block, section.main-section .main-content .content-data .replantation-data .title-block {
   justify-content: flex-start;
 }
-section.main-section .main-content .content-data .packages-data .title-block .nav {
+section.main-section .main-content .content-data .packages-data .title-block .nav, section.main-section .main-content .content-data .replantation-data .title-block .nav {
   display: flex;
   justify-content: center;
   width: 75%;
 }
-section.main-section .main-content .content-data .packages-data .title-block .nav nav a.nav-link {
+section.main-section .main-content .content-data .packages-data .title-block .nav nav a.nav-link, section.main-section .main-content .content-data .replantation-data .title-block .nav nav a.nav-link {
   font-size: 20px;
   height: 61px;
   display: flex;
@@ -523,82 +564,124 @@ section.main-section .main-content .content-data .packages-data .title-block .na
   width: 115px;
   justify-content: center;
 }
-section.main-section .main-content .content-data .packages-data .title-block .nav nav a.active {
+section.main-section .main-content .content-data .packages-data .title-block .nav nav a.active, section.main-section .main-content .content-data .replantation-data .title-block .nav nav a.active {
   font-weight: 700;
 }
-section.main-section .main-content .content-data .packages-data .title-block .nav nav a.active.plot {
+section.main-section .main-content .content-data .packages-data .title-block .nav nav a.active.plot, section.main-section .main-content .content-data .replantation-data .title-block .nav nav a.active.plot {
   border-bottom: 4px solid #2581EB;
 }
-section.main-section .main-content .content-data .packages-data .title-block .nav nav a.active.harvest {
+section.main-section .main-content .content-data .packages-data .title-block .nav nav a.active.harvest, section.main-section .main-content .content-data .replantation-data .title-block .nav nav a.active.harvest {
   border-bottom: 4px solid #65CB00;
 }
-section.main-section .main-content .content-data .packages-data .title-block .nav nav a.active.transport {
+section.main-section .main-content .content-data .packages-data .title-block .nav nav a.active.transport, section.main-section .main-content .content-data .replantation-data .title-block .nav nav a.active.transport {
   border-bottom: 4px solid #FF70F1;
 }
-section.main-section .main-content .content-data .packages {
+section.main-section .main-content .content-data .packages, section.main-section .main-content .content-data .replantations {
   display: flex;
   flex-direction: column;
 }
-section.main-section .main-content .content-data .packages .package {
+section.main-section .main-content .content-data .packages .package, section.main-section .main-content .content-data .packages .replantation, section.main-section .main-content .content-data .replantations .package, section.main-section .main-content .content-data .replantations .replantation {
   padding-top: 30px;
   font-size: 20px;
   font-weight: 600;
 }
-section.main-section .main-content .content-data .packages .package .package-pid {
+section.main-section .main-content .content-data .packages .package .package-pid, section.main-section .main-content .content-data .packages .package .replantation-pid, section.main-section .main-content .content-data .packages .replantation .package-pid, section.main-section .main-content .content-data .packages .replantation .replantation-pid, section.main-section .main-content .content-data .replantations .package .package-pid, section.main-section .main-content .content-data .replantations .package .replantation-pid, section.main-section .main-content .content-data .replantations .replantation .package-pid, section.main-section .main-content .content-data .replantations .replantation .replantation-pid {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
-section.main-section .main-content .content-data .packages .package .package-pid .pid {
+section.main-section .main-content .content-data .packages .package .package-pid .pid, section.main-section .main-content .content-data .packages .package .replantation-pid .pid, section.main-section .main-content .content-data .packages .replantation .package-pid .pid, section.main-section .main-content .content-data .packages .replantation .replantation-pid .pid, section.main-section .main-content .content-data .replantations .package .package-pid .pid, section.main-section .main-content .content-data .replantations .package .replantation-pid .pid, section.main-section .main-content .content-data .replantations .replantation .package-pid .pid, section.main-section .main-content .content-data .replantations .replantation .replantation-pid .pid {
   display: flex;
   align-items: center;
 }
-section.main-section .main-content .content-data .packages .package .package-pid .pid .see-chain {
+section.main-section .main-content .content-data .packages .package .package-pid .pid .see-chain, section.main-section .main-content .content-data .packages .package .replantation-pid .pid .see-chain, section.main-section .main-content .content-data .packages .replantation .package-pid .pid .see-chain, section.main-section .main-content .content-data .packages .replantation .replantation-pid .pid .see-chain, section.main-section .main-content .content-data .replantations .package .package-pid .pid .see-chain, section.main-section .main-content .content-data .replantations .package .replantation-pid .pid .see-chain, section.main-section .main-content .content-data .replantations .replantation .package-pid .pid .see-chain, section.main-section .main-content .content-data .replantations .replantation .replantation-pid .pid .see-chain {
   cursor: pointer;
   border: 1px solid #E8EBF1;
   border-radius: 5px;
   padding: 5px 10px;
   margin-left: 45px;
 }
-section.main-section .main-content .content-data .packages .package .package-pid .pid .see-chain img {
+section.main-section .main-content .content-data .packages .package .package-pid .pid .see-chain img, section.main-section .main-content .content-data .packages .package .replantation-pid .pid .see-chain img, section.main-section .main-content .content-data .packages .replantation .package-pid .pid .see-chain img, section.main-section .main-content .content-data .packages .replantation .replantation-pid .pid .see-chain img, section.main-section .main-content .content-data .replantations .package .package-pid .pid .see-chain img, section.main-section .main-content .content-data .replantations .package .replantation-pid .pid .see-chain img, section.main-section .main-content .content-data .replantations .replantation .package-pid .pid .see-chain img, section.main-section .main-content .content-data .replantations .replantation .replantation-pid .pid .see-chain img {
   padding-left: 10px;
 }
-section.main-section .main-content .content-data .packages .package .package-pid .pid .active-package {
+section.main-section .main-content .content-data .packages .package .package-pid .pid .active-package, section.main-section .main-content .content-data .packages .package .replantation-pid .pid .active-package, section.main-section .main-content .content-data .packages .replantation .package-pid .pid .active-package, section.main-section .main-content .content-data .packages .replantation .replantation-pid .pid .active-package, section.main-section .main-content .content-data .replantations .package .package-pid .pid .active-package, section.main-section .main-content .content-data .replantations .package .replantation-pid .pid .active-package, section.main-section .main-content .content-data .replantations .replantation .package-pid .pid .active-package, section.main-section .main-content .content-data .replantations .replantation .replantation-pid .pid .active-package {
   font-weight: 700;
 }
-section.main-section .main-content .content-data .packages .package .package-pid .see-details {
+section.main-section .main-content .content-data .packages .package .package-pid .see-details, section.main-section .main-content .content-data .packages .package .replantation-pid .see-details, section.main-section .main-content .content-data .packages .replantation .package-pid .see-details, section.main-section .main-content .content-data .packages .replantation .replantation-pid .see-details, section.main-section .main-content .content-data .replantations .package .package-pid .see-details, section.main-section .main-content .content-data .replantations .package .replantation-pid .see-details, section.main-section .main-content .content-data .replantations .replantation .package-pid .see-details, section.main-section .main-content .content-data .replantations .replantation .replantation-pid .see-details {
   cursor: pointer;
 }
-section.main-section .main-content .content-data .packages .package .package-details {
+section.main-section .main-content .content-data .packages .package .package-details, section.main-section .main-content .content-data .packages .package .replantation-details, section.main-section .main-content .content-data .packages .replantation .package-details, section.main-section .main-content .content-data .packages .replantation .replantation-details, section.main-section .main-content .content-data .replantations .package .package-details, section.main-section .main-content .content-data .replantations .package .replantation-details, section.main-section .main-content .content-data .replantations .replantation .package-details, section.main-section .main-content .content-data .replantations .replantation .replantation-details {
   margin-top: 10px;
 }
-section.main-section .main-content .content-data .packages .package .package-details .package-entity div {
+section.main-section .main-content .content-data .packages .package .package-details .package-entity div, section.main-section .main-content .content-data .packages .package .package-details .replantation-entity div, section.main-section .main-content .content-data .packages .package .replantation-details .package-entity div, section.main-section .main-content .content-data .packages .package .replantation-details .replantation-entity div, section.main-section .main-content .content-data .packages .replantation .package-details .package-entity div, section.main-section .main-content .content-data .packages .replantation .package-details .replantation-entity div, section.main-section .main-content .content-data .packages .replantation .replantation-details .package-entity div, section.main-section .main-content .content-data .packages .replantation .replantation-details .replantation-entity div, section.main-section .main-content .content-data .replantations .package .package-details .package-entity div, section.main-section .main-content .content-data .replantations .package .package-details .replantation-entity div, section.main-section .main-content .content-data .replantations .package .replantation-details .package-entity div, section.main-section .main-content .content-data .replantations .package .replantation-details .replantation-entity div, section.main-section .main-content .content-data .replantations .replantation .package-details .package-entity div, section.main-section .main-content .content-data .replantations .replantation .package-details .replantation-entity div, section.main-section .main-content .content-data .replantations .replantation .replantation-details .package-entity div, section.main-section .main-content .content-data .replantations .replantation .replantation-details .replantation-entity div {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
-section.main-section .main-content .content-data .packages .package .package-details .package-entity .description {
+section.main-section .main-content .content-data .packages .package .package-details .package-entity .description, section.main-section .main-content .content-data .packages .package .package-details .replantation-entity .description, section.main-section .main-content .content-data .packages .package .replantation-details .package-entity .description, section.main-section .main-content .content-data .packages .package .replantation-details .replantation-entity .description, section.main-section .main-content .content-data .packages .replantation .package-details .package-entity .description, section.main-section .main-content .content-data .packages .replantation .package-details .replantation-entity .description, section.main-section .main-content .content-data .packages .replantation .replantation-details .package-entity .description, section.main-section .main-content .content-data .packages .replantation .replantation-details .replantation-entity .description, section.main-section .main-content .content-data .replantations .package .package-details .package-entity .description, section.main-section .main-content .content-data .replantations .package .package-details .replantation-entity .description, section.main-section .main-content .content-data .replantations .package .replantation-details .package-entity .description, section.main-section .main-content .content-data .replantations .package .replantation-details .replantation-entity .description, section.main-section .main-content .content-data .replantations .replantation .package-details .package-entity .description, section.main-section .main-content .content-data .replantations .replantation .package-details .replantation-entity .description, section.main-section .main-content .content-data .replantations .replantation .replantation-details .package-entity .description, section.main-section .main-content .content-data .replantations .replantation .replantation-details .replantation-entity .description {
   font-weight: 100;
   letter-spacing: -0.5px;
 }
-section.main-section .main-content .content-data .packages .package .package-details .package-entity .timestamp {
+section.main-section .main-content .content-data .packages .package .package-details .package-entity .timestamp, section.main-section .main-content .content-data .packages .package .package-details .replantation-entity .timestamp, section.main-section .main-content .content-data .packages .package .replantation-details .package-entity .timestamp, section.main-section .main-content .content-data .packages .package .replantation-details .replantation-entity .timestamp, section.main-section .main-content .content-data .packages .replantation .package-details .package-entity .timestamp, section.main-section .main-content .content-data .packages .replantation .package-details .replantation-entity .timestamp, section.main-section .main-content .content-data .packages .replantation .replantation-details .package-entity .timestamp, section.main-section .main-content .content-data .packages .replantation .replantation-details .replantation-entity .timestamp, section.main-section .main-content .content-data .replantations .package .package-details .package-entity .timestamp, section.main-section .main-content .content-data .replantations .package .package-details .replantation-entity .timestamp, section.main-section .main-content .content-data .replantations .package .replantation-details .package-entity .timestamp, section.main-section .main-content .content-data .replantations .package .replantation-details .replantation-entity .timestamp, section.main-section .main-content .content-data .replantations .replantation .package-details .package-entity .timestamp, section.main-section .main-content .content-data .replantations .replantation .package-details .replantation-entity .timestamp, section.main-section .main-content .content-data .replantations .replantation .replantation-details .package-entity .timestamp, section.main-section .main-content .content-data .replantations .replantation .replantation-details .replantation-entity .timestamp {
   font-weight: 500;
 }
-section.main-section .main-content .content-data .packages .package .package-details .package-entity .timestamp .timezone {
+section.main-section .main-content .content-data .packages .package .package-details .package-entity .timestamp .timezone, section.main-section .main-content .content-data .packages .package .package-details .replantation-entity .timestamp .timezone, section.main-section .main-content .content-data .packages .package .replantation-details .package-entity .timestamp .timezone, section.main-section .main-content .content-data .packages .package .replantation-details .replantation-entity .timestamp .timezone, section.main-section .main-content .content-data .packages .replantation .package-details .package-entity .timestamp .timezone, section.main-section .main-content .content-data .packages .replantation .package-details .replantation-entity .timestamp .timezone, section.main-section .main-content .content-data .packages .replantation .replantation-details .package-entity .timestamp .timezone, section.main-section .main-content .content-data .packages .replantation .replantation-details .replantation-entity .timestamp .timezone, section.main-section .main-content .content-data .replantations .package .package-details .package-entity .timestamp .timezone, section.main-section .main-content .content-data .replantations .package .package-details .replantation-entity .timestamp .timezone, section.main-section .main-content .content-data .replantations .package .replantation-details .package-entity .timestamp .timezone, section.main-section .main-content .content-data .replantations .package .replantation-details .replantation-entity .timestamp .timezone, section.main-section .main-content .content-data .replantations .replantation .package-details .package-entity .timestamp .timezone, section.main-section .main-content .content-data .replantations .replantation .package-details .replantation-entity .timestamp .timezone, section.main-section .main-content .content-data .replantations .replantation .replantation-details .package-entity .timestamp .timezone, section.main-section .main-content .content-data .replantations .replantation .replantation-details .replantation-entity .timestamp .timezone {
   color: #CDDFD0;
   font-size: 16px;
   font-weight: 100;
 }
-section.main-section .main-content .content-data .packages .package .package-details .transaction-property-key {
+section.main-section .main-content .content-data .packages .package .package-details .transaction-property-key, section.main-section .main-content .content-data .packages .package .replantation-details .transaction-property-key, section.main-section .main-content .content-data .packages .replantation .package-details .transaction-property-key, section.main-section .main-content .content-data .packages .replantation .replantation-details .transaction-property-key, section.main-section .main-content .content-data .replantations .package .package-details .transaction-property-key, section.main-section .main-content .content-data .replantations .package .replantation-details .transaction-property-key, section.main-section .main-content .content-data .replantations .replantation .package-details .transaction-property-key, section.main-section .main-content .content-data .replantations .replantation .replantation-details .transaction-property-key {
   width: 30%;
 }
-section.main-section .main-content .content-data .packages .package .package-details .transaction-property-value {
+section.main-section .main-content .content-data .packages .package .package-details .transaction-property-value, section.main-section .main-content .content-data .packages .package .replantation-details .transaction-property-value, section.main-section .main-content .content-data .packages .replantation .package-details .transaction-property-value, section.main-section .main-content .content-data .packages .replantation .replantation-details .transaction-property-value, section.main-section .main-content .content-data .replantations .package .package-details .transaction-property-value, section.main-section .main-content .content-data .replantations .package .replantation-details .transaction-property-value, section.main-section .main-content .content-data .replantations .replantation .package-details .transaction-property-value, section.main-section .main-content .content-data .replantations .replantation .replantation-details .transaction-property-value {
   width: 70%;
 }
-section.main-section .main-content .content-data .packages .package .package-details .transaction-property-key, section.main-section .main-content .content-data .packages .package .package-details .transaction-property-value {
+section.main-section .main-content .content-data .packages .package .package-details .transaction-property-key, section.main-section .main-content .content-data .packages .package .package-details .transaction-property-value, section.main-section .main-content .content-data .packages .package .replantation-details .transaction-property-key, section.main-section .main-content .content-data .packages .package .replantation-details .transaction-property-value, section.main-section .main-content .content-data .packages .replantation .package-details .transaction-property-key, section.main-section .main-content .content-data .packages .replantation .package-details .transaction-property-value, section.main-section .main-content .content-data .packages .replantation .replantation-details .transaction-property-key, section.main-section .main-content .content-data .packages .replantation .replantation-details .transaction-property-value, section.main-section .main-content .content-data .replantations .package .package-details .transaction-property-key, section.main-section .main-content .content-data .replantations .package .package-details .transaction-property-value, section.main-section .main-content .content-data .replantations .package .replantation-details .transaction-property-key, section.main-section .main-content .content-data .replantations .package .replantation-details .transaction-property-value, section.main-section .main-content .content-data .replantations .replantation .package-details .transaction-property-key, section.main-section .main-content .content-data .replantations .replantation .package-details .transaction-property-value, section.main-section .main-content .content-data .replantations .replantation .replantation-details .transaction-property-key, section.main-section .main-content .content-data .replantations .replantation .replantation-details .transaction-property-value {
   display: inline-block !important;
   float: left;
   word-break: break-all;
+}
+section.main-section .main-content .content-data .replantations .replantation .replantation-pid {
+  border-bottom: 1px solid #CDDFD0;
+  padding-bottom: 10px;
+}
+section.main-section .main-content .content-data .replantations .replantation .replantation-pid .pid {
+  font-size: 24px;
+  letter-spacing: -0.6px;
+}
+section.main-section .main-content .content-data .replantations .replantation .replantation-pid .replantation-ending-date {
+  font-size: 20px;
+  letter-spacing: -0.5px;
+  font-weight: 100;
+}
+section.main-section .main-content .content-data .replantations .replantation .replantation-details .replantation-entity {
+  font-size: 18px;
+  font-weight: 100;
+}
+section.main-section .main-content .content-data .replantations .replantation .replantation-details .replantation-entity .timestamp {
+  font-weight: 100;
+}
+section.main-section .main-content .content-data .replantations .replantation .replantation-details .replantation-entity div {
+  padding-top: 10px;
+  padding-bottom: 15px;
+}
+section.main-section .main-content .content-data .replantations .replantation .replantation-details .replantation-entity div:nth-child(1) {
+  border-bottom: 1px solid #EFF6F0;
+}
+section.main-section .main-content .content-data .replantations .replantation .replantation-details .replantation-bar {
+  position: relative;
+  border-radius: 9px;
+  height: 18px;
+  background-color: #94733A;
+  margin-top: 5px;
+}
+section.main-section .main-content .content-data .replantations .replantation .replantation-details .replantation-bar .trees-planted {
+  position: absolute;
+  left: 0;
+  top: 0;
+  border-radius: 9px;
+  height: 18px;
+  background-color: #65CB00;
 }
 section.main-section .main-content .content-data .transactions-data {
   width: 100%;
@@ -756,45 +839,6 @@ section.main-section .main-content .content-data .entity .entity-details .entity
   height: 600px;
 }
 
-.calendar-block .nav-search .nav-tabs li.dropdown .dropdown-menu {
-  background-color: #667176;
-  border: none;
-  margin-top: 0;
-}
-.calendar-block .nav-search .nav-tabs li.dropdown .dropdown-menu .dropdown-item {
-  background-color: #667176;
-  color: #FFFFFF;
-  font-weight: 100;
-}
-.calendar-block .nav-search .nav-tabs li.dropdown .dropdown-menu .dropdown-item i.current {
-  float: right;
-  display: inline-block;
-  width: 22px;
-  height: 22px;
-  -ms-transform: rotate(45deg);
-  /* IE 9 */
-  -webkit-transform: rotate(45deg);
-  /* Chrome, Safari, Opera */
-  transform: rotate(45deg);
-}
-.calendar-block .nav-search .nav-tabs li.dropdown .dropdown-menu .dropdown-item i.current:before {
-  content: "";
-  position: absolute;
-  width: 2px;
-  height: 12px;
-  background-color: #FFFFFF;
-  left: 21px;
-  top: -6px;
-}
-.calendar-block .nav-search .nav-tabs li.dropdown .dropdown-menu .dropdown-item i.current:after {
-  content: "";
-  position: absolute;
-  width: 5px;
-  height: 2px;
-  background-color: #FFFFFF;
-  left: 17px;
-  top: 4px;
-}
 .calendar-block .calendar {
   background-color: var(--white);
   display: grid;

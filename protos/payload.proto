@@ -12,6 +12,7 @@ message SCPayload {
         CREATE_ENTITY_BATCH = 2;
         MOVE_ENTITY_BATCH = 3;
         UPDATE_PACKAGE = 4;
+        CREATE_REPLANTATION = 5;
     }
 
     Action action = 1;
@@ -27,6 +28,7 @@ message SCPayload {
     CreateEntityBatchAction create_entity_batch = 5;
     MoveEntityBatchAction move_entity_batch = 6;
     UpdatePackageAction update_package = 7;
+    CreateReplantationAction create_replantation = 8;
 }
 
 
@@ -62,3 +64,6 @@ message MoveEntityBatchAction {
     string buyer = 8;
 }
 
+message CreateReplantationAction {
+    Replantation replantation = 1;
+}

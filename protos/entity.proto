@@ -76,11 +76,6 @@ message Entity {
 
 }
 
-message Location {
-  double lat = 1;
-  double long = 2;
-}
-
 message EntityBatch {
     // Current owner public_key
     // string owner_public_key = 1;
@@ -93,3 +88,19 @@ message EntityBatch {
     string id = 4;
 }
 
+
+message Replantation {
+    Package plot = 1;
+    uint64 trees_planted = 2;
+    string tree_specie = 3;
+    Agent user = 4;
+    Location location = 5;
+    uint64 beginning_date = 6;
+    uint64 ending_date = 7;
+    uint64 id = 8;
+}
+
+message Location {
+  double lat = 1;
+  double long = 2;
+}

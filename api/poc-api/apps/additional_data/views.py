@@ -8,6 +8,7 @@ from apps.additional_data.models import Village, Destination,  Parcel, TreeSpeci
 from apps.additional_data.serializers import (
     VillageSerializer, DestinationSerializer, ParcelSerializer, TreeSpecieSerializer, OvenTypeSerializer
 )
+from config.swagger_schema import CustomSchema
 
 
 class AdditionalDataViewSet(ViewSet):
@@ -17,6 +18,7 @@ class AdditionalDataViewSet(ViewSet):
     filter_backends = (SearchFilter,)
     search_fields = ('name',)
     permission_classes = [AllowAny]
+    schema = CustomSchema()
 
     @action(methods=['get'], detail=False, filter_backends=(SearchFilter,), search_fields=('name',))
     def villages(self, request):

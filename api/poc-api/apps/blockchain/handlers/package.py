@@ -24,18 +24,3 @@ class PackageHandler(HandlerBase):
         package = Package()
         package.ParseFromString(changes.value)
         LOG.debug(f"Package: {package.id} ({package.type})")
-        # r.table(Tbl.ENTITIES).insert(
-        #     {
-        #         "id": entity.id,
-        #         "ref": changes.address,
-        #         "generator_public_key": entity.generator_public_key,
-        #         "generation_timestamp": entity.generation_timestamp,
-        #         "assignment_timestamp": entity.assignment_timestamp or None,
-        #         "commodity_type": Entity.CommodityType.Name(entity.commodity_type),
-        #         "entity_batch_id": entity.entity_batch_id,
-        #         "finished_timestamp": entity.finished_timestamp or None,
-        #         "is_initialized": bool(entity.entity_batch_id),
-        #         "is_finished": entity.finished_timestamp > 0,
-        #     },
-        #     conflict="update",
-        # ).run()

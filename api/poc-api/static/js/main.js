@@ -3,6 +3,7 @@ const router = new VueRouter({
         {path: '/traceability', component: Packages},
         {path: '/traceability/:id', component: PackageDetails},
         {path: '/calendar', component: Calendar},
+        {path: '/replantation', component: Replantation},
         {path: '/', redirect: '/traceability'}
     ]
 });
@@ -13,6 +14,7 @@ const messages = {
         traceability: 'Traceability',
         recent_transactions: 'Recent transactions',
         calendar: 'Calendar',
+        replantation: 'Replantation',
         more: 'More',
         back: 'Back',
         map: 'Map',
@@ -64,7 +66,9 @@ const messages = {
             april: 'April', may: 'May', june: 'June',
             july: 'July', august: 'August', september: 'September',
             october: 'October', 'november': 'November', december: 'December'
-        }
+        },
+        trees_planted: 'Trees planted',
+        trees_cut: 'Trees cut',
     },
 };
 
