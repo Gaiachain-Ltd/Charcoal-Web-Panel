@@ -31,6 +31,13 @@ class TreeSpecie(models.Model):
 
 
 class OvenType(models.Model):
+    CUSTOM = 1
+    FIXED = 2
+    TYPE_CHOICES = (
+        (CUSTOM, _('Custom')),
+        (FIXED, _('Fixed')),
+    )
+    type = models.PositiveSmallIntegerField(default=CUSTOM, choices=TYPE_CHOICES)
     name = models.CharField(verbose_name=_('Name'), max_length=20)
     oven_height = models.PositiveIntegerField(verbose_name=_('Oven height'), null=True, blank=True)
     oven_width = models.PositiveIntegerField(verbose_name=_('Oven width'), null=True, blank=True)

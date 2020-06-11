@@ -19,6 +19,7 @@
         </div>
     </header>
     <section class="main-section" id="dashboard-main" >
+        {% csrf_token %}
         {% include 'includes/sidebar.html' %}
         <div class="main-content">
             <router-view></router-view>

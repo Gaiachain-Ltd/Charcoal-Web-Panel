@@ -1,4 +1,4 @@
-from rest_framework.viewsets import ViewSet
+from rest_framework.viewsets import ViewSet, ModelViewSet
 from rest_framework.filters import SearchFilter
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -21,56 +21,6 @@ class AdditionalDataViewSet(ViewSet):
     schema = CustomSchema()
 
     @action(methods=['get'], detail=False, filter_backends=(SearchFilter,), search_fields=('name',))
-    def villages(self, request):
-        queryset = Village.objects.all()
-        serializer = VillageSerializer(queryset, many=True)
-        data = {
-            'count': len(serializer.data),
-            'results': serializer.data
-        }
-        return Response(data)
-
-    @action(methods=['get'], detail=False, filter_backends=(SearchFilter,), search_fields=('name',))
-    def parcels(self, request):
-        queryset = Parcel.objects.all()
-        serializer = ParcelSerializer(queryset, many=True)
-        data = {
-            'count': len(serializer.data),
-            'results': serializer.data
-        }
-        return Response(data)
-
-    @action(methods=['get'], detail=False, filter_backends=(SearchFilter,), search_fields=('name',))
-    def destinations(self, request):
-        queryset = Destination.objects.all()
-        serializer = DestinationSerializer(queryset, many=True)
-        data = {
-            'count': len(serializer.data),
-            'results': serializer.data
-        }
-        return Response(data)
-
-    @action(methods=['get'], detail=False, filter_backends=(SearchFilter,), search_fields=('name',))
-    def tree_species(self, request):
-        queryset = TreeSpecie.objects.all()
-        serializer = TreeSpecieSerializer(queryset, many=True)
-        data = {
-            'count': len(serializer.data),
-            'results': serializer.data
-        }
-        return Response(data)
-
-    @action(methods=['get'], detail=False, filter_backends=(SearchFilter,), search_fields=('name',))
-    def oven_types(self, request):
-        queryset = OvenType.objects.all()
-        serializer = OvenTypeSerializer(queryset, many=True)
-        data = {
-            'count': len(serializer.data),
-            'results': serializer.data
-        }
-        return Response(data)
-
-    @action(methods=['get'], detail=False, filter_backends=(SearchFilter,), search_fields=('name',))
     def all_data(self, request):
         data = {
             'villages': VillageSerializer(Village.objects.all(), many=True).data,
@@ -80,3 +30,38 @@ class AdditionalDataViewSet(ViewSet):
             'oven_types': OvenTypeSerializer(OvenType.objects.all(), many=True).data,
         }
         return Response(data)
+
+
+class ParcelViewSet(ModelViewSet):
+    schema = CustomSchema()
+    filter_backends = (SearchFilter,)
+    serializer_class = ParcelSerializer
+    queryset = Parcel.objects.all()
+
+
+class VillageViewSet(ModelViewSet):
+    schema = CustomSchema()
+    filter_backends = (SearchFilter,)
+    serializer_class = VillageSerializer
+    queryset = Village.objects.all()
+
+
+class DestinationViewSet(ModelViewSet):
+    schema = CustomSchema()
+    filter_backends = (SearchFilter,)
+    serializer_class = DestinationSerializer
+    queryset = Destination.objects.all()
+
+
+class TreeSpecieViewSet(ModelViewSet):
+    schema = CustomSchema()
+    filter_backends = (SearchFilter,)
+    serializer_class = TreeSpecieSerializer
+    queryset = TreeSpecie.objects.all()
+
+
+class OvenTypeViewSet(ModelViewSet):
+    schema = CustomSchema()
+    filter_backends = (SearchFilter,)
+    serializer_class = OvenTypeSerializer
+    queryset = OvenType.objects.all()

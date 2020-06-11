@@ -30,4 +30,16 @@ class TreeSpecieSerializer(serializers.ModelSerializer):
 class OvenTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = OvenType
-        fields = ('id', 'name', 'oven_height', 'oven_width', 'oven_length',)
+        fields = ('id', 'name', 'oven_height', 'oven_width', 'oven_length', 'type',)
+
+    def validate(self, attrs):
+        if attrs.get('type'):
+            if attrs['type'] == OvenType.FIXED:
+                for key in ('oven_height', 'oven_width', 'oven_length'):
+                    if attrs[key] is None:
+                        attrs[key] = 1
+            else:
+                attrs['oven_height'] = None
+                attrs['oven_length'] = None
+                attrs['oven_width'] = None
+        return attrs

@@ -114,7 +114,6 @@ let Replantation = Vue.component('replantation', {
             let url = '/entities/replantation/?' + new URLSearchParams(params).toString();
             this.$http.get(url).then(function (response) {
                 this.replantations = response.data.results;
-                console.log(this.replantations);
                 this.$root.$data.loading = false;
             }).catch(function (err) {
                 this.$root.$data.loading = false;

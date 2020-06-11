@@ -4,6 +4,7 @@ const router = new VueRouter({
         {path: '/traceability/:id', component: PackageDetails},
         {path: '/calendar', component: Calendar},
         {path: '/replantation', component: Replantation},
+        {path: '/settings', component: Settings},
         {path: '/', redirect: '/traceability'}
     ]
 });
@@ -15,6 +16,7 @@ const messages = {
         recent_transactions: 'Recent transactions',
         calendar: 'Calendar',
         replantation: 'Replantation',
+        settings: 'Settings',
         more: 'More',
         back: 'Back',
         map: 'Map',
@@ -49,6 +51,8 @@ const messages = {
         length: 'Length',
         width: 'Width',
         carbonizer_id: 'Carbonizer\'s ID',
+        carbonization: 'Carbonization',
+        logging: 'Logging',
         timber_volume: 'Timber volume',
         weekday_names: {
             short: {
@@ -69,6 +73,22 @@ const messages = {
         },
         trees_planted: 'Trees planted',
         trees_cut: 'Trees cut',
+        parcel_list: 'Parcelle list',
+        tree_species_list: 'Tree species list',
+        village_list: 'Village list',
+        add_new: 'Add new',
+        edit: 'Edit',
+        delete: 'Delete',
+        name: 'Name',
+        code: 'Code',
+        delivery_destination: 'Delivery destination',
+        yes: 'Yes',
+        no: 'No',
+        modal: {
+            delete_item: 'Are you sure you want to delete this item?'
+        },
+        custom_measurements: 'Custom measurements',
+        fixed_measurements: 'Fixed measurements',
     },
 };
 
@@ -77,33 +97,18 @@ const i18n = new VueI18n({
     messages,
 });
 
+Vue.http.interceptors.push((request, next) => {
+    var csrftoken = document.querySelector('input[name="csrfmiddlewaretoken"]').getAttribute("value");
+    request.headers.set('X-CSRFTOKEN', csrftoken);
+    next()
+});
+
 const app = new Vue({
     delimiters: ['[[', ']]'],
     data: {
         currentPageName: '',
         staticPrefix: window.staticPrefix,
         loading: false,
-        //         actions: [],
-        //         action_types: {},
-        //         keyword: '',
-        //         active_package_type: 'harvest',
-        //         recent_limit: 5,
-        //         content_page: "recent_actions",
-        //         active_element: '',
-        //         active_subelement: '',
-        //         show_subelements: false,
-        //         package_keyword: '',
-        //         packages: [],
-        //         package_properties: {},
-        //         opened_package: '',
-        //         chain_list: '',
-        //         transactions: [],
-        //         transactions_per_page: 10,
-        //         transactions_next_page: '',
-        //         transactions_prev_page: '',
-        //         opened_transaction: '',
-        //         showTransactionFirstPage: false,
-        //         curr: new Date(),
     },
     //     computed: {
     //         formattedDate() {
