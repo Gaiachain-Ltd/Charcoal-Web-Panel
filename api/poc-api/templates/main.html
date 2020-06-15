@@ -32,5 +32,6 @@
 {% endblock content %}
 
 {% block extra_js %}
+    <script>window.mapboxToken = '{{ mapbox_token }}'</script>
     {{ block.super }}
 {% endblock extra_js %}

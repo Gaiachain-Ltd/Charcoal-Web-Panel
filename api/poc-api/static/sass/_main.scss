@@ -621,6 +621,11 @@ section.main-section {
                   align-items: center;
                   justify-content: space-between;
                 }
+                &:last-child {
+                  hr {
+                    border-top: 2px solid $border-color;
+                  }
+                }
                 .description {
                   font-weight: 100;
                   letter-spacing: -0.5px;

@@ -345,16 +345,20 @@ class SimpleEntitySerializer(serializers.ModelSerializer):
     timestamp_display = serializers.SerializerMethodField()
     description = serializers.CharField(source='web_description')
     timezone = serializers.SerializerMethodField()
+    location_display = serializers.SerializerMethodField()
 
     class Meta:
         model = Entity
-        fields = ('description', 'timestamp_display', 'timezone')
+        fields = ('description', 'timestamp_display', 'timezone', 'location_display')
 
     def get_timezone(self, obj):
         return datetime.fromtimestamp(obj.timestamp, tz=pytz.timezone(settings.TIME_ZONE)).strftime('%Z%z')
 
     def get_timestamp_display(self, obj):
         return datetime.fromtimestamp(obj.timestamp, tz=pytz.timezone(settings.TIME_ZONE)).strftime('%d/%m/%Y %H:%S')
+
+    def get_location_display(self, obj):
+        return [obj.location.y, obj.location.x]
 
 
 class PackagesSerializer(serializers.ModelSerializer):
@@ -563,7 +567,7 @@ class TruckPackageSerializer(serializers.ModelSerializer):
 
     def get_reception(self, obj):
         try:
-            return ReceptionSerializer(obj.package_entities.filter(action=Entity.RECEPTION)[2].reception).data
+            return ReceptionSerializer(obj.package_entities.get(action=Entity.RECEPTION).reception).data
         except Entity.DoesNotExist:
             return {}
 
@@ -686,11 +690,24 @@ class ReplantationListSerializer(serializers.ModelSerializer):
     trees_cut_dates_display = serializers.SerializerMethodField()
     ending_date_display = serializers.SerializerMethodField()
     pid = serializers.CharField(source='plot.pid')
+    entities = serializers.SerializerMethodField()
+    type_display = serializers.SerializerMethodField()
 
     class Meta:
         model = Replantation
         fields = ('pid', 'trees_planted', 'trees_cut', 'ending_date_display', 'trees_cut_dates_display',
-                  'trees_planted_dates_display',)
+                  'trees_planted_dates_display', 'entities', 'type_display')
+
+
+    def get_type_display(self, obj):
+        return 'replantation'
+
+    def get_entities(self, obj):
+        # add data for map component
+        return [{
+            'description': f'Planted {obj.trees_planted} tree{"s" if obj.trees_planted > 1 else ""}',
+            'location_display': [obj.location.y, obj.location.x]
+        }]
 
     def parse_timestamp_to_str_date(self, timestamp):
         return datetime.fromtimestamp(timestamp, tz=pytz.timezone(settings.TIME_ZONE)).strftime('%d/%m/%Y')

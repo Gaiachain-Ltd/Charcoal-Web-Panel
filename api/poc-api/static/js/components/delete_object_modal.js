@@ -47,7 +47,6 @@ let deleteObjectModal = Vue.component('delete-object-modal', {
     methods: {
         submit() {
             this.submitCallback(this.objectId);
-            console.log('submit')
         },
     }
 });

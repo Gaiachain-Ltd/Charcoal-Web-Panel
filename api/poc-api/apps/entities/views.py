@@ -527,37 +527,19 @@ class PackageViewSet(ViewSet, MultiSerializerMixin):
         ---
         """
         package = get_object_or_404(Package, pk=pk)
-        chain = []
+        queryset = self.queryset.filter(
+            Q(id=package.id) |  # matches self
+            Q(plot=package) |  # matches harvest's plot
+            Q(harvest=package) |  # matches truck's harvest
+            Q(trucks=package) |  # matches harvest's trucks
+            Q(plot_harvest=package) |  # matches plot's harvest
+            Q(plot_harvest__trucks=package) |  # matches plot's trucks
+            Q(harvest__plot=package) |  # matches truck's plot
+            Q(harvest__trucks=package)  # matches truck's other trucks
+        ).distinct().order_by('id')
+        chain = self.get_serializer(queryset, many=True)
 
-        # TODO Works, but looks ugly, need to refactor
-        if package.type == Package.HARVEST:
-            for entity in package.package_entities.all():
-                chain.append(ChainSeriazlier(entity).data)
-            if package.sac:
-                chain.append(ChainSeriazlier(package.sac.package_entities.first()).data)
-                if package.sac.lot:
-                    for entity in package.sac.lot.package_entities.exclude(action=Entity.INITIAL):
-                        chain.append(ChainSeriazlier(entity).data)
-        elif package.type == Package.SAC:
-            for harvest_entity in Entity.objects.filter(package__type=Package.HARVEST, package__sac=package):
-                chain.append(ChainSeriazlier(harvest_entity).data)
-            for entity in package.package_entities.all():
-                chain.append(ChainSeriazlier(entity).data)
-            if package.lot:
-                lot_data = ChainSeriazlier(package.lot.package_entities.exclude(action=Entity.INITIAL).first()).data
-                if lot_data:
-                    chain.append(lot_data)
-        elif package.type == Package.LOT:
-            sacs = Entity.objects.filter(package__type=Package.SAC, package__lot=package)
-            for sac_entity in sacs:
-                for harvest_entity in Entity.objects.filter(
-                        package__type=Package.HARVEST, package__sac=sac_entity.package
-                ):
-                    chain.append(ChainSeriazlier(harvest_entity).data)
-                chain.append(ChainSeriazlier(sac_entity).data)
-            for entity in package.package_entities.exclude(action=Entity.INITIAL):
-                chain.append(ChainSeriazlier(entity).data)
-        return Response(chain, status=status.HTTP_200_OK)
+        return Response(chain.data, status=status.HTTP_200_OK)
 
 
 class ReplantationViewSet(mixins.CreateModelMixin,

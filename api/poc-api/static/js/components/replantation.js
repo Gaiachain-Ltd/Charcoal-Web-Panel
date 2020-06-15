@@ -30,7 +30,7 @@ let Replantation = Vue.component('replantation', {
                     </ul>
                 </div>
             </div>
-            <div class="content-data">
+            <div class="content-data" v-if="activeTab == 'list'">
                 <div class="replantation-data">
                     <div class="replantations">
                         <div class="replantation" v-for="replantation in replantations">
@@ -60,6 +60,10 @@ let Replantation = Vue.component('replantation', {
                         </div>
                     </div>
                 </div>
+            </div v-if=>
+            <div class="content-data" v-if="activeTab == 'map'">
+                <package-map v-bind:package-id="0" v-bind:is-replantation="true" 
+                             v-bind:show-map-details="false" v-bind:replantations="replantations"></package-map>
             </div>
         </div>`,
     delimiters: ['[[', ']]'],
@@ -78,25 +82,29 @@ let Replantation = Vue.component('replantation', {
         this.yearsRange = this.generateYearsRange();
     },
     mounted: function () {
-        this.showReplantations();
+        this.updateData();
         document.getElementById('current-page-name').innerHTML = this.$t('replantation')
+    },
+    watch: {
+        selectedYear() {
+            this.updateData();
+        }
     },
     methods: {
         showMap: function (type) {
-            // this.$root.$data.loading = true;
             this.activeTab = 'map';
-            // this.getPackages(type)
         },
         nextYear() {
             this.selectedYear += 1;
-            this.showReplantations();
+            this.updateData();
         },
         previousYear() {
             this.selectedYear -= 1;
-            this.showReplantations();
+            this.updateData();
         },
         setYear(year) {
             this.selectedYear = year;
+            this.updateData();
             this.showReplantations();
         },
         generateYearsRange() {
@@ -107,9 +115,8 @@ let Replantation = Vue.component('replantation', {
             }
             return arr;
         },
-        showReplantations: function () {
+        updateData: function () {
             this.$root.$data.loading = true;
-            this.activeTab = 'list';
             let params = {'year': this.selectedYear};
             let url = '/entities/replantation/?' + new URLSearchParams(params).toString();
             this.$http.get(url).then(function (response) {
@@ -119,6 +126,9 @@ let Replantation = Vue.component('replantation', {
                 this.$root.$data.loading = false;
                 console.log(err);
             })
+        },
+        showReplantations: function () {
+            this.activeTab = 'list';
         },
     }
 });

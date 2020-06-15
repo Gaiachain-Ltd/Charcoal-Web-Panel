@@ -89,6 +89,7 @@ const messages = {
         },
         custom_measurements: 'Custom measurements',
         fixed_measurements: 'Fixed measurements',
+        supply_chain: 'Supply chain'
     },
 };
 
