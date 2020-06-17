@@ -63,7 +63,8 @@ class GaiachainTransactionHandler(TransactionHandler):
 
         if package_type == Package.HARVEST:
             plot = state.get_package(package.plot.id)
-            package.plot.CopyFrom(plot)
+            if plot:
+                package.plot.CopyFrom(plot)
         elif package_type == Package.TRUCK:
             harvest = state.get_package(package.harvest.id)
             package.harvest.CopyFrom(harvest)

@@ -639,14 +639,6 @@ section.main-section {
                   }
                 }
               }
-              .transaction-property-key {width: 30%}
-              .transaction-property-value {width: 70%}
-              .transaction-property-key, .transaction-property-value {
-                display: inline-block!important;
-                float: left;
-                word-break: break-all;
-              }
-
             }
           }
       }
@@ -780,6 +772,25 @@ section.main-section {
           }
           .entity-timestamp {
             float: right;
+            .blockchain-details {
+              width: 24px;
+              height: 24px;
+              background-image: url(../img/blockchain_button-icon.png);
+              background-image:
+                -webkit-image-set(
+                  url(../img/blockchain_button-icon.png) 1x,
+                  url(../img/blockchain_button-icon@2x.png) 2x
+              );
+              background-image:
+                image-set(
+                  url(../img/blockchain_button-icon.png) 1x,
+                  url(../img/blockchain_button-icon@2x.png) 2x
+              );
+              cursor: pointer;
+              display: inline-block;
+              position: relative;
+              top: 3px;
+            }
           }
         }
         .entity-details {
@@ -883,17 +894,74 @@ section.main-section {
     .modal-container {
       border-radius: 10px;
       width: 440px;
-      margin: 0px auto;
+      margin: 0 auto;
       padding: 20px 40px;
       background-color: $white-color;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
       transition: all 0.3s ease;
+      &.blockchain-details {
+        width: 1160px;
+        height: 100%;
+        overflow-y: scroll;
+        .modal-body {
+          text-align: left;
+          padding: 0 1rem;
+          .heading {
+            font-size: 20px;
+            .action-name {
+              margin: 0;
+              font-weight: 100;
+            }
+            .package-pid {
+              margin: 0;
+              font-weight: 600;
+            }
+            &.plot {
+              color: $plot-color;
+            }
+            &.harvest {
+              color: $harvest-color;
+            }
+            &.truck {
+              color: $truck-color;
+            }
+          }
+          .package-details {
+            font-size: 20px;
+            padding-top: 50px;
+            .package-property {
+              display: flex;
+              border-bottom: 1px solid $border-color;
+              margin-bottom: 15px;
+              .transaction-property-key {
+                flex: 0 0 25%;
+                font-weight: 600;
+                border-right: 1px solid $border-color;
+              }
+              .transaction-property-value {
+                flex: 0 0 75%;
+                font-weight: 100;
+                opacity: 0.5;
+                padding-left: 30px;
+              }
+              .transaction-property-key, .transaction-property-value {
+                display: flex;
+                word-break: break-all;
+                padding-top: 9px;
+                padding-bottom: 13px;
+                letter-spacing: -0.5px;
+              }
+            }
+          }
+        }
+      }
       .modal-header, .modal-body, .modal-footer  {
         border: none;
       }
       .modal-header {
         padding-top: 20px;
         padding-bottom: 25px;
+        font-size: 28px;
         .close {
           cursor: pointer;
           color: $black-color;

@@ -89,7 +89,10 @@ const messages = {
         },
         custom_measurements: 'Custom measurements',
         fixed_measurements: 'Fixed measurements',
-        supply_chain: 'Supply chain'
+        supply_chain: 'Supply chain',
+        blockchain_transaction: 'Blockchain transaction',
+        header_signature: 'Header signature',
+        payload: 'Payload',
     },
 };
 

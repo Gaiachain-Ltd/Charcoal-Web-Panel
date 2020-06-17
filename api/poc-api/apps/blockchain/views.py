@@ -10,9 +10,11 @@ from rest_framework.response import Response
 
 from google.protobuf.message import DecodeError
 from protos.payload_pb2 import SCPayload
+from config.swagger_schema import CustomSchema
 
 
 class TransactionListView(APIView):
+    schema = CustomSchema()
 
     def get(self, request):
         http = 'https' if request.is_secure() else 'http'

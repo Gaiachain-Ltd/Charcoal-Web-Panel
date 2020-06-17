@@ -24,7 +24,7 @@ let PackageMap = Vue.component('package-map', {
                                                  :key="key">
                                                 <div>
                                                     <span class="description">[[ entity.description ]]</span>
-                                                    <span class="timestamp">[[ entity.timestamp_display | trimTime ]]<span class="timezone" v-if="showTimezone"> [[ entity.timezone ]]</span></span>
+                                                    <span class="timestamp">[[ entity.timestamp_display | trimTime ]]</span>
                                                 </div>
                                                 <hr>
                                             </div>

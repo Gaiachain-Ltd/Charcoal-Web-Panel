@@ -44,6 +44,7 @@ class Entity(models.Model):
         related_name='package_entities', null=True
     )
     location = models.PointField(verbose_name=_('Location'), null=True, blank=True)
+    blockchain_batch_id = models.CharField(verbose_name=_('Blockchain Batch ID'), blank=True, max_length=128)
 
     def __str__(self):
         if self.package:
@@ -81,7 +82,7 @@ class Entity(models.Model):
         """
             Update Package entities.
         """
-        self.package.update_in_chain(self.user, self.build_proto())
+        self.package.update_in_chain(self)
 
     class Meta:
         ordering = ('-timestamp',)
@@ -139,26 +140,36 @@ class Package(models.Model):
 
     def add_to_chain(self, user, package_type, payload_type, **kwargs):
         proto = self._build_proto(package_type, **kwargs)
-        BlockTransactionFactory.send(
+        response = BlockTransactionFactory.send(
             protos=[proto],
             signer_key=user.private_key,
             payload_type=payload_type,
         )
+        self.assign_batch_id(response, self.package_entities.all())
         return self
 
-    def update_in_chain(self, user, entity):
+    def update_in_chain(self, entity):
         """
             Update Package entities.
         """
         data = {
             'id': self.pid,
-            'entity': entity
+            'entity': entity.build_proto()
         }
-        return BlockTransactionFactory.send(
+        response = BlockTransactionFactory.send(
             protos=[data],
-            signer_key=user.private_key,
+            signer_key=entity.user.private_key,
             payload_type=PayloadFactory.Types.UPDATE_PACKAGE,
         )
+        self.assign_batch_id(response, [entity])
+        return response
+
+    def assign_batch_id(self, response, entities):
+        if 'link' in response:
+            batch_id = response['link'].split('=')[1]
+            for entity in entities:
+                entity.blockchain_batch_id = batch_id
+                entity.save()
 
 
 class ActionAbstract(models.Model):

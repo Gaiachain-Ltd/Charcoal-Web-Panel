@@ -1,5 +1,8 @@
 import json
 import pytz
+import base64
+import requests
+import os
 
 from datetime import datetime
 
@@ -28,6 +31,9 @@ from apps.additional_data.exceptions import InvalidAgentRoleError
 from apps.entities.exceptions import PackageAlreadyExistException, EntityAlreadyExistException
 from apps.entities.utils import unix_to_datetime_tz
 from protos.entity_pb2 import Package as PackageProto
+
+from google.protobuf.message import DecodeError
+from protos.payload_pb2 import SCPayload
 
 
 class VillageSerializer(serializers.ModelSerializer):
@@ -376,10 +382,36 @@ class PackagesSerializer(serializers.ModelSerializer):
 class EntityDetailsSerializer(SimpleEntitySerializer):
     location_display = serializers.SerializerMethodField()
     action_display = serializers.CharField(source='get_action_display')
+    blockchain_details = serializers.SerializerMethodField()
 
     class Meta:
         model = Entity
-        fields = ('description', 'timestamp_display', 'timezone', 'action_display', 'user_id', 'location_display')
+        fields = ('description', 'timestamp_display', 'timezone', 'action_display', 'user_id', 'location_display', 'blockchain_details')
+
+    def get_blockchain_details(self, obj):
+        if obj.blockchain_batch_id:
+            request = self.context['request']
+            http = 'https' if request.is_secure() else 'http'
+            r = requests.get(
+                f"{http}://{os.environ.get('API_HOST')}:{os.environ.get('API_PORT')}/batches/{obj.blockchain_batch_id}")
+            try:
+                transaction = r.json()['data']['transactions'][0]
+                payload = base64.b64decode(transaction['payload'])
+                try:
+                    t = SCPayload()
+                    t.ParseFromString(payload)
+                    payload = str(t).replace('\n', '</br>')
+                    if t.timestamp:
+                        readable_timestamp = self.get_timestamp_display(t)
+                        payload = payload.replace(str(t.timestamp), readable_timestamp)
+                    transaction['payload'] = payload
+                except DecodeError:
+                    transaction['payload'] = 'System transaction'
+            except (KeyError, IndexError):
+                transaction = {}
+
+            return transaction
+        return {}
 
     def get_location_display(self, obj):
         # TODO: add degree minute second format
@@ -502,12 +534,16 @@ class PackageOvenSerializer(serializers.ModelSerializer):
 
     def get_carbonization_beginning(self, obj):
         if obj.carbonization_beginning:
-            return CarbonizationBeginningSerializer(obj.carbonization_beginning).data
+            return CarbonizationBeginningSerializer(
+                obj.carbonization_beginning,
+                context=self.context).data
         return {}
 
     def get_carbonization_ending(self, obj):
         if obj.carbonization_ending:
-            return CarbonizationEndingSerializer(obj.carbonization_ending).data
+            return CarbonizationEndingSerializer(
+                obj.carbonization_ending,
+                context=self.context).data
         return {}
 
 
@@ -524,13 +560,16 @@ class PlotPackageSerializer(serializers.ModelSerializer):
     def get_logging_beginning(self, obj):
         try:
             return LoggingBeginningSerializer(
-                obj.package_entities.get(action=Entity.LOGGING_BEGINNING).loggingbeginning).data
+                obj.package_entities.get(action=Entity.LOGGING_BEGINNING).loggingbeginning,
+                context=self.context).data
         except Entity.DoesNotExist:
             return {}
 
     def get_logging_ending(self, obj):
         try:
-            return LoggingEndingSerializer(obj.package_entities.get(action=Entity.LOGGING_ENDING).loggingending).data
+            return LoggingEndingSerializer(
+                obj.package_entities.get(action=Entity.LOGGING_ENDING).loggingending,
+                context=self.context).data
         except Entity.DoesNotExist:
             return {}
 
@@ -546,7 +585,7 @@ class HarvestPackageSerializer(serializers.ModelSerializer):
         return PackageOvenSerializer(Oven.objects.filter(
             Q(carbonization_beginning__entity__package_id=obj.id) |
             Q(carbonization_ending__entity__package_id=obj.id)
-        ).order_by('oven_id'), many=True).data
+        ).order_by('oven_id'), many=True, context=self.context).data
 
 
 class TruckPackageSerializer(serializers.ModelSerializer):
@@ -561,13 +600,17 @@ class TruckPackageSerializer(serializers.ModelSerializer):
 
     def get_loading_transport(self, obj):
         try:
-            return LoadingTransportSerializer(obj.package_entities.get(action=Entity.LOADING_TRANSPORT).loadingtransport).data
+            return LoadingTransportSerializer(
+                obj.package_entities.get(action=Entity.LOADING_TRANSPORT).loadingtransport,
+                context=self.context).data
         except Entity.DoesNotExist:
             return {}
 
     def get_reception(self, obj):
         try:
-            return ReceptionSerializer(obj.package_entities.get(action=Entity.RECEPTION).reception).data
+            return ReceptionSerializer(
+                obj.package_entities.get(action=Entity.RECEPTION).reception,
+                context=self.context).data
         except Entity.DoesNotExist:
             return {}
 
@@ -591,17 +634,14 @@ class PackageDetailsSerializer(serializers.ModelSerializer):
             return ""
         return properties(obj)
 
-    @staticmethod
-    def _plot_properties(obj):
-        return PlotPackageSerializer(obj).data
+    def _plot_properties(self, obj):
+        return PlotPackageSerializer(obj, context=self.context).data
 
-    @staticmethod
-    def _harvest_properties(obj):
-        return HarvestPackageSerializer(obj).data
+    def _harvest_properties(self, obj):
+        return HarvestPackageSerializer(obj, context=self.context).data
 
-    @staticmethod
-    def _transport_properties(obj):
-        return TruckPackageSerializer(obj).data
+    def _transport_properties(self, obj):
+        return TruckPackageSerializer(obj, context=self.context).data
 
 
 class ChainSeriazlier(serializers.ModelSerializer):

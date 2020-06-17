@@ -15,7 +15,7 @@ class APIRequests:
             headers={"Content-Type": "application/octet-stream"},
         )
         response = urllib.request.urlopen(request)
+        data = json.load(response)
         if response.status == 202:
-            data = json.load(response)
             print(data)
-        return response.status
+        return data

@@ -28,7 +28,12 @@ let PackageDetails = Vue.component('package-details', {
                     <div class="entity" v-if="objectNotEmpty(loggingBeginning)">
                         <div class="entity-header">
                             <div class="entity-action">[[ loggingBeginning.entity.action_display ]]</div>
-                            <div class="entity-timestamp">[[ loggingBeginning.entity.timestamp_display ]]</div>
+                            <div class="entity-timestamp">[[ loggingBeginning.entity.timestamp_display ]] 
+                                <div class="blockchain-details" 
+                                     @click="openModal(loggingBeginning.entity.action_display, loggingBeginning.entity.blockchain_details)" 
+                                     v-if="loggingBeginning.entity.blockchain_details">
+                                 </div>
+                            </div>
                         </div>
                         <div class="entity-details">
                             <div class="entity-property">
@@ -56,7 +61,12 @@ let PackageDetails = Vue.component('package-details', {
                     <div class="entity" v-if="objectNotEmpty(loggingEnding)">
                         <div class="entity-header">
                             <div class="entity-action">[[ loggingEnding.entity.action_display ]]</div>
-                            <div class="entity-timestamp">[[ loggingEnding.entity.timestamp_display ]]</div>
+                            <div class="entity-timestamp">[[ loggingEnding.entity.timestamp_display ]] 
+                                <div class="blockchain-details" 
+                                     @click="openModal(loggingEnding.entity.action_display, loggingEnding.entity.blockchain_details)" 
+                                     v-if="loggingEnding.entity.blockchain_details">
+                                 </div>
+                            </div>
                         </div>
                         <div class="entity-details">
                             <div class="entity-property">
@@ -88,7 +98,12 @@ let PackageDetails = Vue.component('package-details', {
                         <div class="entity" v-if="objectNotEmpty(oven.carbonization_beginning)">
                             <div class="entity-header">
                                 <div class="entity-action">[[ oven.carbonization_beginning.entity.action_display ]]</div>
-                                <div class="entity-timestamp">[[ oven.carbonization_beginning.entity.timestamp_display ]]</div>
+                                <div class="entity-timestamp">[[ oven.carbonization_beginning.entity.timestamp_display ]] 
+                                    <div class="blockchain-details" 
+                                         @click="openModal(oven.carbonization_beginning.entity.action_display, oven.carbonization_beginning.entity.blockchain_details)" 
+                                         v-if="oven.carbonization_beginning.entity.blockchain_details">
+                                    </div>
+                                </div>
                             </div>
                             <div class="entity-details">
                                 <div class="entity-property">
@@ -120,7 +135,12 @@ let PackageDetails = Vue.component('package-details', {
                         <div class="entity" v-if="objectNotEmpty(oven.carbonization_ending)">
                             <div class="entity-header">
                                 <div class="entity-action">[[ oven.carbonization_ending.entity.action_display ]]</div>
-                                <div class="entity-timestamp">[[ oven.carbonization_ending.entity.timestamp_display ]]</div>
+                                <div class="entity-timestamp">[[ oven.carbonization_ending.entity.timestamp_display ]] 
+                                    <div class="blockchain-details" 
+                                         @click="openModal(oven.carbonization_ending.entity.action_display, oven.carbonization_ending.entity.blockchain_details)" 
+                                         v-if="oven.carbonization_ending.entity.blockchain_details">
+                                    </div>
+                                </div>
                             </div>
                             <div class="entity-details">
                                 <div class="entity-property">
@@ -154,7 +174,12 @@ let PackageDetails = Vue.component('package-details', {
                         <div class="entity">
                             <div class="entity-header">
                                 <div class="entity-action">[[ loadingTransport.entity.action_display ]]</div>
-                                <div class="entity-timestamp">[[ loadingTransport.entity.timestamp_display ]]</div>
+                                <div class="entity-timestamp">[[ loadingTransport.entity.timestamp_display ]] 
+                                    <div class="blockchain-details" 
+                                         @click="openModal(loadingTransport.entity.action_display, loadingTransport.entity.blockchain_details)" 
+                                         v-if="loadingTransport.entity.blockchain_details">
+                                    </div>
+                                </div>
                             </div>
                             <div class="entity-details">
                                 <div class="entity-property">
@@ -191,7 +216,12 @@ let PackageDetails = Vue.component('package-details', {
                         <div class="entity">
                             <div class="entity-header">
                                 <div class="entity-action">[[ reception.entity.action_display ]]</div>
-                                <div class="entity-timestamp">[[ reception.entity.timestamp_display ]]</div>
+                                <div class="entity-timestamp">[[ reception.entity.timestamp_display ]] 
+                                    <div class="blockchain-details" 
+                                         @click="openModal(reception.entity.action_display, reception.entity.blockchain_details)" 
+                                         v-if="reception.entity.blockchain_details">
+                                    </div>
+                                </div>
                             </div>
                             <div class="entity-details">
                                 <div class="entity-property">
@@ -250,6 +280,10 @@ let PackageDetails = Vue.component('package-details', {
             <div v-if="activeTab == 'map'">
                 <package-map v-bind:package-id="package.id"></package-map>
             </div>
+            <blockchain-transaction-modal v-if="isModalOpen" @close="closeModal()" v-bind:action="modalAction" 
+                                          v-bind:package-pid="package.pid" v-bind:package-type="package.type_display" 
+                                          v-bind:transaction="modalTransaction">
+            </blockchain-transaction-modal>
         </div>`,
     delimiters: ['[[', ']]'],
     data() {
@@ -261,13 +295,27 @@ let PackageDetails = Vue.component('package-details', {
             loggingEnding: {},
             loadingTransport: {},
             reception: {},
-            ovens: []
+            ovens: [],
+            isModalOpen: false,
+            modalAction: '',
+            modalTransaction: ''
         }
     },
     mounted: function () {
         this.showPackageDetails();
     },
     methods: {
+        openModal: function(action, transaction) {
+            this.modalAction = action;
+            this.modalTransaction = transaction;
+            console.log(transaction)
+            this.isModalOpen = true;
+        },
+        closeModal: function() {
+            this.isModalOpen = false;
+            this.modalAction = '';
+            this.modalTransaction = '';
+        },
         objectNotEmpty: function (obj) {
             return Object.keys(obj).length !== 0
         },
@@ -288,7 +336,6 @@ let PackageDetails = Vue.component('package-details', {
                     this.activeSubTab = `oven_${this.ovens[0].oven_id}`
                 }
                 this.$root.$data.loading = false;
-                this.showMap()
             }).catch(function (err) {
                 this.$root.$data.loading = false;
                 console.log(err);
