@@ -42,7 +42,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('email', 'password', 'token', 'role')
+        fields = ('email', 'password', 'token', 'role', 'first_name', 'last_name', 'function', 'contact')
 
     @transaction.atomic
     def create(self, validated_data):
@@ -61,6 +61,10 @@ class TokenObtainPairSerializer(CoreTokenObtainPairSerializer):
         data = {
             'email': self.user.email,
             'role': RoleSerializer(instance=self.user.role).data,
+            'full_name': self.user.get_full_name(),
+            'contact': self.user.contact,
+            'code': self.user.code,
+            'function': self.user.get_function_display(),
             **data
         }
         return data

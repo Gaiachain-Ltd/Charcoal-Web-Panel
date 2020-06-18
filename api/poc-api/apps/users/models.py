@@ -17,6 +17,20 @@ class User(AbstractUser):
         'users.Role', verbose_name=_('Role'), related_name='users', on_delete=models.CASCADE, null=True
     )
 
+    PRESIDENT = 'AD'
+    VICE_PRESIDENT = 'KP'
+    ACCOUNTANT = 'PM'
+    CARBONIZER = 'NA'
+    FUNCTION_CHOICES = (
+        (PRESIDENT, _('President Malebi')),
+        (VICE_PRESIDENT, _('Vice President')),
+        (ACCOUNTANT, _('Malebi\'s Rep - Accountant')),
+        (CARBONIZER, _('Carbonizer')),
+    )
+    function = models.CharField(verbose_name=_('Function'), max_length=2, choices=FUNCTION_CHOICES, blank=True)
+    code = models.CharField(verbose_name=_('Code'), max_length=8, blank=True)
+    contact = models.CharField(verbose_name=_('Contact'), max_length=16, blank=True)
+
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
     objects = UserManager()
@@ -59,6 +73,9 @@ class User(AbstractUser):
             self.public_key = swt.context.get_public_key(private_key).as_hex()
 
         super().save(*args, **kwargs)
+        if not self.code:
+            self.code = f'AM{self.id:03d}{self.function}'
+            self.save()
 
     def get_proto(self):
         return self._build_proto()

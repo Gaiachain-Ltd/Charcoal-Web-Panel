@@ -46,7 +46,7 @@ let PackageDetails = Vue.component('package-details', {
                             </div>
                             <div class="entity-property">
                                 <div class="entity-property-name">[[ $t('user_id') ]]</div>
-                                <div class="entity-property-value">[[ loggingBeginning.entity.user_id ]]</div>
+                                <div class="entity-property-value">[[ loggingBeginning.entity.user_code ]]</div>
                             </div>
                             <div class="entity-property">
                                 <div class="entity-property-name">[[ $t('village') ]]</div>
@@ -116,7 +116,7 @@ let PackageDetails = Vue.component('package-details', {
                                 </div>
                                 <div class="entity-property">
                                     <div class="entity-property-name">[[ $t('carbonizer_id') ]]</div>
-                                    <div class="entity-property-value">[[ oven.carbonization_beginning.entity.user_id ]]</div>
+                                    <div class="entity-property-value">[[ oven.carbonization_beginning.entity.user_code ]]</div>
                                 </div>
                                 <div class="entity-property">
                                     <div class="entity-property-name">[[ $t('oven_type') ]]</div>
