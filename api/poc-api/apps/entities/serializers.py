@@ -710,7 +710,7 @@ class ReplantationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Replantation
-        fields = '__all__'
+        exclude = ('blockchain_batch_id', 'user')
 
     def validate_location(self, data):
         if type(data) != dict:
@@ -719,6 +719,7 @@ class ReplantationSerializer(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data):
+        validated_data['user'] = self.context['request'].user
         obj = super().create(validated_data)
         obj.add_to_chain(PayloadFactory.Types.CREATE_REPLANTATION)
         return obj
@@ -732,11 +733,37 @@ class ReplantationListSerializer(serializers.ModelSerializer):
     pid = serializers.CharField(source='plot.pid')
     entities = serializers.SerializerMethodField()
     type_display = serializers.SerializerMethodField()
+    blockchain_details = serializers.SerializerMethodField()
 
     class Meta:
         model = Replantation
         fields = ('pid', 'trees_planted', 'trees_cut', 'ending_date_display', 'trees_cut_dates_display',
-                  'trees_planted_dates_display', 'entities', 'type_display')
+                  'trees_planted_dates_display', 'entities', 'type_display', 'blockchain_details')
+
+    def get_blockchain_details(self, obj):
+        if obj.blockchain_batch_id:
+            request = self.context['request']
+            http = 'https' if request.is_secure() else 'http'
+            r = requests.get(
+                f"{http}://{os.environ.get('API_HOST')}:{os.environ.get('API_PORT')}/batches/{obj.blockchain_batch_id}")
+            try:
+                transaction = r.json()['data']['transactions'][0]
+                payload = base64.b64decode(transaction['payload'])
+                try:
+                    t = SCPayload()
+                    t.ParseFromString(payload)
+                    payload = str(t).replace('\n', '</br>')
+                    if t.timestamp:
+                        readable_timestamp = self.parse_timestamp_to_str_datetime(t.timestamp)
+                        payload = payload.replace(str(t.timestamp), readable_timestamp)
+                    transaction['payload'] = payload
+                except DecodeError:
+                    transaction['payload'] = 'System transaction'
+            except (KeyError, IndexError):
+                transaction = {}
+
+            return transaction
+        return {}
 
 
     def get_type_display(self, obj):
@@ -752,8 +779,11 @@ class ReplantationListSerializer(serializers.ModelSerializer):
     def parse_timestamp_to_str_date(self, timestamp):
         return datetime.fromtimestamp(timestamp, tz=pytz.timezone(settings.TIME_ZONE)).strftime('%d/%m/%Y')
 
+    def parse_timestamp_to_str_datetime(self, timestamp):
+        return datetime.fromtimestamp(timestamp, tz=pytz.timezone(settings.TIME_ZONE)).strftime('%d/%m/%Y %H:%S')
+
     def get_ending_date_display(self, obj):
-        return datetime.fromtimestamp(obj.ending_date, tz=pytz.timezone(settings.TIME_ZONE)).strftime('%d/%m/%Y %H:%S')
+        return self.parse_timestamp_to_str_datetime(obj.ending_date)
 
     def get_trees_cut(self, obj):
         try:

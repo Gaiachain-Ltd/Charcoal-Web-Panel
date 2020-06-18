@@ -418,6 +418,7 @@ class Replantation(models.Model):
     beginning_date = models.PositiveIntegerField(verbose_name=_('Beginning date'))
     ending_date = models.PositiveIntegerField(verbose_name=_('Ending date'))
     location = models.PointField(verbose_name=_('Location'))
+    blockchain_batch_id = models.CharField(verbose_name=_('Blockchain Batch ID'), blank=True, max_length=128)
 
     def _build_proto(self):
         return ReplantationProto(**{
@@ -436,9 +437,16 @@ class Replantation(models.Model):
 
     def add_to_chain(self, payload_type):
         proto = self._build_proto()
-        BlockTransactionFactory.send(
+        response = BlockTransactionFactory.send(
             protos=[proto],
             signer_key=self.user.private_key,
             payload_type=payload_type,
         )
+        self.assign_batch_id(response)
         return self
+
+    def assign_batch_id(self, response):
+        if 'link' in response:
+            batch_id = response['link'].split('=')[1]
+            self.blockchain_batch_id = batch_id
+            self.save()

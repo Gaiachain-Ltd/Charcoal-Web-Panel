@@ -39,7 +39,12 @@ let Replantation = Vue.component('replantation', {
                                     <span>[[ replantation.pid ]]</span>
                                 </div>
                                 <div class="replantation-ending-date">
-                                    <span>[[ replantation.ending_date_display ]]</span>
+                                    <span>[[ replantation.ending_date_display ]] 
+                                        <div class="blockchain-details" 
+                                             @click="openModal(replantation.pid, replantation.blockchain_details)" 
+                                             v-if="objectNotEmpty(replantation.blockchain_details)">
+                                        </div>
+                                    </span>
                                 </div>
                             </div>
                             <div class="replantation-details">
@@ -60,11 +65,15 @@ let Replantation = Vue.component('replantation', {
                         </div>
                     </div>
                 </div>
-            </div v-if=>
+            </div>
             <div class="content-data" v-if="activeTab == 'map'">
                 <package-map v-bind:package-id="0" v-bind:is-replantation="true" 
                              v-bind:show-map-details="false" v-bind:replantations="replantations"></package-map>
             </div>
+            <blockchain-transaction-modal v-if="isModalOpen" @close="closeModal()" v-bind:action="$t('replantation')" 
+                                          v-bind:package-pid="modalPid" package-type="harvest" 
+                                          v-bind:transaction="modalTransaction">
+            </blockchain-transaction-modal>
         </div>`,
     delimiters: ['[[', ']]'],
     data() {
@@ -73,7 +82,10 @@ let Replantation = Vue.component('replantation', {
             selectedYear: null,
             replantations: [],
             yearsRange: [],
-            activeTab: 'list'
+            activeTab: 'list',
+            isModalOpen: false,
+            modalTransaction: {},
+            modalPid: ''
         }
     },
     created() {
@@ -82,7 +94,6 @@ let Replantation = Vue.component('replantation', {
         this.yearsRange = this.generateYearsRange();
     },
     mounted: function () {
-        this.updateData();
         document.getElementById('current-page-name').innerHTML = this.$t('replantation')
     },
     watch: {
@@ -91,20 +102,30 @@ let Replantation = Vue.component('replantation', {
         }
     },
     methods: {
+        objectNotEmpty: function (obj) {
+            return Object.keys(obj).length !== 0
+        },
+        openModal: function(pid, transaction) {
+            this.modalPid = pid;
+            this.modalTransaction = transaction;
+            this.isModalOpen = true;
+        },
+        closeModal: function() {
+            this.isModalOpen = false;
+            this.modalPid = '';
+            this.modalTransaction = {};
+        },
         showMap: function (type) {
             this.activeTab = 'map';
         },
         nextYear() {
             this.selectedYear += 1;
-            this.updateData();
         },
         previousYear() {
             this.selectedYear -= 1;
-            this.updateData();
         },
         setYear(year) {
             this.selectedYear = year;
-            this.updateData();
             this.showReplantations();
         },
         generateYearsRange() {
@@ -116,6 +137,7 @@ let Replantation = Vue.component('replantation', {
             return arr;
         },
         updateData: function () {
+            console.log('update data')
             this.$root.$data.loading = true;
             let params = {'year': this.selectedYear};
             let url = '/entities/replantation/?' + new URLSearchParams(params).toString();

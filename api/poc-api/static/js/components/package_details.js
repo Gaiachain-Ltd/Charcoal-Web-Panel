@@ -31,7 +31,7 @@ let PackageDetails = Vue.component('package-details', {
                             <div class="entity-timestamp">[[ loggingBeginning.entity.timestamp_display ]] 
                                 <div class="blockchain-details" 
                                      @click="openModal(loggingBeginning.entity.action_display, loggingBeginning.entity.blockchain_details)" 
-                                     v-if="loggingBeginning.entity.blockchain_details">
+                                     v-if="objectNotEmpty(loggingBeginning.entity.blockchain_details)">
                                  </div>
                             </div>
                         </div>
@@ -64,7 +64,7 @@ let PackageDetails = Vue.component('package-details', {
                             <div class="entity-timestamp">[[ loggingEnding.entity.timestamp_display ]] 
                                 <div class="blockchain-details" 
                                      @click="openModal(loggingEnding.entity.action_display, loggingEnding.entity.blockchain_details)" 
-                                     v-if="loggingEnding.entity.blockchain_details">
+                                     v-if="objectNotEmpty(loggingEnding.entity.blockchain_details)">
                                  </div>
                             </div>
                         </div>
@@ -101,7 +101,7 @@ let PackageDetails = Vue.component('package-details', {
                                 <div class="entity-timestamp">[[ oven.carbonization_beginning.entity.timestamp_display ]] 
                                     <div class="blockchain-details" 
                                          @click="openModal(oven.carbonization_beginning.entity.action_display, oven.carbonization_beginning.entity.blockchain_details)" 
-                                         v-if="oven.carbonization_beginning.entity.blockchain_details">
+                                         v-if="objectNotEmpty(oven.carbonization_beginning.entity.blockchain_details)">
                                     </div>
                                 </div>
                             </div>
@@ -138,7 +138,7 @@ let PackageDetails = Vue.component('package-details', {
                                 <div class="entity-timestamp">[[ oven.carbonization_ending.entity.timestamp_display ]] 
                                     <div class="blockchain-details" 
                                          @click="openModal(oven.carbonization_ending.entity.action_display, oven.carbonization_ending.entity.blockchain_details)" 
-                                         v-if="oven.carbonization_ending.entity.blockchain_details">
+                                         v-if="objectNotEmpty(oven.carbonization_ending.entity.blockchain_details)">
                                     </div>
                                 </div>
                             </div>
@@ -177,7 +177,7 @@ let PackageDetails = Vue.component('package-details', {
                                 <div class="entity-timestamp">[[ loadingTransport.entity.timestamp_display ]] 
                                     <div class="blockchain-details" 
                                          @click="openModal(loadingTransport.entity.action_display, loadingTransport.entity.blockchain_details)" 
-                                         v-if="loadingTransport.entity.blockchain_details">
+                                         v-if="objectNotEmpty(loadingTransport.entity.blockchain_details)">
                                     </div>
                                 </div>
                             </div>
@@ -219,7 +219,7 @@ let PackageDetails = Vue.component('package-details', {
                                 <div class="entity-timestamp">[[ reception.entity.timestamp_display ]] 
                                     <div class="blockchain-details" 
                                          @click="openModal(reception.entity.action_display, reception.entity.blockchain_details)" 
-                                         v-if="reception.entity.blockchain_details">
+                                         v-if="objectNotEmpty(reception.entity.blockchain_details)">
                                     </div>
                                 </div>
                             </div>
@@ -298,7 +298,7 @@ let PackageDetails = Vue.component('package-details', {
             ovens: [],
             isModalOpen: false,
             modalAction: '',
-            modalTransaction: ''
+            modalTransaction: {}
         }
     },
     mounted: function () {
@@ -308,13 +308,12 @@ let PackageDetails = Vue.component('package-details', {
         openModal: function(action, transaction) {
             this.modalAction = action;
             this.modalTransaction = transaction;
-            console.log(transaction)
             this.isModalOpen = true;
         },
         closeModal: function() {
             this.isModalOpen = false;
             this.modalAction = '';
-            this.modalTransaction = '';
+            this.modalTransaction = {};
         },
         objectNotEmpty: function (obj) {
             return Object.keys(obj).length !== 0

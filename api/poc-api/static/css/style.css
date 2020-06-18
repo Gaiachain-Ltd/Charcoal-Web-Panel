@@ -760,17 +760,6 @@ section.main-section .main-content .content-data .entity .entity-header .entity-
 section.main-section .main-content .content-data .entity .entity-header .entity-timestamp {
   float: right;
 }
-section.main-section .main-content .content-data .entity .entity-header .entity-timestamp .blockchain-details {
-  width: 24px;
-  height: 24px;
-  background-image: url(../img/blockchain_button-icon.png);
-  background-image: -webkit-image-set(url(../img/blockchain_button-icon.png) 1x, url(../img/blockchain_button-icon@2x.png) 2x);
-  background-image: image-set(url(../img/blockchain_button-icon.png) 1x, url(../img/blockchain_button-icon@2x.png) 2x);
-  cursor: pointer;
-  display: inline-block;
-  position: relative;
-  top: 3px;
-}
 section.main-section .main-content .content-data .entity .entity-details .entity-property {
   position: relative;
   padding-top: 15px;
@@ -807,6 +796,17 @@ section.main-section .main-content .content-data .entity .entity-details .entity
   background-image: url(../img/icon-warning.png);
   background-image: -webkit-image-set(url(../img/icon-warning.png) 1x, url(../img/icon-warning@2x.png) 2x);
   background-image: image-set(url(../img/icon-warning.png) 1x, url(../img/icon-warning@2x.png) 2x);
+}
+section.main-section .main-content .content-data .replantation .replantation-ending-date .blockchain-details, section.main-section .main-content .content-data .replantation .entity-timestamp .blockchain-details, section.main-section .main-content .content-data .entity .replantation-ending-date .blockchain-details, section.main-section .main-content .content-data .entity .entity-timestamp .blockchain-details {
+  width: 24px;
+  height: 24px;
+  background-image: url(../img/blockchain_button-icon.png);
+  background-image: -webkit-image-set(url(../img/blockchain_button-icon.png) 1x, url(../img/blockchain_button-icon@2x.png) 2x);
+  background-image: image-set(url(../img/blockchain_button-icon.png) 1x, url(../img/blockchain_button-icon@2x.png) 2x);
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  top: 3px;
 }
 
 #mapid {

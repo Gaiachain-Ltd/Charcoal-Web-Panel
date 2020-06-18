@@ -772,25 +772,6 @@ section.main-section {
           }
           .entity-timestamp {
             float: right;
-            .blockchain-details {
-              width: 24px;
-              height: 24px;
-              background-image: url(../img/blockchain_button-icon.png);
-              background-image:
-                -webkit-image-set(
-                  url(../img/blockchain_button-icon.png) 1x,
-                  url(../img/blockchain_button-icon@2x.png) 2x
-              );
-              background-image:
-                image-set(
-                  url(../img/blockchain_button-icon.png) 1x,
-                  url(../img/blockchain_button-icon@2x.png) 2x
-              );
-              cursor: pointer;
-              display: inline-block;
-              position: relative;
-              top: 3px;
-            }
           }
         }
         .entity-details {
@@ -840,6 +821,29 @@ section.main-section {
                   url(../img/icon-warning@2x.png) 2x
               );
             }
+          }
+        }
+      }
+      .replantation, .entity {
+        .replantation-ending-date, .entity-timestamp {
+          .blockchain-details {
+            width: 24px;
+            height: 24px;
+            background-image: url(../img/blockchain_button-icon.png);
+            background-image:
+              -webkit-image-set(
+                url(../img/blockchain_button-icon.png) 1x,
+                url(../img/blockchain_button-icon@2x.png) 2x
+            );
+            background-image:
+              image-set(
+                url(../img/blockchain_button-icon.png) 1x,
+                url(../img/blockchain_button-icon@2x.png) 2x
+            );
+            cursor: pointer;
+            display: inline-block;
+            position: relative;
+            top: 3px;
           }
         }
       }
