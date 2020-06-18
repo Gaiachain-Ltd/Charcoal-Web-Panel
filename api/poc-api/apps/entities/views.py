@@ -10,7 +10,6 @@ from rest_framework.viewsets import ViewSet, GenericViewSet
 from rest_framework import status, mixins
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated, AllowAny
 
 from apps.entities.models import Entity,  Package, Oven, Replantation
 from apps.entities.serializers import (
@@ -32,7 +31,6 @@ class EntityViewSet(ViewSet, MultiSerializerMixin):
     queryset = Entity.objects.all()
     pagination_class = LimitOffsetPagination
     schema = CustomSchema()
-    permission_classes = [AllowAny]
     serializer_class = EntityListSerializer
     custom_serializer_classes = {
         'new': EntitySerializer,
@@ -50,7 +48,7 @@ class EntityViewSet(ViewSet, MultiSerializerMixin):
         """
         return Response({i[0]: i[1] for i in Entity.ACTIONS}, status=status.HTTP_200_OK)
 
-    @action(methods=['post'], detail=False, permission_classes=[IsAuthenticated])
+    @action(methods=['post'], detail=False)
     def new(self, request, pk=None):
         """
         ---
@@ -94,7 +92,7 @@ class EntityViewSet(ViewSet, MultiSerializerMixin):
         ser.save()
         return Response({'pid': ser.instance.package.pid}, status=status.HTTP_200_OK)
 
-    @action(methods=['get'], detail=False, permission_classes=[IsAuthenticated])
+    @action(methods=['get'], detail=False)
     def plots(self, request):
         """
         ---
@@ -121,7 +119,7 @@ class EntityViewSet(ViewSet, MultiSerializerMixin):
         serializer = PackagePidSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @action(methods=['get'], detail=False, permission_classes=[IsAuthenticated])
+    @action(methods=['get'], detail=False)
     def harvests(self, request):
         """
         ---
@@ -148,7 +146,7 @@ class EntityViewSet(ViewSet, MultiSerializerMixin):
         serializer = PackagePidSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @action(methods=['get'], detail=False, permission_classes=[IsAuthenticated])
+    @action(methods=['get'], detail=False)
     def ovens(self, request):
         """
         ---
@@ -380,7 +378,6 @@ class RelationsViewSet(ViewSet):
     pagination_class = LimitOffsetPagination
     serializer_class = EntityBatchSerializer
     schema = CustomSchema()
-    permission_classes = [AllowAny]
 
     def _filter_entities(self, request, additional_filters={}):
         from_timestamp = unix_to_datetime_tz(request.GET.get('from_timestamp'))
@@ -443,7 +440,6 @@ class PackageViewSet(ViewSet, MultiSerializerMixin):
     queryset = Package.objects.order_by('-id')
     pagination_class = LimitOffsetPagination
     schema = CustomSchema()
-    permission_classes = [AllowAny]
     serializer_class = PackagesSerializer
     custom_serializer_classes = {
         'get_package_details': PackageDetailsSerializer,
@@ -552,7 +548,11 @@ class ReplantationViewSet(mixins.CreateModelMixin,
     queryset = Replantation.objects.all().order_by('-id')
     pagination_class = LimitOffsetPagination
     schema = CustomSchema()
-    permission_classes = [AllowAny]
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        return context
 
     def get_serializer_class(self):
         if self.action == 'list':

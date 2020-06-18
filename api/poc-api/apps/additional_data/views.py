@@ -17,7 +17,6 @@ class AdditionalDataViewSet(ViewSet):
     """
     filter_backends = (SearchFilter,)
     search_fields = ('name',)
-    permission_classes = [AllowAny]
     schema = CustomSchema()
 
     @action(methods=['get'], detail=False, filter_backends=(SearchFilter,), search_fields=('name',))
