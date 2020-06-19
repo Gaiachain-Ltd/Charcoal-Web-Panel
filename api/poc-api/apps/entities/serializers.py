@@ -365,7 +365,7 @@ class SimpleEntitySerializer(serializers.ModelSerializer):
         return datetime.fromtimestamp(obj.timestamp, tz=pytz.timezone(settings.TIME_ZONE)).strftime('%Z%z')
 
     def get_timestamp_display(self, obj):
-        return datetime.fromtimestamp(obj.timestamp, tz=pytz.timezone(settings.TIME_ZONE)).strftime('%d/%m/%Y %H:%S')
+        return datetime.fromtimestamp(obj.timestamp, tz=pytz.timezone(settings.TIME_ZONE)).strftime('%d/%m/%Y %H:%M')
 
     def get_location_display(self, obj):
         return [obj.location.y, obj.location.x]
@@ -786,7 +786,7 @@ class ReplantationListSerializer(serializers.ModelSerializer):
         return datetime.fromtimestamp(timestamp, tz=pytz.timezone(settings.TIME_ZONE)).strftime('%d/%m/%Y')
 
     def parse_timestamp_to_str_datetime(self, timestamp):
-        return datetime.fromtimestamp(timestamp, tz=pytz.timezone(settings.TIME_ZONE)).strftime('%d/%m/%Y %H:%S')
+        return datetime.fromtimestamp(timestamp, tz=pytz.timezone(settings.TIME_ZONE)).strftime('%d/%m/%Y %H:%M')
 
     def get_ending_date_display(self, obj):
         return self.parse_timestamp_to_str_datetime(obj.ending_date)
