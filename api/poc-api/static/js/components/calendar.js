@@ -130,8 +130,6 @@ let Calendar = Vue.component('calendar', {
         currentMonthLabel() {
             return this.months[this.currentMonth];
         },
-        dates() {
-        },
     },
     watch: {},
     mounted: function () {
@@ -151,9 +149,6 @@ let Calendar = Vue.component('calendar', {
             }
 
             return arr;
-        },
-        showDots: function (actions) {
-
         },
         drawCalendar: function () {
             this.$root.$data.loading = true;

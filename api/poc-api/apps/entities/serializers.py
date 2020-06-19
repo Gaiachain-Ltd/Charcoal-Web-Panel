@@ -797,7 +797,7 @@ class ReplantationListSerializer(serializers.ModelSerializer):
         except:
             return 0
 
-    def get_trees_planted_dates_display(self, obj):
+    def get_trees_cut_dates_display(self, obj):
         try:
             logging_beginning = obj.plot.package_entities.get(action=Entity.LOGGING_BEGINNING).loggingbeginning.beginning_date
         except:
@@ -808,7 +808,7 @@ class ReplantationListSerializer(serializers.ModelSerializer):
             logging_ending = 0
         return f'{self.parse_timestamp_to_str_date(logging_beginning)} - {self.parse_timestamp_to_str_date(logging_ending)}'
 
-    def get_trees_cut_dates_display(self, obj):
+    def get_trees_planted_dates_display(self, obj):
         return f'{self.parse_timestamp_to_str_date(obj.beginning_date)} - {self.parse_timestamp_to_str_date(obj.ending_date)}'
 
     def to_representation(self, instance):
