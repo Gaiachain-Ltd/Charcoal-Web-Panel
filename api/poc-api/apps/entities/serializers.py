@@ -359,7 +359,7 @@ class SimpleEntitySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Entity
-        fields = ('description', 'timestamp_display', 'timezone', 'location_display')
+        fields = ('description', 'timestamp_display', 'timezone', 'location_display', 'timestamp')
 
     def get_timezone(self, obj):
         return datetime.fromtimestamp(obj.timestamp, tz=pytz.timezone(settings.TIME_ZONE)).strftime('%Z%z')
@@ -392,7 +392,7 @@ class EntityDetailsSerializer(SimpleEntitySerializer):
     class Meta:
         model = Entity
         fields = ('description', 'timestamp_display', 'timezone', 'action_display', 'user_id', 'location_display',
-                  'blockchain_details', 'user_code')
+                  'blockchain_details', 'user_code', 'timestamp')
 
     def get_blockchain_details(self, obj):
         if obj.blockchain_batch_id:
@@ -438,7 +438,7 @@ class LoggingBeginningSerializer(BaseEntityActionSerializer, serializers.ModelSe
 
     class Meta:
         model = LoggingBeginning
-        fields = ('entity', 'beginning_date_display', 'village', 'tree_specie')
+        fields = ('entity', 'beginning_date_display', 'village', 'tree_specie', 'beginning_date')
 
     def get_beginning_date_display(self, obj):
         return self.parse_timestamp_to_str_date(obj.beginning_date)
@@ -449,7 +449,7 @@ class LoggingEndingSerializer(BaseEntityActionSerializer, serializers.ModelSeria
 
     class Meta:
         model = LoggingEnding
-        fields = ('entity', 'ending_date_display', 'number_of_trees')
+        fields = ('entity', 'ending_date_display', 'number_of_trees', 'ending_date')
 
     def get_ending_date_display(self, obj):
         return self.parse_timestamp_to_str_date(obj.ending_date)
@@ -468,7 +468,7 @@ class LoadingTransportSerializer(BaseEntityActionSerializer, serializers.ModelSe
 
     class Meta:
         model = LoadingTransport
-        fields = ('entity', 'plate_number', 'loading_date_display', 'bags', 'scanned_bags')
+        fields = ('entity', 'plate_number', 'loading_date_display', 'bags', 'scanned_bags', 'loading_date')
 
     def get_scanned_bags(self, obj):
         return obj.bags.count()
@@ -510,7 +510,7 @@ class CarbonizationBeginningSerializer(BaseEntityActionSerializer, serializers.M
 
     class Meta:
         model = CarbonizationBeginning
-        fields = ('entity', 'beginning_date_display', 'oven_type_display', 'oven_measurements', 'timber_volume')
+        fields = ('entity', 'beginning_date_display', 'oven_type_display', 'oven_measurements', 'timber_volume', 'beginning_date')
 
     def get_timber_volume(self, obj):
         result = 1
@@ -740,11 +740,14 @@ class ReplantationListSerializer(serializers.ModelSerializer):
     entities = serializers.SerializerMethodField()
     type_display = serializers.SerializerMethodField()
     blockchain_details = serializers.SerializerMethodField()
+    trees_planted_dates = serializers.SerializerMethodField()
+    trees_cut_dates = serializers.SerializerMethodField()
 
     class Meta:
         model = Replantation
         fields = ('pid', 'trees_planted', 'trees_cut', 'ending_date_display', 'trees_cut_dates_display',
-                  'trees_planted_dates_display', 'entities', 'type_display', 'blockchain_details')
+                  'trees_planted_dates_display', 'entities', 'type_display', 'blockchain_details',
+                  'ending_date', 'trees_planted_dates', 'trees_cut_dates')
 
     def get_blockchain_details(self, obj):
         if obj.blockchain_batch_id:
@@ -808,8 +811,22 @@ class ReplantationListSerializer(serializers.ModelSerializer):
             logging_ending = 0
         return f'{self.parse_timestamp_to_str_date(logging_beginning)} - {self.parse_timestamp_to_str_date(logging_ending)}'
 
+    def get_trees_cut_dates(self, obj):
+        try:
+            logging_beginning = obj.plot.package_entities.get(action=Entity.LOGGING_BEGINNING).loggingbeginning.beginning_date
+        except:
+            logging_beginning = 0
+        try:
+            logging_ending = obj.plot.package_entities.get(action=Entity.LOGGING_ENDING).loggingending.ending_date
+        except:
+            logging_ending = 0
+        return [logging_beginning, logging_ending]
+
     def get_trees_planted_dates_display(self, obj):
         return f'{self.parse_timestamp_to_str_date(obj.beginning_date)} - {self.parse_timestamp_to_str_date(obj.ending_date)}'
+
+    def get_trees_planted_dates(self, obj):
+        return [obj.beginning_date, obj.ending_date]
 
     def to_representation(self, instance):
         repr = super().to_representation(instance)

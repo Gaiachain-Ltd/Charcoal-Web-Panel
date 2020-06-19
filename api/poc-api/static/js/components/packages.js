@@ -47,7 +47,8 @@ let Packages = Vue.component('packages', {
                                      :key="key">
                                     <div>
                                         <span class="description">[[ entity.description ]]</span>
-                                        <span class="timestamp">[[ entity.timestamp_display ]]<span class="timezone" v-if="showTimezone"> [[ entity.timezone ]]</span></span>
+                                        <span class="timestamp" v-if="showTimezone">[[ entity.timestamp_display ]]<span class="timezone"> [[ entity.timezone ]]</span></span>
+                                        <span class="timestamp" v-else>[[ entity.timestamp | timestampToDateTime ]]</span>
                                     </div>
                                     <hr>
                                 </div>
@@ -118,5 +119,10 @@ let Packages = Vue.component('packages', {
             this.keyword = "";
             this.getPackages(type)
         },
-    }
+    },
+    filters: {
+        timestampToDateTime(val) {
+            return dateFns.format(new Date(val * 1000), 'YYYY-MM-DD HH:mm');
+        }
+    },
 });

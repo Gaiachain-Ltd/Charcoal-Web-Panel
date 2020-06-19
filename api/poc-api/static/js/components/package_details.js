@@ -28,7 +28,7 @@ let PackageDetails = Vue.component('package-details', {
                     <div class="entity" v-if="objectNotEmpty(loggingBeginning)">
                         <div class="entity-header">
                             <div class="entity-action">[[ loggingBeginning.entity.action_display ]]</div>
-                            <div class="entity-timestamp">[[ loggingBeginning.entity.timestamp_display ]] 
+                            <div class="entity-timestamp">[[ loggingBeginning.entity.timestamp | timestampToDateTime ]] 
                                 <div class="blockchain-details" 
                                      @click="openModal(loggingBeginning.entity.action_display, loggingBeginning.entity.blockchain_details)" 
                                      v-if="objectNotEmpty(loggingBeginning.entity.blockchain_details)">
@@ -38,7 +38,7 @@ let PackageDetails = Vue.component('package-details', {
                         <div class="entity-details">
                             <div class="entity-property">
                                 <div class="entity-property-name">[[ $t('beginning_date') ]]</div>
-                                <div class="entity-property-value">[[ loggingBeginning.beginning_date_display ]]</div>
+                                <div class="entity-property-value">[[ loggingBeginning.beginning_date | timestampToDate ]]</div>
                             </div>
                             <div class="entity-property">
                                 <div class="entity-property-name">[[ $t('gps_coordinates') ]]</div>
@@ -61,7 +61,7 @@ let PackageDetails = Vue.component('package-details', {
                     <div class="entity" v-if="objectNotEmpty(loggingEnding)">
                         <div class="entity-header">
                             <div class="entity-action">[[ loggingEnding.entity.action_display ]]</div>
-                            <div class="entity-timestamp">[[ loggingEnding.entity.timestamp_display ]] 
+                            <div class="entity-timestamp">[[ loggingEnding.entity.timestamp | timestampToDateTime ]] 
                                 <div class="blockchain-details" 
                                      @click="openModal(loggingEnding.entity.action_display, loggingEnding.entity.blockchain_details)" 
                                      v-if="objectNotEmpty(loggingEnding.entity.blockchain_details)">
@@ -71,7 +71,7 @@ let PackageDetails = Vue.component('package-details', {
                         <div class="entity-details">
                             <div class="entity-property">
                                 <div class="entity-property-name">[[ $t('ending_date') ]]</div>
-                                <div class="entity-property-value">[[ loggingEnding.ending_date_display ]]</div>
+                                <div class="entity-property-value">[[ loggingEnding.ending_date | timestampToDate ]]</div>
                             </div>
                             <div class="entity-property">
                                 <div class="entity-property-name">[[ $t('gps_coordinates') ]]</div>
@@ -98,7 +98,7 @@ let PackageDetails = Vue.component('package-details', {
                         <div class="entity" v-if="objectNotEmpty(oven.carbonization_beginning)">
                             <div class="entity-header">
                                 <div class="entity-action">[[ oven.carbonization_beginning.entity.action_display ]]</div>
-                                <div class="entity-timestamp">[[ oven.carbonization_beginning.entity.timestamp_display ]] 
+                                <div class="entity-timestamp">[[ oven.carbonization_beginning.entity.timestamp | timestampToDateTime ]] 
                                     <div class="blockchain-details" 
                                          @click="openModal(oven.carbonization_beginning.entity.action_display, oven.carbonization_beginning.entity.blockchain_details)" 
                                          v-if="objectNotEmpty(oven.carbonization_beginning.entity.blockchain_details)">
@@ -108,7 +108,7 @@ let PackageDetails = Vue.component('package-details', {
                             <div class="entity-details">
                                 <div class="entity-property">
                                     <div class="entity-property-name">[[ $t('beginning_date') ]]</div>
-                                    <div class="entity-property-value">[[ oven.carbonization_beginning.beginning_date_display ]]</div>
+                                    <div class="entity-property-value">[[ oven.carbonization_beginning.beginning_date | timestampToDate ]]</div>
                                 </div>
                                 <div class="entity-property">
                                     <div class="entity-property-name">[[ $t('gps_coordinates') ]]</div>
@@ -135,7 +135,7 @@ let PackageDetails = Vue.component('package-details', {
                         <div class="entity" v-if="objectNotEmpty(oven.carbonization_ending)">
                             <div class="entity-header">
                                 <div class="entity-action">[[ oven.carbonization_ending.entity.action_display ]]</div>
-                                <div class="entity-timestamp">[[ oven.carbonization_ending.entity.timestamp_display ]] 
+                                <div class="entity-timestamp">[[ oven.carbonization_ending.entity.timestamp | timestampToDateTime ]] 
                                     <div class="blockchain-details" 
                                          @click="openModal(oven.carbonization_ending.entity.action_display, oven.carbonization_ending.entity.blockchain_details)" 
                                          v-if="objectNotEmpty(oven.carbonization_ending.entity.blockchain_details)">
@@ -145,7 +145,7 @@ let PackageDetails = Vue.component('package-details', {
                             <div class="entity-details">
                                 <div class="entity-property">
                                     <div class="entity-property-name">[[ $t('ending_date') ]]</div>
-                                    <div class="entity-property-value">[[ oven.carbonization_ending.entity.timestamp_display ]]</div>
+                                    <div class="entity-property-value">[[ oven.carbonization_ending.entity.timestamp | timestampToDate ]]</div>
                                 </div>
                                 <div class="entity-property">
                                     <div class="entity-property-name">[[ $t('gps_coordinates') ]]</div>
@@ -174,7 +174,7 @@ let PackageDetails = Vue.component('package-details', {
                         <div class="entity">
                             <div class="entity-header">
                                 <div class="entity-action">[[ loadingTransport.entity.action_display ]]</div>
-                                <div class="entity-timestamp">[[ loadingTransport.entity.timestamp_display ]] 
+                                <div class="entity-timestamp">[[ loadingTransport.entity.timestamp | timestampToDateTime ]] 
                                     <div class="blockchain-details" 
                                          @click="openModal(loadingTransport.entity.action_display, loadingTransport.entity.blockchain_details)" 
                                          v-if="objectNotEmpty(loadingTransport.entity.blockchain_details)">
@@ -188,7 +188,7 @@ let PackageDetails = Vue.component('package-details', {
                                 </div>
                                 <div class="entity-property">
                                     <div class="entity-property-name">[[ $t('loading_date') ]]</div>
-                                    <div class="entity-property-value">[[ loadingTransport.loading_date_display ]]</div>
+                                    <div class="entity-property-value">[[ loadingTransport.loading_date | timestampToDate ]]</div>
                                 </div>
                                 <div class="entity-property">
                                     <div class="entity-property-name">[[ $t('scanned_bags') ]]</div>
@@ -216,7 +216,7 @@ let PackageDetails = Vue.component('package-details', {
                         <div class="entity">
                             <div class="entity-header">
                                 <div class="entity-action">[[ reception.entity.action_display ]]</div>
-                                <div class="entity-timestamp">[[ reception.entity.timestamp_display ]] 
+                                <div class="entity-timestamp">[[ reception.entity.timestamp | timestampToDateTime ]] 
                                     <div class="blockchain-details" 
                                          @click="openModal(reception.entity.action_display, reception.entity.blockchain_details)" 
                                          v-if="objectNotEmpty(reception.entity.blockchain_details)">
@@ -230,7 +230,7 @@ let PackageDetails = Vue.component('package-details', {
                                 </div>
                                 <div class="entity-property">
                                     <div class="entity-property-name">[[ $t('reception_date') ]]</div>
-                                    <div class="entity-property-value">[[ reception.entity.timestamp_display ]]</div>
+                                    <div class="entity-property-value">[[ reception.entity.timestamp | timestampToDate ]]</div>
                                 </div>
                                 <div class="entity-property">
                                     <div class="entity-property-name">[[ $t('scanned_bags') ]]</div>
@@ -351,5 +351,13 @@ let PackageDetails = Vue.component('package-details', {
         showSubTab: function (tab) {
             this.activeSubTab = tab;
         }
-    }
+    },
+    filters: {
+        timestampToDateTime(val) {
+            return dateFns.format(new Date(val * 1000), 'YYYY-MM-DD HH:mm');
+        },
+        timestampToDate(val) {
+            return dateFns.format(new Date(val * 1000), 'DD/MM/YYYY');
+        }
+    },
 });

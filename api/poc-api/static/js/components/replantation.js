@@ -39,7 +39,7 @@ let Replantation = Vue.component('replantation', {
                                     <span>[[ replantation.pid ]]</span>
                                 </div>
                                 <div class="replantation-ending-date">
-                                    <span>[[ replantation.ending_date_display ]] 
+                                    <span>[[ replantation.ending_date | timestampToDateTime ]] 
                                         <div class="blockchain-details" 
                                              @click="openModal(replantation.pid, replantation.blockchain_details)" 
                                              v-if="objectNotEmpty(replantation.blockchain_details)">
@@ -51,11 +51,11 @@ let Replantation = Vue.component('replantation', {
                                 <div class="replantation-entity">
                                     <div>
                                         <span class="description">[[ $t('trees_planted') ]]: [[ replantation.trees_planted ]]</span>
-                                        <span class="timestamp">[[ replantation.trees_planted_dates_display ]]</span>
+                                        <span class="timestamp">[[ replantation.trees_planted_dates[0] | timestampToDate ]] - [[ replantation.trees_planted_dates[1] | timestampToDate ]]</span>
                                     </div>
                                     <div>
                                         <span class="description">[[ $t('trees_cut') ]]: [[ replantation.trees_cut ]]</span>
-                                        <span class="timestamp">[[ replantation.trees_cut_dates_display ]]</span>
+                                        <span class="timestamp">[[ replantation.trees_cut_dates[0] | timestampToDate ]] - [[ replantation.trees_cut_dates[1] | timestampToDate ]]</span>
                                     </div>
                                 </div>
                                 <div class="replantation-bar">
@@ -151,5 +151,13 @@ let Replantation = Vue.component('replantation', {
         showReplantations: function () {
             this.activeTab = 'list';
         },
-    }
+    },
+    filters: {
+        timestampToDateTime(val) {
+            return dateFns.format(new Date(val * 1000), 'DD/MM/YYYY HH:mm');
+        },
+        timestampToDate(val) {
+            return dateFns.format(new Date(val * 1000), 'DD/MM/YYYY');
+        }
+    },
 });

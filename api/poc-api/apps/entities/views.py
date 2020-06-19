@@ -363,7 +363,7 @@ class EntityViewSet(ViewSet, MultiSerializerMixin):
         response = {}
         for timestamp in dates:
             start_timestamp = int(timestamp)
-            end_timestamp = int(start_timestamp) + 24 * 60 * 60
+            end_timestamp = start_timestamp + 24 * 60 * 60 - 1  # -1 to cover midnight edgecase
             available_actions = list(
                 Package.objects.filter(
                     package_entities__timestamp__range=(start_timestamp, end_timestamp)

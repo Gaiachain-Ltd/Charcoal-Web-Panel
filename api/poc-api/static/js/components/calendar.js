@@ -162,7 +162,7 @@ let Calendar = Vue.component('calendar', {
                 daysList.push((dateFns.getTime(day) / 1000).toString())
             });
             let arrArg = encodeURIComponent(JSON.stringify(daysList));
-            this.$http.get('/entities/dots/?dates=' + arrArg)
+            this.$http.get(`/entities/dots/?dates=${arrArg}`)
                 .then((response) => {
                     let dates = [];
                     let actionsFunc = this.getAvailableActions;
