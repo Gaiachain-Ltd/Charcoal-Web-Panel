@@ -21,4 +21,4 @@ class AgentHandler(HandlerBase):
         container = AgentContainer()
         container.ParseFromString(changes.value)
         agent = container.entries[0]
-        LOG.debug(f"Agent: {agent.email} ({agent.company_name})")
+        LOG.debug(f"Agent: {agent.email}")

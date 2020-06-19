@@ -594,6 +594,9 @@ section.main-section .main-content .content-data .packages .package .package-pid
   display: flex;
   align-items: center;
 }
+section.main-section .main-content .content-data .packages .package .package-pid .pid span, section.main-section .main-content .content-data .packages .package .replantation-pid .pid span, section.main-section .main-content .content-data .packages .replantation .package-pid .pid span, section.main-section .main-content .content-data .packages .replantation .replantation-pid .pid span, section.main-section .main-content .content-data .replantations .package .package-pid .pid span, section.main-section .main-content .content-data .replantations .package .replantation-pid .pid span, section.main-section .main-content .content-data .replantations .replantation .package-pid .pid span, section.main-section .main-content .content-data .replantations .replantation .replantation-pid .pid span {
+  cursor: pointer;
+}
 section.main-section .main-content .content-data .packages .package .package-pid .pid .see-chain, section.main-section .main-content .content-data .packages .package .replantation-pid .pid .see-chain, section.main-section .main-content .content-data .packages .replantation .package-pid .pid .see-chain, section.main-section .main-content .content-data .packages .replantation .replantation-pid .pid .see-chain, section.main-section .main-content .content-data .replantations .package .package-pid .pid .see-chain, section.main-section .main-content .content-data .replantations .package .replantation-pid .pid .see-chain, section.main-section .main-content .content-data .replantations .replantation .package-pid .pid .see-chain, section.main-section .main-content .content-data .replantations .replantation .replantation-pid .pid .see-chain {
   cursor: pointer;
   border: 1px solid #E8EBF1;

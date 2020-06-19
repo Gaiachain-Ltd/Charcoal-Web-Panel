@@ -109,15 +109,17 @@ class EntitySerializer(serializers.ModelSerializer):
             harvest_id = properties_data.pop('harvest_id')
             package, created = Package.objects.get_or_create(pid=pid, type=Package.TRUCK, harvest_id=harvest_id)
         elif action == Entity.RECEPTION:
-            try:
-                qr_code = properties_data['bags_qr_codes'][0]
-                package = Package.objects.get(
-                    package_entities__loadingtransport__bags__qr_code=qr_code
-                )
-                properties_data['documents_photos'] = validated_data.pop('documents_photos')
-                properties_data['receipt_photos'] = validated_data.pop('receipt_photos')
-            except Package.DoesNotExist:
+            qr_code = properties_data['bags_qr_codes'][0]
+            # qr codes are reusable after reception in any other chain
+            package = Package.objects.filter(
+                package_entities__loadingtransport__bags__qr_code=qr_code,
+                type=Package.TRUCK,
+                last_action__action=Entity.LOADING_TRANSPORT
+            ).order_by('id').last()
+            if not package:
                 raise NotFound(detail=f'Truck with this bag ({qr_code}) not found.')
+            properties_data['documents_photos'] = validated_data.pop('documents_photos', [])
+            properties_data['receipt_photos'] = validated_data.pop('receipt_photos', [])
         else:
             raise NotFound(detail='Please check your data in request body.')
         if action not in [Entity.CARBONIZATION_BEGINNING, Entity.CARBONIZATION_ENDING] \
@@ -170,6 +172,8 @@ class EntitySerializer(serializers.ModelSerializer):
         if not (entity.user.is_carbonizer or entity.user.is_superuser_role):
             raise InvalidAgentRoleError("Only Carbonizer can add carbonization beginning.")
         oven_id = properties_data.pop('oven_id')
+        if CarbonizationBeginning.objects.filter(oven__oven_id=oven_id, entity__package=entity.package).exists():
+            raise serializers.ValidationError('Oven ID already exists!')
         oven_type_id = properties_data.pop('oven_type')
         oven = Oven.objects.create(oven_id=oven_id)
         carbonization_beginning, created = CarbonizationBeginning.objects.get_or_create(
@@ -225,7 +229,7 @@ class EntitySerializer(serializers.ModelSerializer):
             **properties_data
         )
         if created:
-            Bag.objects.filter(qr_code__in=bags_qr_codes).update(reception=reception)
+            Bag.objects.filter(qr_code__in=bags_qr_codes, transport__entity__package=entity.package).update(reception=reception)
             photos = [ReceptionImage(image=image, type=ReceptionImage.DOCUMENT, reception_id=reception.id)
                     for image in documents_photos]
             photos.extend([ReceptionImage(image=image, type=ReceptionImage.RECEIPT, reception_id=reception.id)

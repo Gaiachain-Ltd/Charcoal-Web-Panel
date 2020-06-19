@@ -595,6 +595,9 @@ section.main-section {
               .pid {
                 display: flex;
                 align-items: center;
+                span {
+                  cursor: pointer;
+                }
                 .see-chain {
                   cursor: pointer;
                   border: 1px solid $main-header-border-color;

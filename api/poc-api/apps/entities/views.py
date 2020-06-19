@@ -110,7 +110,8 @@ class EntityViewSet(ViewSet, MultiSerializerMixin):
         queryset = Package.objects.filter(
             type=Package.PLOT,
             package_entities__user=request.user,
-            last_action__action=last_action
+            last_action__action=last_action,
+            plot_harvest__isnull=True
         ).distinct()
         page = self.paginator.paginate_queryset(queryset=queryset, request=request)
         if page is not None:
@@ -137,7 +138,8 @@ class EntityViewSet(ViewSet, MultiSerializerMixin):
         queryset = Package.objects.filter(
             type=Package.HARVEST,
             package_entities__user=request.user,
-            last_action__action=last_action
+            last_action__action=last_action,
+            trucks__isnull=True
         ).distinct()
         page = self.paginator.paginate_queryset(queryset=queryset, request=request)
         if page is not None:
@@ -150,21 +152,21 @@ class EntityViewSet(ViewSet, MultiSerializerMixin):
     def ovens(self, request):
         """
         ---
-        desc: List API ovens for given harvest
+        desc: List API active ovens for given harvest
         ret: List of ovens
         input:
         -
-            name: harvest_pid
+            name: harvest_id
             required: true
             location: query
             type: string
         ---
         """
-        harvest_pid = request.GET.get('harvest_pid')
+        harvest_id = request.GET.get('harvest_id')
         queryset = Oven.objects.filter(
-            carbonization_beginning__entity__package__pid=harvest_pid,
+            carbonization_beginning__entity__package_id=harvest_id,
             carbonization_beginning__entity__user=request.user,
-            carbonization_endings__isnull=True
+            carbonization_ending__isnull=True
         ).distinct()
         page = self.paginator.paginate_queryset(queryset=queryset, request=request)
         if page is not None:
