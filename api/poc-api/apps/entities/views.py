@@ -484,7 +484,7 @@ class PackageViewSet(ViewSet, MultiSerializerMixin):
             filter_kwargs['type'] = type.upper()
         queryset = self.queryset.filter(
             **filter_kwargs
-        ).exclude(last_action__action=Entity.INITIAL)
+        ).exclude(last_action__action=Entity.INITIAL).distinct()
         page = self.paginator.paginate_queryset(queryset=queryset, request=request)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
