@@ -96,10 +96,46 @@ let PackageMap = Vue.component('package-map', {
         loadMap: function () {
             let markers = [];
             let bounds = [];
+            let defaultIcon = L.Icon.extend({
+                    options: {
+                        iconSize: [30, 41],
+                        iconAnchor: [15, 41],
+                        popupAnchor: [0, -38],
+                        shadowSize: [41, 41],
+                        shadowUrl: `${window.staticPrefix}img/marker-shadow.png`,
+                        shadowAnchor: [13, 44]
+                    }
+                }),
+                plotIcon = new defaultIcon({
+                    iconUrl: `${window.staticPrefix}img/marker-icon-blue.png`,
+                    iconRetinaUrl: `${window.staticPrefix}img/marker-icon-blue2x.png`,
+                }),
+                harvestIcon = new defaultIcon({
+                    iconUrl: `${window.staticPrefix}img/marker-icon-green.png`,
+                    iconRetinaUrl: `${window.staticPrefix}img/marker-icon-green2x.png`,
+                }),
+                transportIcon = new defaultIcon({
+                    iconUrl: `${window.staticPrefix}img/marker-icon-pink.png`,
+                    iconRetinaUrl: `${window.staticPrefix}img/marker-icon-pink2x.png`,
+                });
             this.packages.forEach((package) => {
                 package.entities.forEach((entity) => {
                     bounds.push(entity.location_display);
-                    markers.push({location: entity.location_display, text: `<b class="${package.type_display}">${package.pid}</b><br/>${entity.description}`})
+                    markers.push({
+                        location: entity.location_display,
+                        text: `<b class="${package.type_display}">${package.pid}</b><br/>${entity.description}`,
+                        icon: function () {
+                            if (package.type_display == 'plot') {
+                                return plotIcon;
+                            }
+                            else if (['harvest', 'replantation'].indexOf(package.type_display) >= 0) {
+                                return harvestIcon;
+                            }
+                            else if (package.type_display == 'transport') {
+                                return transportIcon
+                            }
+                        }
+                    })
                 })
             });
             let mapWrapper = document.getElementById('map-wrapper');
@@ -117,7 +153,7 @@ let PackageMap = Vue.component('package-map', {
                 }).addTo(map);
                 map.fitBounds(bounds);
                 markers.forEach((marker) => {
-                    L.marker(marker.location).addTo(map).bindPopup(marker.text);
+                    L.marker(marker.location, {icon: marker.icon()}).addTo(map).bindPopup(marker.text);
                 });
             }
             this.$root.$data.loading = false;
