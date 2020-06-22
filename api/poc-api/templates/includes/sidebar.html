@@ -3,35 +3,33 @@
 
 <div class="sidebar" id="sidebar" v-cloak>
     <router-link to="/traceability" v-slot="{ href, route, navigate, isActive, isExactActive }">
-        <div id="tracability" class='menu-element'
-             @click="navigate"
-             :class="{ 'active-element': isActive }">
+        <div id="tracability" class='menu-element' @click="navigate" :class="{ 'active-element': isActive }">
             <i class="tracability-icon"></i>
-            {% trans 'TRACABILITY' %}
+            [[ $t('tracability') ]]
         </div>
     </router-link>
     <router-link to="/calendar" v-slot="{ href, route, navigate, isActive, isExactActive }">
-        <div id="calendar" class='menu-element'
-             @click="navigate"
-             :class="{ 'active-element': isActive }">
+        <div id="calendar" class='menu-element' @click="navigate" :class="{ 'active-element': isActive }">
             <i class="calendar-icon"></i>
-            {% trans 'CALENDAR' %}
+            [[ $t('calendar') ]]
         </div>
     </router-link>
     <router-link to="/replantation" v-slot="{ href, route, navigate, isActive, isExactActive }">
-        <div id="replantation" class='menu-element'
-             @click="navigate"
-             :class="{ 'active-element': isActive }">
+        <div id="replantation" class='menu-element' @click="navigate" :class="{ 'active-element': isActive }">
             <i class="replantation-icon"></i>
-            {% trans 'REPLANTATION' %}
+            [[ $t('replantation') ]]
         </div>
     </router-link>
-    <router-link to="/settings" v-slot="{ href, route, navigate, isActive, isExactActive }">
-        <div id="settings" class='menu-element'
-             @click="navigate"
-             :class="{ 'active-element': isActive }">
-            <i class="settings-icon"></i>
-            {% trans 'SETTINGS' %}
+    <div id="settings">
+        <router-link to="/settings" v-slot="{ href, route, navigate, isActive, isExactActive }">
+            <div class='menu-element' @click="navigate" :class="{ 'active-element': isActive }">
+                <i class="settings-icon"></i>
+                [[ $t('settings') ]]
+            </div>
+        </router-link>
+        <div class='menu-element' @click="switchLanguage()">
+            <i :class="$i18n.locale + '-language-icon'"></i>
+            [[ languageName ]]
         </div>
-    </router-link>
+    </div>
 </div>

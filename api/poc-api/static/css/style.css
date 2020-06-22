@@ -187,6 +187,15 @@ section.main-section .sidebar .submenu .submenu-element {
   font-weight: 600;
   cursor: pointer;
 }
+section.main-section .sidebar #settings {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+section.main-section .sidebar #settings .menu-element:first-child {
+  margin-top: 0;
+  border-top: 1px solid #E8EBF1;
+}
 section.main-section .sidebar .menu-element {
   height: 92px;
   display: flex;
@@ -197,21 +206,14 @@ section.main-section .sidebar .menu-element {
   font-weight: 600;
   letter-spacing: -0.5px;
   color: #000000;
-  text-transform: capitalize;
+  text-transform: uppercase;
   padding-left: 80px;
   position: relative;
   cursor: pointer;
+  border-bottom: 1px solid #E8EBF1;
 }
 section.main-section .sidebar .menu-element:first-child {
   margin-top: 120px;
-}
-section.main-section .sidebar .menu-element:not(:first-child) {
-  border-top: 1px solid #E8EBF1;
-}
-section.main-section .sidebar .menu-element#settings {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
 }
 section.main-section .sidebar .menu-element i {
   position: absolute;
@@ -247,6 +249,22 @@ section.main-section .sidebar .menu-element .settings-icon {
   background-image: image-set(url(../img/icon-settings_dark.png) 1x, url(../img/icon-settings_dark@2x.png) 2x);
   height: 40px;
   width: 40px;
+  top: 26px;
+}
+section.main-section .sidebar .menu-element .en-language-icon {
+  background-image: url(../img/en.png);
+  background-image: -webkit-image-set(url(../img/en.png) 1x, url(../img/en@2x.png) 2x);
+  background-image: image-set(url(../img/en.png) 1x, url(../img/en@2x.png) 2x);
+  height: 38px;
+  width: 38px;
+  top: 26px;
+}
+section.main-section .sidebar .menu-element .fr-language-icon {
+  background-image: url(../img/fr.png);
+  background-image: -webkit-image-set(url(../img/fr.png) 1x, url(../img/fr@2x.png) 2x);
+  background-image: image-set(url(../img/fr.png) 1x, url(../img/fr@2x.png) 2x);
+  height: 38px;
+  width: 38px;
   top: 26px;
 }
 section.main-section .sidebar .menu-element .show-arrow-icon {
@@ -837,7 +855,7 @@ section.main-section .main-content .content-data .replantation .replantation-end
 }
 
 [v-cloak] {
-  display: none;
+  display: none !important;
 }
 
 #prm-map {

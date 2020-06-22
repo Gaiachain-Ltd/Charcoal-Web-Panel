@@ -94,6 +94,17 @@ section.main-section {
         cursor: pointer;
       }
     }
+    #settings {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      .menu-element {
+        &:first-child {
+          margin-top: 0;
+          border-top: 1px solid $main-header-border-color;
+        }
+      }
+    }
     .menu-element {
       height: 92px;
       display: flex;
@@ -104,20 +115,13 @@ section.main-section {
       font-weight: 600;
       letter-spacing: -0.5px;
       color: $black-color;
-      text-transform: capitalize;
+      text-transform: uppercase;
       padding-left: 80px;
       position: relative;
       cursor: pointer;
+      border-bottom: 1px solid $main-header-border-color;
       &:first-child {
         margin-top: 120px;
-      }
-      &:not(:first-child) {
-        border-top: 1px solid $main-header-border-color;
-      }
-      &#settings {
-        position: absolute;
-        bottom: 0;
-        width: 100%;
       }
       i {
         position: absolute;
@@ -185,6 +189,38 @@ section.main-section {
         );
         height: 40px;
         width: 40px;
+        top: 26px;
+      }
+      .en-language-icon {
+        background-image: url(../img/en.png);
+        background-image:
+          -webkit-image-set(
+            url(../img/en.png) 1x,
+            url(../img/en@2x.png) 2x
+        );
+        background-image:
+          image-set(
+            url(../img/en.png) 1x,
+            url(../img/en@2x.png) 2x
+        );
+        height: 38px;
+        width: 38px;
+        top: 26px;
+      }
+      .fr-language-icon {
+        background-image: url(../img/fr.png);
+        background-image:
+          -webkit-image-set(
+            url(../img/fr.png) 1x,
+            url(../img/fr@2x.png) 2x
+        );
+        background-image:
+          image-set(
+            url(../img/fr.png) 1x,
+            url(../img/fr@2x.png) 2x
+        );
+        height: 38px;
+        width: 38px;
         top: 26px;
       }
       .show-arrow-icon {
@@ -877,7 +913,7 @@ section.main-section {
 }
 
 [v-cloak] {
-  display: none;
+  display: none!important;
 }
 
 #prm-map {

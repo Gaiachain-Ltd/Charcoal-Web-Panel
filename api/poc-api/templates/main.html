@@ -14,18 +14,18 @@
         <div class="header-right">
             {% if request.user.is_authenticated %}
                 <span class="corporate-name">{{ user.email }}</span>
-                <a href={% url "account_logout" %} class="logout">{% trans 'Logout' %}</a>
+                <a href="{% url "account_logout" %}" class="logout">{% trans 'Logout' %}</a>
             {% endif %}
         </div>
     </header>
-    <section class="main-section" id="dashboard-main" >
+    <section class="main-section" id="dashboard-main">
         {% csrf_token %}
         {% include 'includes/sidebar.html' %}
         <div class="main-content">
             <router-view></router-view>
         </div>
-        <div id="loading-overlay" class="loading-overlay" v-if="loading===true">
-            {% trans 'Loading' %}&#8230;
+        <div id="loading-overlay" class="loading-overlay" v-if="loading===true" v-cloak>
+            [[ $t('loading') ]]&#8230;
             <img src="{% static 'img/loading.svg' %}">
         </div>
     </section>
