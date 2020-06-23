@@ -7,7 +7,7 @@ let Replantation = Vue.component('replantation', {
                         <a class="nav-link dropdown-toggle" :class="{ 'active': activeTab == 'list' } " data-toggle="dropdown" href="#" 
                            role="button" aria-haspopup="true" aria-expanded="false">[[ selectedYear ]]</a>
                         <div class="dropdown-menu">
-                            <a class="dropdown-item" href="#" v-for="year in yearsRange"
+                            <a class="dropdown-item" href="#" v-for="year in yearsRange" :key="year"
                                @click.prevent="setYear(year)">[[ year ]] <i class="current" v-if="year === selectedYear"></i></a>
                         </div>
                     </li>
@@ -33,7 +33,7 @@ let Replantation = Vue.component('replantation', {
             <div class="content-data" v-if="activeTab == 'list'">
                 <div class="replantation-data">
                     <div class="replantations">
-                        <div class="replantation" v-for="replantation in replantations">
+                        <div class="replantation" v-for="replantation in replantations" :key="replantation.id">
                             <div class="replantation-pid">
                                 <div class="pid">
                                     <span>[[ replantation.pid ]]</span>

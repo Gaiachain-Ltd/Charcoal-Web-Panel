@@ -36,7 +36,7 @@ SITE_ID = 1
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'z96^kryc$^ymowz5t=ymt^xlah9))_rej64mh8$4qc*6_+1#13'
+SECRET_KEY = env('SECRET_KEY', default='z96^kryc$^ymowz5t=ymt^xlah9))_rej64mh8$4qc*6_+1#13')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool('DJANGO_DEBUG', False)
@@ -149,7 +149,7 @@ USE_L10N = True
 USE_TZ = True
 
 ADMINS = [
-    ("""Stanislav Chernov""", 'schernov@milosolutions.com'),
+    ("""Sergey Bondar""", 'sbondar@milosolutions.com'),
 ]
 
 # Static files (CSS, JavaScript, Images)
@@ -221,11 +221,6 @@ ACCOUNT_ALLOW_REGISTRATION = env.bool('DJANGO_ACCOUNT_ALLOW_REGISTRATION', True)
 ACCOUNT_LOGIN_ON_PASSWORD_RESET = True
 ACCOUNT_EMAIL_REQUIRED = True
 LOGIN_REDIRECT_URL = reverse_lazy('web-panel')
-
-HARVEST = 'harvest'
-SAC = 'sac'
-LOT = 'lot'
-PACKAGE_TYPES = (HARVEST, SAC, LOT)
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',

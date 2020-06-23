@@ -87,14 +87,15 @@ let PackageDetails = Vue.component('package-details', {
                 <div v-if="package.type_display === 'harvest'">
                     <div class="nav-search nav-sub">
                         <ul class="nav nav-tabs">
-                            <li class="nav-item" v-for="oven in ovens">
+                            <li class="nav-item" v-for="oven in ovens" :key="'oven_' + oven.id">
                                 <a class="nav-link"
                                    :class="{ 'active': activeSubTab == 'oven_' + oven.oven_id } "
                                    @click.prevent="showSubTab('oven_' + oven.oven_id)" href="#">[[ $t('oven') ]] [[ oven.oven_id ]]</a>
                             </li>
                         </ul>
                     </div>
-                    <div class="content-data" v-for="oven in ovens" v-if="activeSubTab == 'oven_' + oven.oven_id">
+                    <div class="content-data" v-for="oven in ovens" v-if="activeSubTab == 'oven_' + oven.oven_id"
+                         :key="'oven_' + oven.id">
                         <div class="entity" v-if="objectNotEmpty(oven.carbonization_beginning)">
                             <div class="entity-header">
                                 <div class="entity-action">[[ oven.carbonization_beginning.entity.action_display ]]</div>
@@ -204,7 +205,7 @@ let PackageDetails = Vue.component('package-details', {
                             <div class="entity-header">
                                 <div class="entity-action">[[ $t('scanned_bags') ]] ([[ loadingTransport.scanned_bags ]])</div>
                             </div>
-                            <div class="entity-details" v-for="bag in loadingTransport.bags">
+                            <div class="entity-details" v-for="bag in loadingTransport.bags" :key="'bag_' + bag.id">
                                 <div class="entity-property">
                                     <div class="entity-property-name">[[ bag.pid ]]</div>
                                     <div class="entity-property-value">[[ bag.qr_code ]]</div>
@@ -251,13 +252,21 @@ let PackageDetails = Vue.component('package-details', {
                                 </div>
                                 <div class="row m-0">
                                     <div class="entity-property no-border col px-0">
-                                        <div class="entity-property-name" v-for="image in reception.documents_photos">
-                                            <a target="_blank" :href="image.image"><img width="100%" :src="image.image" alt=""></a>
+                                        <div class="entity-property-name" 
+                                             v-for="(image, index) in reception.documents_photos" 
+                                             :key="'document_' + index">
+                                            <a target="_blank" :href="image.image">
+                                                <img width="100%" :src="image.image" alt="">
+                                            </a>
                                         </div>
                                     </div>
                                     <div class="entity-property no-border col px-0">
-                                        <div class="entity-property-name" v-for="image in reception.receipt_photos">
-                                            <a target="_blank" :href="image.image"><img width="100%" :src="image.image" alt=""></a>
+                                        <div class="entity-property-name" 
+                                             v-for="(image, index) in reception.receipt_photos"
+                                             :key="'receipt_' + index">
+                                            <a target="_blank" :href="image.image">
+                                                <img width="100%" :src="image.image" alt="">
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
@@ -267,7 +276,7 @@ let PackageDetails = Vue.component('package-details', {
                             <div class="entity-header">
                                 <div class="entity-action">[[ $t('scanned_bags') ]] ([[ reception.scanned_bags ]])</div>
                             </div>
-                            <div class="entity-details" v-for="bag in reception.bags">
+                            <div class="entity-details" v-for="bag in reception.bags" :key="'reception_bag_' + bag.id">
                                 <div class="entity-property">
                                     <div class="entity-property-name">[[ bag.pid ]]</div>
                                     <div class="entity-property-value">[[ bag.qr_code ]]</div>

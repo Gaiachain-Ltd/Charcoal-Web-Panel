@@ -27,13 +27,13 @@ let Packages = Vue.component('packages', {
     
                 <div class="nav-tabs-right-actions" v-if="showSearch">
                     <i class="search-icon"></i>
-                    <input type="text" v-model="keyword" v-bind:placeholder="$t('search') + '...'"/>
+                    <input type="text" v-model="keyword" :placeholder="$t('search') + '...'"/>
                 </div>
             </div>
             <div class="content-data">
                 <div class="packages-data">
                     <div class="packages">
-                        <div class="package" v-for="(package, key) in packages" v-bind:id="key">
+                        <div class="package" v-for="package in packages" :key="'package_' + package.id">
                             <div class="package-pid">
                                 <div class="pid">
                                     <router-link :to="{ path: '/traceability/' + package.id }"
@@ -43,8 +43,7 @@ let Packages = Vue.component('packages', {
                                 </div>
                             </div>
                             <div class="package-details">
-                                <div class="package-entity" v-for="entity in package.entities"
-                                     :key="key">
+                                <div class="package-entity" v-for="entity in package.entities" :key="'entity_' + entity.id">
                                     <div>
                                         <span class="description">[[ entity.description ]]</span>
                                         <span class="timestamp" v-if="showTimezone">[[ entity.timestamp_display ]]<span class="timezone"> [[ entity.timezone ]]</span></span>

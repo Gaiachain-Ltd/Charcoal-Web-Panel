@@ -9,7 +9,7 @@ let additionalDataSimple = Vue.component('additional-data-simple', {
                 <button class="add-new" @click="addObject()">[[ $t("add_new") ]] <div class="plus"><div class="horizontal"></div><div class="vertical"></div></div></button>
             </div>
             <div class="additional-data-list">
-                <div class="additional-data-list-row" v-for="object in objects">
+                <div class="additional-data-list-row" v-for="object in objects" :key="title + '_' + object.id">
                     <div class="additional-data-list-row-name" v-if="isEditing && object.id == currentObject.id">
                         <input name="name" type="text" :placeholder="[[ $t(placeholder) ]]" v-model="currentObject[nameField]" @change="saveObject">
                     </div>

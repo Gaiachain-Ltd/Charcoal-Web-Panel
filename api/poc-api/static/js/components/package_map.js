@@ -13,7 +13,7 @@ let PackageMap = Vue.component('package-map', {
                         <div class="calendar-details-packages">
                             <div class="packages-data">
                                 <div class="packages">
-                                    <div class="package" v-for="(package, key) in packages" v-bind:id="key">
+                                    <div class="package" v-for="package in packages" :key="'package_' + package.id">
                                         <div class="package-pid">
                                             <div class="pid">
                                                 <span :class="[package.type_display]">[[ package.pid ]]</span>
@@ -21,7 +21,7 @@ let PackageMap = Vue.component('package-map', {
                                         </div>
                                         <div class="package-details">
                                             <div class="package-entity" v-for="entity in package.entities"
-                                                 :key="key">
+                                                 :key="'entity_' + entity.id">
                                                 <div>
                                                     <span class="description">[[ entity.description ]]</span>
                                                     <span class="timestamp">[[ entity.timestamp_display | trimTime ]]</span>

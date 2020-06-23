@@ -359,7 +359,7 @@ class SimpleEntitySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Entity
-        fields = ('description', 'timestamp_display', 'timezone', 'location_display', 'timestamp')
+        fields = ('description', 'timestamp_display', 'timezone', 'location_display', 'timestamp', 'id')
 
     def get_timezone(self, obj):
         return datetime.fromtimestamp(obj.timestamp, tz=pytz.timezone(settings.TIME_ZONE)).strftime('%Z%z')
@@ -458,7 +458,7 @@ class LoggingEndingSerializer(BaseEntityActionSerializer, serializers.ModelSeria
 class BagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Bag
-        fields = ('pid', 'qr_code')
+        fields = ('pid', 'qr_code', 'id')
 
 
 class LoadingTransportSerializer(BaseEntityActionSerializer, serializers.ModelSerializer):
@@ -536,7 +536,7 @@ class PackageOvenSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Oven
-        fields = ('oven_id', 'carbonization_beginning', 'carbonization_ending')
+        fields = ('id', 'oven_id', 'carbonization_beginning', 'carbonization_ending')
 
     def get_carbonization_beginning(self, obj):
         if obj.carbonization_beginning:

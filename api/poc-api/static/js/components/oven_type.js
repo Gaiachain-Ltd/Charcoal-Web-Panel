@@ -9,7 +9,7 @@ let ovenType = Vue.component('oven-type', {
                 <button class="add-new" @click="addObject()">[[ $t("add_new") ]] <div class="plus"><div class="horizontal"></div><div class="vertical"></div></div></button>
             </div>
             <div class="additional-data-list">
-                <div class="additional-data-list-row" v-for="object in objects">
+                <div class="additional-data-list-row" v-for="object in objects" :key="'oven_type_' + object.id">
                     <div class="additional-data-list-row-name" v-if="isEditing && object.id == currentObject.id">
                         <input name="name" type="text" :placeholder="[[ $t('name') ]]" v-model="currentObject.name" @change="saveObject">
                     </div>

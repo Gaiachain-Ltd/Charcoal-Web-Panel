@@ -11,7 +11,7 @@ let Calendar = Vue.component('calendar', {
                                     <a class="nav-link dropdown-toggle active" data-toggle="dropdown" href="#" 
                                        role="button" aria-haspopup="true" aria-expanded="false">[[ currentMonthLabel ]]</a>
                                     <div class="dropdown-menu">
-                                        <a class="dropdown-item" href="#" v-for="(month, index) in months"
+                                        <a class="dropdown-item" href="#" v-for="(month, index) in months" :key="index"
                                            @click.prevent="setMonth(index)">[[ month.toUpperCase() ]] <i class="current" v-if="index === currentMonth"></i></a>
                                     </div>
                                 </li>
@@ -19,7 +19,7 @@ let Calendar = Vue.component('calendar', {
                                     <a class="nav-link dropdown-toggle active" data-toggle="dropdown" href="#" 
                                        role="button" aria-haspopup="true" aria-expanded="false">[[ currentYear ]]</a>
                                     <div class="dropdown-menu">
-                                        <a class="dropdown-item" href="#" v-for="year in yearsRange"
+                                        <a class="dropdown-item" href="#" v-for="year in yearsRange" :key="year"
                                            @click.prevent="setYear(year)">[[ year ]] <i class="current" v-if="year === currentYear"></i></a>
                                     </div>
                                 </li>
@@ -61,13 +61,13 @@ let Calendar = Vue.component('calendar', {
                             </div>
                         </div>
                         <div class="calendar">
-                            <div v-for="(day, index) in datesList"
-                                 class="day"
-                                 :class="dayClassObj(day)">
+                            <div v-for="(day, index) in datesList" class="day"
+                                 :key="'day_' + index" :class="dayClassObj(day)">
                                 <button @click="setSelectedDate(day)">
                                     [[ day.date | formatDateToDay ]]
                                     <div class="action-dots">
-                                        <div class="action-dot" v-for="action in day.availableActions" :class="action"></div>
+                                        <div class="action-dot" v-for="action in day.availableActions" 
+                                             :class="action" :key="'action_' + action"></div>
                                     </div>
                                 </button>
         
