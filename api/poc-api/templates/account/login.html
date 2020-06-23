@@ -1,36 +1,37 @@
 {% extends "base.html" %}
 
-{% load i18n %}
 {% load account %}
 {% load socialaccount %}
 {% load staticfiles %}
 
 
 {% block content %}
-    <header class="auth-header">
-        <img width="205" srcset="{% static 'img/logo.png' %} 1x, {% static 'img/logo@2x.png' %} 2x"/>
-    </header>
-    <section class="auth-section">
-        <form class="login" method="POST" action="{% url 'account_login' %}">
-            {% csrf_token %}
-            <div class="input-block">
-                <div class="login-input">
-                    <i class="input-icon email-icon"></i>
-                    <input type="email" name="login" placeholder="{% trans "E-mail address" %}" autofocus="autofocus"
-                           required="" id="id_login">
+    <div id="dashboard-main">
+        <header class="auth-header">
+            <img width="205" srcset="{% static 'img/logo.png' %} 1x, {% static 'img/logo@2x.png' %} 2x"/>
+        </header>
+        <section class="auth-section">
+            <form class="login" method="POST" action="{% url 'account_login' %}" v-cloak>
+                {% csrf_token %}
+                <div class="input-block">
+                    <div class="login-input">
+                        <i class="input-icon email-icon"></i>
+                        <input type="email" name="login" :placeholder="[[ $t('email_address') ]]" autofocus="autofocus"
+                               required="" id="id_login">
+                    </div>
+                    <div class="login-input">
+                        <i class="input-icon password-icon"></i>
+                        <input type="password" name="password" :placeholder="[[ $t('password') ]]" required=""
+                               id="id_password">
+                    </div>
                 </div>
-                <div class="login-input">
-                    <i class="input-icon password-icon"></i>
-                    <input type="password" name="password" placeholder="{% trans "Password" %}" required=""
-                           id="id_password">
+                <div class="buttons-block">
+                    {% if redirect_field_value %}
+                        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+                    {% endif %}
+                    <button class="login-buttons primaryAction" type="submit">[[ $t('connection') ]]</button>
                 </div>
-            </div>
-            <div class="buttons-block">
-                {% if redirect_field_value %}
-                    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
-                {% endif %}
-                <button class="login-buttons primaryAction" type="submit">{% trans "CONNECTION" %}</button>
-            </div>
-        </form>
-    </section>
+            </form>
+        </section>
+    </div>
 {% endblock %}

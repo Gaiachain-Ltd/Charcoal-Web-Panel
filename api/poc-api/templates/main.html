@@ -1,34 +1,35 @@
 {% extends "base.html" %}
 
-{% load i18n %}
 {% load staticfiles %}
 
 {% block content %}
-    <header class="main-header">
-        <div class="logo">
-            <img width="205" srcset="{% static 'img/logo_dark.png' %} 1x, {% static 'img/logo_dark@2x.png' %} 2x"/>
-        </div>
-        <div class="current-page-name">
-            <h1 id="current-page-name">{% trans "Dashboard" %}</h1>
-        </div>
-        <div class="header-right">
-            {% if request.user.is_authenticated %}
-                <span class="corporate-name">{{ user.email }}</span>
-                <a href="{% url "account_logout" %}" class="logout">{% trans 'Logout' %}</a>
-            {% endif %}
-        </div>
-    </header>
-    <section class="main-section" id="dashboard-main">
-        {% csrf_token %}
-        {% include 'includes/sidebar.html' %}
-        <div class="main-content">
-            <router-view></router-view>
-        </div>
-        <div id="loading-overlay" class="loading-overlay" v-if="loading===true" v-cloak>
-            [[ $t('loading') ]]&#8230;
-            <img src="{% static 'img/loading.svg' %}">
-        </div>
-    </section>
+    <div id="dashboard-main">
+        <header class="main-header">
+            <div class="logo">
+                <img width="205" srcset="{% static 'img/logo_dark.png' %} 1x, {% static 'img/logo_dark@2x.png' %} 2x"/>
+            </div>
+            <div class="current-page-name">
+                <h1 id="current-page-name" v-cloak>[[ $t('dashboard') ]]</h1>
+            </div>
+            <div class="header-right">
+                {% if request.user.is_authenticated %}
+                    <span class="corporate-name">{{ user.email }}</span>
+                    <a href="{% url "account_logout" %}" class="logout" v-cloak>[[ $t('logout') ]]</a>
+                {% endif %}
+            </div>
+        </header>
+        <section class="main-section">
+            {% csrf_token %}
+            {% include 'includes/sidebar.html' %}
+            <div class="main-content">
+                <router-view></router-view>
+            </div>
+            <div id="loading-overlay" class="loading-overlay" v-if="loading===true" v-cloak>
+                [[ $t('loading') ]]&#8230;
+                <img src="{% static 'img/loading.svg' %}">
+            </div>
+        </section>
+    </div>
 {% endblock content %}
 
 {% block extra_js %}

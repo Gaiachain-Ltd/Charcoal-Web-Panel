@@ -93,7 +93,12 @@ const messages = {
         blockchain_transaction: 'Blockchain transaction',
         header_signature: 'Header signature',
         payload: 'Payload',
-        loading: 'Loading'
+        loading: 'Loading',
+        dashboard: 'Dashboard',
+        logout: 'Logout',
+        email_address: 'E-mail address',
+        password: 'Password',
+        connection: 'Connection'
     },
     fr: {
         search: 'Search',
@@ -178,7 +183,12 @@ const messages = {
         blockchain_transaction: 'Blockchain transaction',
         header_signature: 'Header signature',
         payload: 'Payload',
-        loading: 'Loading'
+        loading: 'Loading',
+        dashboard: 'Dashboard',
+        logout: 'Logout',
+        email_address: 'E-mail address',
+        password: 'Password',
+        connection: 'Connection'
     },
 };
 

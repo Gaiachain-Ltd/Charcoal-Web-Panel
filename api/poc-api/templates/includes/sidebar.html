@@ -1,11 +1,9 @@
-{% load i18n %}
-{% load staticfiles %}
 
 <div class="sidebar" id="sidebar" v-cloak>
     <router-link to="/traceability" v-slot="{ href, route, navigate, isActive, isExactActive }">
         <div id="tracability" class='menu-element' @click="navigate" :class="{ 'active-element': isActive }">
             <i class="tracability-icon"></i>
-            [[ $t('tracability') ]]
+            [[ $t('traceability') ]]
         </div>
     </router-link>
     <router-link to="/calendar" v-slot="{ href, route, navigate, isActive, isExactActive }">
