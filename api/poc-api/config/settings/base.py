@@ -182,7 +182,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated'
     ],
     'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
-    'DEFAULT_PAGINATION_CLASS': 'apps.entities.pagination.LimitOffsetPagination',
+    'DEFAULT_PAGINATION_CLASS': 'apps.api.v1.entities.pagination.LimitOffsetPagination',
     'PAGE_SIZE': None,
 }
 

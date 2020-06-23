@@ -24,12 +24,12 @@ from apps.entities.models import (
 from apps.additional_data.models import (
     Parcel, Village
 )
-from apps.users.serializers import (
+from apps.api.v1.users.serializers import (
     UserSerializer,
 )
 from apps.additional_data.exceptions import InvalidAgentRoleError
-from apps.entities.exceptions import PackageAlreadyExistException, EntityAlreadyExistException
-from apps.entities.utils import unix_to_datetime_tz
+from apps.api.v1.entities.exceptions import EntityAlreadyExistException
+from apps.api.v1.entities.utils import unix_to_datetime_tz
 from protos.entity_pb2 import Package as PackageProto
 
 from google.protobuf.message import DecodeError

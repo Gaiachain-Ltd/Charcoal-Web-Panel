@@ -103,7 +103,7 @@ let Packages = Vue.component('packages', {
                     to_timestamp: dateFns.endOfDay(this.date).getTime() / 1000 | 0
                 }}
             }
-            let url = '/entities/packages/?' + new URLSearchParams(params).toString();
+            let url = '/api/v1/entities/packages/?' + new URLSearchParams(params).toString();
             this.$http.get(url).then(function (response) {
                 this.packages = response.data.results;
                 this.$root.$data.loading = false;

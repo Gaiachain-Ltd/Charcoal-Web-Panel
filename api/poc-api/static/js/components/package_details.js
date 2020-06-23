@@ -329,7 +329,7 @@ let PackageDetails = Vue.component('package-details', {
         },
         getPackage: function (type, args = "", search = false) {
             this.$root.$data.loading = true;
-            let url = `/entities/packages/${this.$route.params.id}/get_package_details/`;
+            let url = `/api/v1/entities/packages/${this.$route.params.id}/get_package_details/`;
             this.$http.get(url).then(function (response) {
                 this.package = response.data;
                 document.getElementById('current-page-name').innerHTML = this.package.type_display.toUpperCase() + ' ID ' + this.$t('details')

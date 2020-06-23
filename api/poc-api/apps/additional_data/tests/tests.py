@@ -6,10 +6,10 @@ from rest_framework.test import APIClient
 from apps.users.tests.factories import (UserFactory)
 from apps.users.models import Role
 from apps.additional_data.tests.factories import (
-    CompanyFactory, VillageFactory, ProducerFactory, ParcelFactory, DestinationFactory
+    VillageFactory, ParcelFactory, DestinationFactory
 )
 from apps.additional_data.models import (
-    Company, Village, Producer, Parcel, Destination
+    Village, Parcel, Destination
 )
 
 
@@ -20,12 +20,8 @@ class MainTestCase(APITestCase):
     def setUp(self):
         self.client = APIClient()
         self.super_user = UserFactory(email='dont@mail.me', role=SUPER_ROLE)
-        self.company = CompanyFactory()
-        self.super_user.company = self.company
-        self.super_user.save()
         self.village = VillageFactory()
-        self.producer = ProducerFactory(village=self.village)
-        self.parcel = ParcelFactory(producer=self.producer)
+        self.parcel = ParcelFactory()
         self.destination = DestinationFactory()
 
 

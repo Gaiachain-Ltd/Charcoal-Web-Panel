@@ -1,7 +1,7 @@
 from django.urls import path
 
 from rest_framework_simplejwt import views as jwt_views
-from apps.users.views import RegistrationAPIView, RoleListAPIView, UserListAPIView, TokenObtainPairView
+from apps.api.v1.users.views import RegistrationAPIView, RoleListAPIView, UserListAPIView, TokenObtainPairView
 from config.swagger_schema import CustomSchema
 
 app_name = 'users'

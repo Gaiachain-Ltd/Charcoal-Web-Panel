@@ -139,7 +139,7 @@ let Replantation = Vue.component('replantation', {
         updateData: function () {
             this.$root.$data.loading = true;
             let params = {'year': this.selectedYear};
-            let url = '/entities/replantation/?' + new URLSearchParams(params).toString();
+            let url = '/api/v1/entities/replantation/?' + new URLSearchParams(params).toString();
             this.$http.get(url).then(function (response) {
                 this.replantations = response.data.results;
                 this.$root.$data.loading = false;

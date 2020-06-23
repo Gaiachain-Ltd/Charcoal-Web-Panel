@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 import factory
 
-from apps.additional_data.models import Company
-
 
 class VillageFactory(factory.django.DjangoModelFactory):
     name = factory.Sequence(lambda n: 'village-{0}'.format(n))

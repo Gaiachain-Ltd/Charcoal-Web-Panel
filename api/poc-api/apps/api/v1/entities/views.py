@@ -12,14 +12,14 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from apps.entities.models import Entity,  Package, Oven, Replantation
-from apps.entities.serializers import (
+from apps.api.v1.entities.serializers import (
     EntitySerializer, PackagePidSerializer, EntityListSerializer, EntityBatchSerializer, EntityBatchListSerializer,
-    PackagesSerializer, PackageDetailsSerializer, ChainSeriazlier, OvenSimpleSerializer, ReplantationSerializer,
+    PackagesSerializer, PackageDetailsSerializer, OvenSimpleSerializer, ReplantationSerializer,
     ReplantationListSerializer
 )
-from apps.additional_data.mixins import MultiSerializerMixin
-from apps.entities.utils import unix_to_datetime_tz
-from apps.entities.pagination import LimitOffsetPagination
+from apps.api.v1.additional_data.mixins import MultiSerializerMixin
+from apps.api.v1.entities.utils import unix_to_datetime_tz
+from apps.api.v1.entities.pagination import LimitOffsetPagination
 from config.swagger_schema import CustomSchema
 
 

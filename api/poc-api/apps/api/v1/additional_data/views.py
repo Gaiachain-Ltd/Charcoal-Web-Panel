@@ -2,10 +2,9 @@ from rest_framework.viewsets import ViewSet, ModelViewSet
 from rest_framework.filters import SearchFilter
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny
 
 from apps.additional_data.models import Village, Destination,  Parcel, TreeSpecie, OvenType
-from apps.additional_data.serializers import (
+from apps.api.v1.additional_data.serializers import (
     VillageSerializer, DestinationSerializer, ParcelSerializer, TreeSpecieSerializer, OvenTypeSerializer
 )
 from config.swagger_schema import CustomSchema

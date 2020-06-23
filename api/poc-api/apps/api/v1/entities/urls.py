@@ -1,6 +1,6 @@
 from rest_framework.routers import DefaultRouter
 
-from apps.entities.views import (
+from apps.api.v1.entities.views import (
     EntityViewSet, RelationsViewSet, PackageViewSet, ReplantationViewSet
 )
 

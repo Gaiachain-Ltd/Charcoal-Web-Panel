@@ -84,7 +84,7 @@ let PackageMap = Vue.component('package-map', {
             }
             else {
                 this.$root.$data.loading = true;
-                this.$http.get(`/entities/packages/${this.packageId}/get_package_chain/`).then(function (response) {
+                this.$http.get(`/api/v1/entities/packages/${this.packageId}/get_package_chain/`).then(function (response) {
                     this.packages = response.data;
                     this.loadMap()
                 }).catch(function (err) {

@@ -1,6 +1,6 @@
 from rest_framework.routers import DefaultRouter
 
-from apps.additional_data.views import (
+from apps.api.v1.additional_data.views import (
     AdditionalDataViewSet, ParcelViewSet, VillageViewSet, DestinationViewSet, TreeSpecieViewSet, OvenTypeViewSet
 )
 

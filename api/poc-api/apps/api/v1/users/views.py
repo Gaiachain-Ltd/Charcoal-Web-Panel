@@ -8,7 +8,7 @@ from rest_framework.permissions import AllowAny
 
 from rest_framework_simplejwt.views import TokenObtainPairView as CoreTokenObtainPairView
 
-from apps.users.serializers import RegistrationSerializer, RoleSerializer, UserSerializer, TokenObtainPairSerializer
+from apps.api.v1.users.serializers import RegistrationSerializer, RoleSerializer, UserSerializer, TokenObtainPairSerializer
 from apps.users.models import Role
 from config.swagger_schema import CustomSchema
 
