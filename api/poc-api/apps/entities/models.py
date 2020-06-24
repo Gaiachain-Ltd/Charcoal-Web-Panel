@@ -382,6 +382,7 @@ class ReceptionImage(models.Model):
 
 
 class Reception(ActionAbstract):
+    reception_date = models.PositiveIntegerField(verbose_name=_('Reception date'), null=True)
 
     def get_proto_status(self):
         return EntityProto.RECEPTION

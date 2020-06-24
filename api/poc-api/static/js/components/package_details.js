@@ -231,7 +231,7 @@ let PackageDetails = Vue.component('package-details', {
                                 </div>
                                 <div class="entity-property">
                                     <div class="entity-property-name">[[ $t('reception_date') ]]</div>
-                                    <div class="entity-property-value">[[ reception.entity.timestamp | timestampToDate ]]</div>
+                                    <div class="entity-property-value">[[ reception.reception_date | timestampToDate ]]</div>
                                 </div>
                                 <div class="entity-property">
                                     <div class="entity-property-name">[[ $t('scanned_bags') ]]</div>
