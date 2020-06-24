@@ -90,7 +90,11 @@ class EntityViewSet(ViewSet, MultiSerializerMixin):
         ser = self.get_serializer(data=request.data, context={'request': request})
         ser.is_valid(raise_exception=True)
         ser.save()
-        return Response({'pid': ser.instance.package.pid}, status=status.HTTP_200_OK)
+        return Response({
+            'pid': ser.instance.package.pid,
+            'package_id': ser.instance.package_id,
+            'timestamp': ser.instance.timestamp
+        }, status=status.HTTP_200_OK)
 
     @action(methods=['get'], detail=False)
     def plots(self, request):
