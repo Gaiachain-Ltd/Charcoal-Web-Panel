@@ -366,7 +366,9 @@ let PackageDetails = Vue.component('package-details', {
             return dateFns.format(new Date(val * 1000), 'YYYY-MM-DD HH:mm');
         },
         timestampToDate(val) {
-            return dateFns.format(new Date(val * 1000), 'DD/MM/YYYY');
+            if (val)
+                return dateFns.format(new Date(val * 1000), 'DD/MM/YYYY');
+            return ''
         }
     },
 });

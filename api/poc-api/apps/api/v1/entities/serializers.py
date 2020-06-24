@@ -495,7 +495,9 @@ class ReceptionSerializer(BaseEntityActionSerializer, serializers.ModelSerialize
         fields = ('entity', 'bags', 'scanned_bags', 'documents_photos', 'receipt_photos', 'reception_date_display', 'reception_date')
 
     def get_reception_date_display(self, obj):
-        return self.parse_timestamp_to_str_date(obj.reception_date)
+        if obj.reception_date:
+            return self.parse_timestamp_to_str_date(obj.reception_date)
+        return ''
 
     def get_scanned_bags(self, obj):
         return obj.bags.count()
