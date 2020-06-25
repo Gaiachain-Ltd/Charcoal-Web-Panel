@@ -30,6 +30,7 @@ class Gaiachain(SimpleEnum):
 
 class Namespaces(SimpleEnum):
     GA_NAMESPACE = hashlib.sha512("gaiachain".encode("utf-8")).hexdigest()[:6]
+    # hex: 0-9 a-f
     AGENT = "ae"
     ENTITY = "e0"
     ENTITY_BATCH = "eb"

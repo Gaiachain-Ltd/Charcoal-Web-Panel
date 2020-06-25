@@ -50,29 +50,27 @@ message Entity {
     uint64 number_of_trees = 12;
 
     // step 3
-    string oven = 15;
-    string oven_type = 16;
-    uint64 oven_height = 17;
-    uint64 oven_width = 18;
-    uint64 oven_length = 19;
+    string oven = 13; // also used at step 4
+    string oven_type = 14;
+    uint64 oven_height = 15;
+    uint64 oven_width = 16;
+    uint64 oven_length = 17;
 
-    // repeated Entity entities = 12;
     // step 4
-    repeated string ovens = 20;
-    uint64 end_date = 21;
+    uint64 end_date = 18;
 
     // step 5
-    uint64 loading_date = 22;
-    string plate_number = 23;
-    string destination = 24;
-    repeated string bags = 26; // also used at step 6
+    uint64 loading_date = 19;
+    string plate_number = 20;
+    string destination = 21;
+    repeated string bags = 22; // also used at step 6
 
     // step 6
-    repeated string documents_photos = 29;
-    repeated string receipt_photos = 30;
+    repeated string documents_photos = 23;
+    repeated string receipt_photos = 24;
 
-    Location location = 31;
-    Agent user = 32;
+    Location location = 25;
+    Agent user = 26;
 
 }
 

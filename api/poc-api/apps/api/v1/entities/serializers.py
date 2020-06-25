@@ -189,15 +189,18 @@ class EntitySerializer(serializers.ModelSerializer):
     def _create_carbonization_ending(entity, properties_data):
         if not (entity.user.is_carbonizer or entity.user.is_superuser_role):
             raise InvalidAgentRoleError("Only Carbonizer can add carbonization ending.")
-        oven_ids = properties_data.pop('oven_ids')
-
-        carbonization_ending, created = CarbonizationEnding.objects.get_or_create(
-            entity=entity,
-            **properties_data
-        )
-        if created:
-            Oven.objects.filter(id__in=oven_ids).update(carbonization_ending_id=carbonization_ending.id)
-            entity.update_in_chain()
+        oven_id = properties_data.pop('oven_id')
+        try:
+            oven = Oven.objects.get(oven_id=oven_id, carbonization_beginning__entity__package=entity.package)
+            carbonization_ending, created = CarbonizationEnding.objects.get_or_create(
+                entity=entity,
+                oven=oven,
+                **properties_data
+            )
+            if created:
+                entity.update_in_chain()
+        except Oven.DoesNotExist:
+            raise NotFound(detail='Oven not found.')
 
     @staticmethod
     def _create_loading_transport(entity, properties_data):

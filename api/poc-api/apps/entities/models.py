@@ -246,10 +246,6 @@ class LoggingEnding(ActionAbstract):
 
 class Oven(models.Model):
     oven_id = models.CharField(max_length=1, verbose_name=_('Oven ID'))
-    carbonization_ending = models.ForeignKey(
-        'entities.CarbonizationEnding', verbose_name=_('Carbonization Ending'),
-        on_delete=models.CASCADE, null=True, related_name='ovens'
-    )
 
 
 class CarbonizationBeginning(ActionAbstract):
@@ -305,6 +301,10 @@ class CarbonizationBeginning(ActionAbstract):
 
 class CarbonizationEnding(ActionAbstract):
     end_date = models.PositiveIntegerField(verbose_name=_('End date'))
+    oven = models.OneToOneField(
+        Oven, verbose_name=_('Oven'), null=True,
+        related_name='carbonization_ending', on_delete=models.CASCADE
+    )
 
     @property
     def short_description(self):
@@ -312,8 +312,7 @@ class CarbonizationEnding(ActionAbstract):
 
     @property
     def web_description(self):
-        ovens_ids = ', '.join(list(self.ovens.values_list('oven_id', flat=True)))
-        return _(f'Oven{"s" if self.ovens.count() > 1 else ""} {ovens_ids} - Carbonization has ended')
+        return _(f'Oven {self.oven.oven_id} - Carbonization has ended')
 
     def get_proto_status(self):
         return EntityProto.CARBONIZATION_ENDING
@@ -321,7 +320,7 @@ class CarbonizationEnding(ActionAbstract):
     def get_proto_data(self):
         return {
             'end_date': self.end_date,
-            'ovens': list(self.ovens.values_list('oven_id', flat=True))
+            'oven': self.oven.oven_id
         }
 
 
