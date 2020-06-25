@@ -146,6 +146,7 @@ class EntitySerializer(serializers.ModelSerializer):
         parcel_id = properties_data.pop('parcel')
         village_id = properties_data.pop('village')
         tree_specie_id = properties_data.pop('tree_specie')
+        properties_data['beginning_date'] = properties_data.get('beginning_date') or properties_data.pop('event_date')
         logging_beginning, created = LoggingBeginning.objects.get_or_create(
             entity=entity,
             parcel_id=parcel_id,
@@ -160,6 +161,7 @@ class EntitySerializer(serializers.ModelSerializer):
     def _create_logging_ending(entity, properties_data):
         if not (entity.user.is_logger or entity.user.is_carbonizer or entity.user.is_superuser_role):
             raise InvalidAgentRoleError("Only Logger or Carbonizer can add logging ending.")
+        properties_data['ending_date'] = properties_data.get('ending_date') or properties_data.pop('event_date')
         logging_ending, created = LoggingEnding.objects.get_or_create(
             entity=entity,
             **properties_data
@@ -176,6 +178,7 @@ class EntitySerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Oven ID already exists!')
         oven_type_id = properties_data.pop('oven_type')
         oven = Oven.objects.create(oven_id=oven_id)
+        properties_data['beginning_date'] = properties_data.get('beginning_date') or properties_data.pop('event_date')
         carbonization_beginning, created = CarbonizationBeginning.objects.get_or_create(
             entity=entity,
             oven=oven,
@@ -192,6 +195,7 @@ class EntitySerializer(serializers.ModelSerializer):
         oven_id = properties_data.pop('oven_id')
         try:
             oven = Oven.objects.get(oven_id=oven_id, carbonization_beginning__entity__package=entity.package)
+            properties_data['end_date'] = properties_data.get('end_date') or properties_data.pop('event_date')
             carbonization_ending, created = CarbonizationEnding.objects.get_or_create(
                 entity=entity,
                 oven=oven,
@@ -208,6 +212,7 @@ class EntitySerializer(serializers.ModelSerializer):
             raise InvalidAgentRoleError("Only Carbonizer can add loading transport.")
         bags_qr_codes = properties_data.pop('bags_qr_codes')
         destination_id = properties_data.pop('destination')
+        properties_data['loading_date'] = properties_data.get('loading_date') or properties_data.pop('event_date')
         loading_transport, created = LoadingTransport.objects.get_or_create(
             entity=entity,
             destination_id=destination_id,
@@ -227,6 +232,7 @@ class EntitySerializer(serializers.ModelSerializer):
         bags_qr_codes = properties_data.pop('bags_qr_codes')
         documents_photos = properties_data.pop('documents_photos')
         receipt_photos = properties_data.pop('receipt_photos')
+        properties_data['reception_date'] = properties_data.get('reception_date') or properties_data.pop('event_date')
         reception, created = Reception.objects.get_or_create(
             entity=entity,
             **properties_data

@@ -390,7 +390,8 @@ class Reception(ActionAbstract):
         return {
             'documents_photos': list(self.images.filter(type=ReceptionImage.DOCUMENT).values_list('image', flat=True)),
             'receipt_photos': list(self.images.filter(type=ReceptionImage.RECEIPT).values_list('image', flat=True)),
-            'bags': list(self.bags.values_list('qr_code', flat=True))
+            'bags': list(self.bags.values_list('qr_code', flat=True)),
+            'reception_date': self.reception_date
         }
 
     @property

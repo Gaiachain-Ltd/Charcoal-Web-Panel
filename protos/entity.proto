@@ -68,9 +68,10 @@ message Entity {
     // step 6
     repeated string documents_photos = 23;
     repeated string receipt_photos = 24;
+    uint64 reception_date = 25;
 
-    Location location = 25;
-    Agent user = 26;
+    Location location = 26;
+    Agent user = 27;
 
 }
 
