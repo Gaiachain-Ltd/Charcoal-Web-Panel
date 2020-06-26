@@ -140,8 +140,7 @@ class EntityViewSet(ViewSet, MultiSerializerMixin):
         queryset = Package.objects.filter(
             type=Package.HARVEST,
             package_entities__user=request.user,
-            last_action__action=last_action,
-            trucks__isnull=True
+            last_action__action=last_action
         ).distinct()
         page = self.paginator.paginate_queryset(queryset=queryset, request=request)
         if page is not None:
