@@ -4,7 +4,7 @@ from apps.api.v1.entities.views import (
     EntityViewSet, PackageViewSet, ReplantationViewSet
 )
 
-app_name = ''
+app_name = 'entities'
 
 router = DefaultRouter()
 router.register('', EntityViewSet, base_name='entities')

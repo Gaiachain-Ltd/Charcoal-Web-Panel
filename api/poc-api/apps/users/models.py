@@ -46,7 +46,7 @@ class User(AbstractUser):
 
     @property
     def is_superuser_role(self):
-        return (self.role is not None and self.role.name == 'SUPER_USER') or self.is_superuser
+        return self.is_superuser or (self.role is not None and self.role.name == 'SUPER_USER')
 
     @property
     def is_director(self):
