@@ -3,7 +3,7 @@ import logging
 from typing import TYPE_CHECKING
 
 from protos.entity_pb2 import Package
-from protos.enums import Namespaces, Tbl
+from protos.enums import Namespaces
 from apps.blockchain.handlers._base import HandlerBase
 
 if TYPE_CHECKING:

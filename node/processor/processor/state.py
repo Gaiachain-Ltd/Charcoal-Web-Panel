@@ -1,7 +1,7 @@
 import logging
 
 from protos.agent_pb2 import Agent, AgentContainer
-from protos.entity_pb2 import Entity, EntityBatch, Package, Replantation
+from protos.entity_pb2 import Entity, Package, Replantation
 from protos.enums import Namespaces
 
 LOG = logging.getLogger(__name__)
@@ -53,26 +53,6 @@ class State:
         package = Package()
         package.ParseFromString(package_list[0].data)
         return package
-
-    def set_entity_batch(self, entity_batch: EntityBatch):
-        address = Namespaces.get_address(
-            entity_batch.id, subnamespace=Namespaces.ENTITY_BATCH
-        )
-        self._context.set_state({address: entity_batch.SerializeToString()})
-
-    def get_entity_batch(self, entity_batch_id: str):
-        address = Namespaces.get_address(
-            entity_batch_id, subnamespace=Namespaces.ENTITY_BATCH
-        )
-        entity_batches_list = self._context.get_state([address])
-
-        if not entity_batches_list:
-            LOG.warning("No entities batch found.")
-            return
-
-        entity_batch = EntityBatch()
-        entity_batch.ParseFromString(entity_batches_list[0].data)
-        return entity_batch
 
     def set_replantation(self, replantation: Replantation):
         address = Namespaces.get_address(str(replantation.id), subnamespace=Namespaces.REPLANTATION)

@@ -13,12 +13,11 @@ from rest_framework.response import Response
 
 from apps.entities.models import Entity,  Package, Oven, Replantation
 from apps.api.v1.entities.serializers import (
-    EntitySerializer, PackagePidSerializer, EntityListSerializer, EntityBatchSerializer, EntityBatchListSerializer,
+    EntitySerializer, PackagePidSerializer, EntityListSerializer,
     PackagesSerializer, PackageDetailsSerializer, OvenSimpleSerializer, ReplantationSerializer,
     ReplantationListSerializer
 )
 from apps.api.v1.additional_data.mixins import MultiSerializerMixin
-from apps.api.v1.entities.utils import unix_to_datetime_tz
 from apps.api.v1.entities.pagination import LimitOffsetPagination
 from config.swagger_schema import CustomSchema
 
@@ -35,7 +34,6 @@ class EntityViewSet(ViewSet, MultiSerializerMixin):
     custom_serializer_classes = {
         'new': EntitySerializer,
         'harvests': PackagePidSerializer,
-        'batch': EntityBatchSerializer,
     }
 
     @action(methods=['get'], detail=False)
@@ -179,22 +177,6 @@ class EntityViewSet(ViewSet, MultiSerializerMixin):
         serializer = OvenSimpleSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @action(methods=['get'], detail=True, lookup_field='qr_code')
-    def get_pid(self, request, pk=None):
-        """
-        ---
-        desc: Details API for package
-        ret: details for package by qr_code
-        input:
-        -
-            name: qr_code
-            required: true
-            location: path
-        ---
-        """
-        package = get_object_or_404(Package, qr_code=pk)
-        return Response(package.pid, status=status.HTTP_200_OK)
-
     def _filter_entities(self, request, additional_filters={}):
         from_timestamp = request.GET.get('from_timestamp')
         to_timestamp = request.GET.get('to_timestamp')
@@ -254,113 +236,6 @@ class EntityViewSet(ViewSet, MultiSerializerMixin):
             return paginator.get_paginated_response(page)
         return Response(ser.data, status=status.HTTP_200_OK)
 
-    @action(methods=['post'], detail=False, serializer_class=EntityBatchSerializer)
-    def batch(self, request):
-        """
-        ---
-        desc: Batch list API for actions
-        ret: List of entities with all details by list of pids
-        input:
-        -
-            name: pids
-            required: false
-            location: body
-            type: dict
-        -
-            name: from_timestamp
-            required: false
-            location: query
-            type: integer
-        -
-            name: from_timestamp
-            required: false
-            location: query
-            type: integer
-        -
-            name: to_timestamp
-            required: false
-            location: query
-            type: integer
-        -
-            name: keyword
-            required: false
-            location: query
-        -
-            name: limit
-            required: false
-            location: query
-            type: integer
-        -
-            name: offset
-            required: false
-            location: query
-            type: integer
-        """
-        additional_filters = {}
-        if 'pids' in request.data:
-            ser = self.serializer_class(data={'pids': request.data['pids']})
-            ser.is_valid(raise_exception=True)
-            additional_filters = {'package__pid__in': ser.validated_data['pids']} if ser.validated_data['pids'] else {}
-        filter_kwargs = self._filter_entities(request, additional_filters=additional_filters)
-        entities = self.queryset.filter(**filter_kwargs)
-        ser = EntityBatchListSerializer(entities, many=True)
-        paginator = self.pagination_class()
-        page = paginator.paginate_queryset(queryset=ser.data, request=request)
-        if page is not None:
-            return paginator.get_paginated_response(page)
-        return Response(ser.data, status=status.HTTP_200_OK)
-
-    @action(methods=['get'], detail=False, serializer_class=EntityBatchSerializer)
-    def batch_web(self, request):
-        """
-        ---
-        desc: Batch list API for actions
-        ret: List of entities with all details by list of pids
-        input:
-        -
-            name: pids
-            required: false
-            location: body
-            type: dict
-        -
-            name: from_timestamp
-            required: false
-            location: query
-            type: integer
-        -
-            name: from_timestamp
-            required: false
-            location: query
-            type: integer
-        -
-            name: to_timestamp
-            required: false
-            location: query
-            type: integer
-        -
-            name: keyword
-            required: false
-            location: query
-        -
-            name: limit
-            required: false
-            location: query
-            type: integer
-        -
-            name: offset
-            required: false
-            location: query
-            type: integer
-        """
-        filter_kwargs = self._filter_entities(request)
-        entities = self.queryset.filter(**filter_kwargs).exclude(action=Entity.INITIAL)
-        ser = EntityBatchListSerializer(entities, many=True)
-        paginator = self.pagination_class()
-        page = paginator.paginate_queryset(queryset=ser.data, request=request)
-        if page is not None:
-            return paginator.get_paginated_response(page)
-        return Response(ser.data, status=status.HTTP_200_OK)
-
     @action(methods=['get'], detail=False)
     def dots(self, request):
         dates = json.loads(request.query_params.get('dates', None))
@@ -375,67 +250,6 @@ class EntityViewSet(ViewSet, MultiSerializerMixin):
             )
             response[start_timestamp] = available_actions
         return Response(response, status=status.HTTP_200_OK)
-
-
-class RelationsViewSet(ViewSet):
-    """
-    Viewset for relations between entities
-    """
-    pagination_class = LimitOffsetPagination
-    serializer_class = EntityBatchSerializer
-    schema = CustomSchema()
-
-    def _filter_entities(self, request, additional_filters={}):
-        from_timestamp = unix_to_datetime_tz(request.GET.get('from_timestamp'))
-        to_timestamp = unix_to_datetime_tz(request.GET.get('to_timestamp'))
-
-        filter_kwargs = {}
-        if from_timestamp and to_timestamp:
-            filter_kwargs['package_entities__timestamp__range'] = (from_timestamp, to_timestamp)
-        elif from_timestamp and not to_timestamp:
-            filter_kwargs['package_entities__timestamp__gte'] = from_timestamp
-        elif to_timestamp and not from_timestamp:
-            filter_kwargs['package_entities__timestamp__lte'] = to_timestamp
-        if request and 'keyword' in request.query_params and len(request.query_params['keyword']) > 0:
-            filter_kwargs['pid__icontains'] = request.query_params['keyword']
-
-        filter_kwargs = {**filter_kwargs, **additional_filters}
-
-        return filter_kwargs
-
-    @action(methods=['post'], detail=False)
-    def batch(self, request):
-        """
-        Batch of relations
-        """
-        ser = EntityBatchSerializer(data={'pids': request.data['pids']})
-        ser.is_valid(raise_exception=True)
-        additional_filters = {'pid__in': ser.validated_data['pids']} if ser.validated_data['pids'] else {}
-        filter_kwargs = self._filter_entities(request, additional_filters=additional_filters)
-        packages = Package.objects.filter(**filter_kwargs)
-        response_data = []
-        for p in packages:
-            if p.type == Package.HARVEST:
-                related_pids = [p.sac.pid] if p.sac else []
-                response_data.append({
-                    p.pid: related_pids
-                })
-            elif p.type == Package.SAC:
-                related_pids = list(p.package_harvests.values_list('pid', flat=True))
-                if p.lot:
-                    related_pids.extend([p.lot.pid])
-                response_data.append({
-                    p.pid: related_pids
-                })
-            elif p.type == Package.LOT:
-                response_data.append({
-                    p.pid: list(p.package_sacs.values_list('pid', flat=True))
-                })
-        paginator = self.pagination_class()
-        page = paginator.paginate_queryset(queryset=response_data, request=request)
-        if page is not None:
-            return paginator.get_paginated_response(page)
-        return Response(response_data, status=status.HTTP_200_OK)
 
 
 class PackageViewSet(ViewSet, MultiSerializerMixin):

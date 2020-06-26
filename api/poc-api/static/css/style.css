@@ -1298,6 +1298,9 @@ section.main-section .main-content .content-data .replantation .replantation-end
   font-size: 14px;
   letter-spacing: -0.35px;
 }
+.start-content.map .content-data .map-details .calendar-details-packages .packages-data .packages .package .package-pid span {
+  cursor: default;
+}
 .start-content.map .content-data .map-details .calendar-details-packages .packages-data .packages .package .package-details .description, .start-content.map .content-data .map-details .calendar-details-packages .packages-data .packages .package .package-details .timestamp {
   font-size: 13px;
   letter-spacing: -0.33px;

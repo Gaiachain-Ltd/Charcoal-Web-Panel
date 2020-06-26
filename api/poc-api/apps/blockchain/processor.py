@@ -12,10 +12,7 @@ from sawtooth_sdk.protobuf.transaction_receipt_pb2 import StateChangeList
 from sawtooth_sdk.protobuf.validator_pb2 import Message
 from typing import TYPE_CHECKING, Optional, Type
 
-# from apps.blockchain.handlers.entity_batch import EntityBatchHandler
-from protos.enums import Namespaces, Tbl
-from apps.blockchain.handlers.agent import AgentHandler
-from apps.blockchain.handlers.entity import EntityHandler
+from protos.enums import Namespaces
 
 if TYPE_CHECKING:
     from concurrent.futures import Future

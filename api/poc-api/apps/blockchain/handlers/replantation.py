@@ -3,7 +3,7 @@ import logging
 from typing import TYPE_CHECKING
 
 from protos.entity_pb2 import Replantation
-from protos.enums import Namespaces, Tbl
+from protos.enums import Namespaces
 from apps.blockchain.handlers._base import HandlerBase
 
 if TYPE_CHECKING:
@@ -15,7 +15,7 @@ if TYPE_CHECKING:
     from sawtooth_sdk.protobuf.transaction_receipt_pb2 import StateChange
 
 
-class PackageHandler(HandlerBase):
+class ReplantationHandler(HandlerBase):
     prefix = Namespaces.get_prefix(Namespaces.REPLANTATION)
 
     @staticmethod
@@ -23,4 +23,4 @@ class PackageHandler(HandlerBase):
         LOG.info(f"Process changes with `ReplantationHandler`: {changes.address}")
         replantation = Replantation()
         replantation.ParseFromString(changes.value)
-        LOG.debug(f"Package: {replantation.id}")
+        LOG.debug(f"Replantation: {replantation.id}")

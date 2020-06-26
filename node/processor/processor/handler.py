@@ -5,7 +5,7 @@ from sawtooth_sdk.processor.handler import TransactionHandler
 from processor.payload import Payload
 from processor.state import State
 from protos.agent_pb2 import Agent
-from protos.entity_pb2 import EntityBatch, Entity, Package
+from protos.entity_pb2 import Entity, Package
 from protos.enums import Gaiachain, Namespaces
 from protos.payload_pb2 import SCPayload
 
@@ -39,10 +39,6 @@ class GaiachainTransactionHandler(TransactionHandler):
             self._create_package(payload, state, signer)
         elif payload.action == SCPayload.UPDATE_PACKAGE:
             self._update_package(payload, state, signer)
-        elif payload.action == SCPayload.CREATE_ENTITY_BATCH:
-            self._create_entity_batch(payload, state, signer)
-        elif payload.action == SCPayload.MOVE_ENTITY_BATCH:
-            self._move_entity_batch(payload, state, signer)
         elif payload.action == SCPayload.CREATE_REPLANTATION:
             self._create_replantation(payload, state, signer)
 
@@ -91,59 +87,6 @@ class GaiachainTransactionHandler(TransactionHandler):
                 return
         except AttributeError as e:
             LOG.info(f"Error {e}")
-
-    def _create_entity_batch(self, payload: Payload, state: State, signer: str):
-        entities = payload.data.entities
-        # todo: use proper generator in full app
-        batch_id = entities[0].id
-
-        for entity in entities:
-            entity.entity_batch_id = batch_id
-            # entity.assignment_timestamp = payload.timestamp
-            state.set_entity(entity)
-
-        entity_batch = EntityBatch(
-            id=batch_id,
-            # owner_public_key=signer,
-            entities=entities,
-            status=Entity.HARVEST,
-        )
-        state.set_entity_batch(entity_batch)
-
-    def _move_entity_batch(self, payload: Payload, state: State, signer: str):
-        entity_batch_id = payload.data.entity_batch_id
-        entity_batch = state.get_entity_batch(entity_batch_id)
-
-        # owner = state.get_agent(entity_batch.owner_public_key)
-        agent = state.get_agent(signer)
-        status = entity_batch.status
-        new_status = payload.data.status
-
-        if self._allowed_to_change_status(agent, status, new_status):
-            # entity_batch.owner_public_key = signer
-            entity_batch.status = new_status
-            # if self._should_finish(agent, new_status):
-            #     entity_batch.finished = True
-            #     for entity in entity_batch.entities:
-            #         entity.finished_timestamp = payload.timestamp
-            #         state.set_entity(entity)
-            keys = []
-            if new_status == Entity.GRAIN_PROCESSING:
-                keys = ['breaking_date', 'end_fermentation_date', 'beans_volume']
-            elif new_status == Entity.SECTION_RECEPTION:
-                keys = ['reception_date', 'transport_date', 'buyer']
-            for entity in entity_batch.entities:
-                for key in keys:
-                    setattr(entity, key, getattr(payload.data, key))
-                state.set_entity(entity)
-
-            state.set_entity_batch(entity_batch)
-            return
-
-        # if self._allowed_to_move_between_agents(owner, agent, status, new_status):
-        #     entity_batch.owner_public_key = signer
-        #     entity_batch.status = new_status
-        #     state.set_entity_batch(entity_batch)
 
     def _allowed_to_add_entity_to_package(
         self,

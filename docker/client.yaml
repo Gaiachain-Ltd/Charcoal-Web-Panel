@@ -55,6 +55,7 @@ services:
       - ./entrypoints/sync.sh:/sync.sh
       - ./entrypoints/utils.sh:/utils.sh
       - ../protos/py/:/poc-api/protos
+      - ../api/poc-api/:/poc-api/
     networks:
       - validators
     command: bash /sync.sh

@@ -1,15 +1,10 @@
-import os
 import sys
-from logging.config import dictConfig
 
 import argparse
-import time
-import yaml
 
 from apps.blockchain.handlers.agent import AgentHandler
 from apps.blockchain.handlers.entity import EntityHandler
 from apps.blockchain.handlers.package import PackageHandler
-from apps.blockchain.handlers.entity_batch import EntityBatchHandler
 from apps.blockchain.handlers.replantation import ReplantationHandler
 from apps.blockchain.processor import SyncProcessor
 
@@ -30,7 +25,6 @@ def main(args=None):
         processor = SyncProcessor(url=opts.connect)
         processor.add_handler(AgentHandler)
         processor.add_handler(EntityHandler)
-        processor.add_handler(EntityBatchHandler)
         processor.add_handler(PackageHandler)
         processor.add_handler(ReplantationHandler)
         processor.start()

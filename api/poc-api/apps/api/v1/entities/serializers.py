@@ -10,7 +10,6 @@ from django.shortcuts import get_object_or_404, get_list_or_404
 from django.db import transaction
 from django.db.models import Q
 from django.contrib.gis.geos import Point
-from django.templatetags.static import static
 from django.conf import settings
 
 from rest_framework import serializers
@@ -21,39 +20,12 @@ from apps.entities.models import (
     Entity, Package, LoggingBeginning, LoggingEnding, CarbonizationBeginning, CarbonizationEnding, Oven,
     Bag, LoadingTransport, Reception, ReceptionImage, Replantation
 )
-from apps.additional_data.models import (
-    Parcel, Village
-)
-from apps.api.v1.users.serializers import (
-    UserSerializer,
-)
 from apps.additional_data.exceptions import InvalidAgentRoleError
 from apps.api.v1.entities.exceptions import EntityAlreadyExistException
-from apps.api.v1.entities.utils import unix_to_datetime_tz
 from protos.entity_pb2 import Package as PackageProto
 
 from google.protobuf.message import DecodeError
 from protos.payload_pb2 import SCPayload
-
-
-class VillageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Village
-        fields = ('name', 'id')
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['id'].read_only = False
-
-
-class ParcelSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Parcel
-        fields = ('name', 'id', )
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['id'].read_only = False
 
 
 class OvenSimpleSerializer(serializers.ModelSerializer):
@@ -61,12 +33,6 @@ class OvenSimpleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Oven
         fields = ('id', 'oven_id')
-
-
-class PackageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Package
-        fields = ('pid',)
 
 
 class EntitySerializer(serializers.ModelSerializer):
@@ -258,13 +224,6 @@ class PackagePidSerializer(serializers.ModelSerializer):
         return obj.last_action.action if obj.last_action else ""
 
 
-class EntityBatchSerializer(serializers.Serializer):
-    pids = serializers.ListField(
-        child=serializers.CharField(),
-        allow_empty=True
-    )
-
-
 class EntityListSerializer(serializers.ModelSerializer):
     pid = serializers.SerializerMethodField()
 
@@ -274,90 +233,6 @@ class EntityListSerializer(serializers.ModelSerializer):
 
     def get_pid(self, obj):
         return obj.package.pid
-
-
-class EntityBatchListSerializer(serializers.ModelSerializer):
-    pid = serializers.SerializerMethodField()
-    user = UserSerializer()
-    properties = serializers.SerializerMethodField()
-    qr_code = serializers.SerializerMethodField()
-    relations = serializers.SerializerMethodField()
-    location = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Entity
-        fields = ('pid', 'action', 'timestamp', 'user', 'qr_code', 'relations', 'properties', 'location')
-
-    def get_weight(self, obj):
-        if not obj.package:
-            return 0
-        return obj.package.weight or 0
-
-    def get_location(self, obj):
-        if not obj.location:
-            return {
-                'latitude': "",
-                'longitude': ""
-            }
-        return {
-            'latitude': obj.location.x,
-            'longitude': obj.location.y
-        }
-
-    def get_relations(self, obj):
-        related_pids = []
-        if obj.package.type == Package.HARVEST:
-            related_pids = [{'pid': obj.package.sac.pid, 'type': obj.package.sac.type}] if obj.package.sac else []
-        elif obj.package.type == Package.SAC:
-            related_pids = list(obj.package.package_harvests.values('pid', 'type'))
-            if obj.package.lot:
-                lot = {'pid': obj.package.lot.pid, 'type': obj.package.lot.type}
-                related_pids.append(lot)
-        elif obj.package.type == Package.LOT:
-            related_pids = list(obj.package.package_sacs.values('pid', 'type'))
-        return related_pids
-
-    def get_pid(self, obj):
-        return obj.package.pid
-
-    def get_qr_code(self, obj):
-        return ""
-
-    def get_properties(self, obj):
-        try:
-            properties = getattr(self, "_{}_properties".format(obj.get_action_display().lower().replace(' ', '_')))
-        except AttributeError:
-            return ""
-            # raise NotFound(detail='Action type "{}" not found.'.format(obj.get_action_display()))
-        return properties(obj)
-
-    @staticmethod
-    def _harvest_properties(obj):
-        return HarvestSerializer(obj.harvest).data
-
-    @staticmethod
-    def _breaking_properties(obj):
-        return BreakingSerializer(obj.breaking).data
-
-    @staticmethod
-    def _harvest_reception_properties(obj):
-        return ReceptionSerializer(obj.reception).data
-
-    @staticmethod
-    def _bagging_properties(obj):
-        return BaggingSerializer(obj.bagging).data
-
-    @staticmethod
-    def _lot_creation_properties(obj):
-        return LotCreationSerializer(obj.lotcreation).data
-
-    @staticmethod
-    def _transport_properties(obj):
-        return TransportSerializer(obj.transport).data
-
-    @staticmethod
-    def _lot_reception_properties(obj):
-        return LotReceptionSerializer(obj.lotreception).data
 
 
 class SimpleEntitySerializer(serializers.ModelSerializer):
@@ -663,68 +538,6 @@ class PackageDetailsSerializer(serializers.ModelSerializer):
 
     def _transport_properties(self, obj):
         return TruckPackageSerializer(obj, context=self.context).data
-
-
-class ChainSeriazlier(serializers.ModelSerializer):
-    icon_name = serializers.SerializerMethodField()
-    action_name = serializers.SerializerMethodField()
-    action_short_name = serializers.SerializerMethodField()
-    dates = serializers.SerializerMethodField()
-    location = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Entity
-        fields = ('id', 'icon_name', 'action_name', 'action_short_name', 'dates', 'location')
-
-    @staticmethod
-    def string_date(unix_date):
-        return unix_to_datetime_tz(unix_date).strftime('%d/%m/%Y') if unix_date else ""
-
-    def get_icon_name(self, obj):
-        return static("img/{}_icon.svg".format(Entity.CHILD_MODEL_NAMES[obj.action]))
-
-    def get_action_name(self, obj):
-        return obj.get_action_display()
-
-    def get_action_short_name(self, obj):
-        return obj.action
-
-    def get_dates(self, obj):
-        dates = ''
-        if obj.action == Entity.HARVEST:
-            dates = {
-                'harvest': self.string_date(obj.harvest.harvest_date)
-            }
-        elif obj.action == Entity.BREAKING:
-            dates = {
-                'breaking': self.string_date(obj.breaking.breaking_date),
-                'fermentation': self.string_date(obj.breaking.end_fermentation_date)
-            }
-        elif obj.action == Entity.HARVEST_RECEPTION:
-            dates = {
-                'reception': self.string_date(obj.reception.reception_date),
-                'transport_date': self.string_date(obj.reception.transport_date),
-            }
-        elif obj.action == Entity.BAGGING:
-            dates = {
-                'bagging': self.string_date(obj.timestamp),
-            }
-        elif obj.action == Entity.HARVEST_RECEPTION:
-            dates = {
-                'creation': self.string_date(obj.timestamp),
-            }
-        elif obj.action == Entity.TRANSPORT:
-            dates = {
-                'transport': self.string_date(obj.transport.transport_date),
-            }
-        elif obj.action == Entity.LOT_RECEPTION:
-            dates = {
-                'reception': self.string_date(obj.timestamp),
-            }
-        return dates
-
-    def get_location(self, obj):
-        return "{}, {}".format(obj.location.y, obj.location.x) if obj.location else ''
 
 
 class ReplantationSerializer(serializers.ModelSerializer):

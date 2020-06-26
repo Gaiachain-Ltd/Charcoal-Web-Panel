@@ -33,7 +33,6 @@ class Namespaces(SimpleEnum):
     # hex: 0-9 a-f
     AGENT = "ae"
     ENTITY = "e0"
-    ENTITY_BATCH = "eb"
     PACKAGE = "ac"
     REPLANTATION = "ea"
 
@@ -48,13 +47,3 @@ class Namespaces(SimpleEnum):
         length = -70 + len(prefix)
         encoded_name_end = hashlib.sha512(name.encode("utf-8")).hexdigest()[length:]
         return prefix + encoded_name_end
-
-
-class Tbl(SimpleEnum):
-    AGENTS = "agents"
-    BLOCKS = "blocks"
-    ENTITIES = "entities"
-    ENTITY_BATCHES = "batches"
-    ENTITY_EVENTS = "events"
-    PACKAGES = "packages"
-    REPLANTATIONS = "replantations"

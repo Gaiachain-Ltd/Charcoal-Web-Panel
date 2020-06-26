@@ -3,7 +3,7 @@ import logging
 from typing import TYPE_CHECKING
 
 from protos.agent_pb2 import AgentContainer
-from protos.enums import Namespaces, Tbl
+from protos.enums import Namespaces
 from apps.blockchain.handlers._base import HandlerBase
 
 LOG = logging.getLogger(__name__)

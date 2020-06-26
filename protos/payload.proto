@@ -9,10 +9,8 @@ message SCPayload {
     enum Action {
         CREATE_AGENT = 0;
         CREATE_PACKAGE = 1;
-        CREATE_ENTITY_BATCH = 2;
-        MOVE_ENTITY_BATCH = 3;
-        UPDATE_PACKAGE = 4;
-        CREATE_REPLANTATION = 5;
+        UPDATE_PACKAGE = 2;
+        CREATE_REPLANTATION = 3;
     }
 
     Action action = 1;
@@ -25,10 +23,8 @@ message SCPayload {
     // according to the Action.
     CreateAgentAction create_agent = 3;
     CreatePackageAction create_package = 4;
-    CreateEntityBatchAction create_entity_batch = 5;
-    MoveEntityBatchAction move_entity_batch = 6;
-    UpdatePackageAction update_package = 7;
-    CreateReplantationAction create_replantation = 8;
+    UpdatePackageAction update_package = 5;
+    CreateReplantationAction create_replantation = 6;
 }
 
 
@@ -43,25 +39,6 @@ message CreatePackageAction {
 message UpdatePackageAction {
     string id = 1;
     Entity entity = 2;
-}
-
-message CreateEntityBatchAction {
-    repeated Entity entities = 1;
-}
-
-message MoveEntityBatchAction {
-    string entity_batch_id = 1;
-    //EntityBatch.Status status = 2;
-
-    // step 2
-    uint64 breaking_date = 3;
-    uint64 end_fermentation_date = 4;
-    uint64 beans_volume = 5;
-
-    // step 3
-    uint64 reception_date = 6;
-    uint64 transport_date = 7;
-    string buyer = 8;
 }
 
 message CreateReplantationAction {

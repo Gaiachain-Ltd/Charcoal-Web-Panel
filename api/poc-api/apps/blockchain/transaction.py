@@ -11,7 +11,7 @@ from sawtooth_sdk.protobuf.transaction_pb2 import TransactionHeader, Transaction
 from sawtooth_signing import CryptoFactory
 
 from protos.agent_pb2 import Agent
-from protos.entity_pb2 import Entity, EntityBatch, Package, Replantation
+from protos.entity_pb2 import Entity, Package, Replantation
 from protos.enums import Gaiachain, Namespaces
 from protos.payload_pb2 import SCPayload
 
@@ -31,10 +31,7 @@ class PayloadFactory:
         """Action types"""
 
         CREATE_AGENT = "_create_agent_action"
-        CREATE_ENTITY = "_create_entity_action"
         CREATE_PACKAGE = "_create_package_action"
-        CREATE_ENTITY_BATCH = "_create_entity_batch_action"
-        UPDATE_ENTITY_BATCH = "_update_entity_batch_action"
         UPDATE_PACKAGE = "_update_package_action"
         CREATE_REPLANTATION = "_create_replantation_action"
 
@@ -57,30 +54,6 @@ class PayloadFactory:
         payload = PayloadFactory._create_payload()
         payload.action = SCPayload.CREATE_PACKAGE
         payload.create_package.package.CopyFrom(proto)
-        return payload
-
-    @staticmethod
-    def _create_entity_batch_action(proto: List[Entity], **kwargs) -> SCPayload:
-        payload = PayloadFactory._create_payload()
-        payload.action = SCPayload.CREATE_ENTITY_BATCH
-        payload.create_entity_batch.entities.extend(proto)
-        return payload
-
-    @staticmethod
-    def _update_entity_batch_action(proto: dict, **kwargs) -> SCPayload:
-        payload = PayloadFactory._create_payload()
-        payload.action = SCPayload.MOVE_ENTITY_BATCH
-        payload.move_entity_batch.entity_batch_id = proto.get("entity_batch_id")
-        status = proto.get("status")
-        payload.move_entity_batch.status = status
-
-        keys = []
-        if status == EntityBatch.Status.Value('GRAIN_PROCESSING'):
-            keys = ['breaking_date', 'end_fermentation_date', 'beans_volume']
-        elif status == EntityBatch.Status.Value('SECTION_RECEPTION'):
-            keys = ['reception_date', 'transport_date', 'buyer']
-        for key in keys:
-            setattr(payload.move_entity_batch, key, proto.get(key))
         return payload
 
     @staticmethod

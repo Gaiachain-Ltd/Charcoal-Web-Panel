@@ -75,18 +75,6 @@ message Entity {
 
 }
 
-message EntityBatch {
-    // Current owner public_key
-    // string owner_public_key = 1;
-
-    // Entities in bath.
-    repeated Entity entities = 1;
-
-    bool finished = 3;
-
-    string id = 4;
-}
-
 
 message Replantation {
     Package plot = 1;
