@@ -240,10 +240,20 @@ class SimpleEntitySerializer(serializers.ModelSerializer):
     description = serializers.CharField(source='web_description')
     timezone = serializers.SerializerMethodField()
     location_display = serializers.SerializerMethodField()
+    event_date = serializers.SerializerMethodField()
+    user_code = serializers.CharField(source='user.code')
 
     class Meta:
         model = Entity
-        fields = ('description', 'timestamp_display', 'timezone', 'location_display', 'timestamp', 'id')
+        fields = ('description', 'timestamp_display', 'timezone', 'location_display', 'timestamp', 'id', 'action',
+                  'event_date', 'user_code')
+
+    def get_event_date(self, obj):
+        action = getattr(obj, Entity.CHILD_MODEL_NAMES[obj.action])
+        for key in ('beginning_date', 'ending_date', 'end_date', 'loading_date', 'reception_date'):
+            if hasattr(action, key):
+                return getattr(action, key)
+        return 0
 
     def get_timezone(self, obj):
         return datetime.fromtimestamp(obj.timestamp, tz=pytz.timezone(settings.TIME_ZONE)).strftime('%Z%z')
@@ -258,13 +268,21 @@ class SimpleEntitySerializer(serializers.ModelSerializer):
 class PackagesSerializer(serializers.ModelSerializer):
     type_display = serializers.SerializerMethodField()
     entities = SimpleEntitySerializer(many=True, source='package_entities')
+    plot_has_replantation = serializers.SerializerMethodField()
 
     class Meta:
         model = Package
-        fields = ('id', 'pid', 'type', 'type_display', 'entities')
+        fields = ('id', 'pid', 'type', 'type_display', 'entities', 'plot_has_replantation')
 
     def get_type_display(self, obj):
         return obj.get_type_display().lower()
+
+    def get_plot_has_replantation(self, obj):
+        try:
+            return obj.type == Package.PLOT and obj.replantation is not None
+        except AttributeError:
+            pass
+        return False
 
 
 class EntityDetailsSerializer(SimpleEntitySerializer):
