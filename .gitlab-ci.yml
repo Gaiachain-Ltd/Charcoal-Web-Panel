@@ -1,0 +1,52 @@
+image: python:3.6-jessie
+
+stages:
+  - test
+  - coverage
+
+services:
+  - kartoza/postgis:latest
+
+
+variables:
+  POSTGRES_DB: poc_api
+  POSTGRES_USER: poc_api
+  POSTGRES_PASSWORD: "poc_api"
+  DATABASE_URL: psql://poc_api:poc_api@kartoza__postgis:5432/poc_api
+  SECRET_KEY: some-secret-key
+  ALLOWED_HOSTS: '*'
+
+tests:
+  script:
+   - cd api/poc-api
+   - pip install -r ./requirements/testing.txt
+   - coverage run --source=apps manage.py test --settings=config.settings.testing -v2
+   - coverage report --omit='*migrations*,*test*,*settings*,*wsgi.py,*__init__*,*urls*,*html*,*schema.py,*admin.py,*apps.py,*blockchain*' -m
+   - coverage xml --omit='*migrations*,*test*,*settings*,*wsgi.py,*__init__*,*urls*,*html*'
+  when: on_success
+  artifacts:
+    untracked: true
+
+
+qualitycheck:
+  stage: coverage
+  allow_failure: true
+  except:
+    - DEV
+    - master
+  before_script:
+    - pip install pyflakes diff_cover
+  script:
+    - diff-quality --violations=pyflakes --fail-under=90
+
+
+coveragediff:
+  stage: coverage
+  allow_failure: true
+  except:
+    - DEV
+    - master
+  before_script:
+    - pip install diff_cover
+  script:
+    - diff-cover coverage.xml --compare-branch=origin/DEV --fail-under=80
