@@ -9,3 +9,5 @@ __pycache__/
 README.md
 env.*
 docker/database
+api/poc-api/media
+api/poc-api/static
