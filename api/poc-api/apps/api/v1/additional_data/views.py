@@ -36,6 +36,16 @@ class ParcelViewSet(ModelViewSet):
     serializer_class = ParcelSerializer
     queryset = Parcel.objects.all()
 
+    def filter_queryset(self, queryset):
+        queryset = super().filter_queryset(queryset)
+        if self.action == 'unused':
+            queryset = queryset.filter(parcel_loggings__isnull=True)
+        return queryset
+
+    @action(methods=['get'], detail=False)
+    def unused(self, request):
+        return self.list(request)
+
 
 class VillageViewSet(ModelViewSet):
     schema = CustomSchema()

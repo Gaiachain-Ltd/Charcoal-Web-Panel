@@ -340,7 +340,7 @@ class LoggingBeginningSerializer(BaseEntityActionSerializer, serializers.ModelSe
 
     class Meta:
         model = LoggingBeginning
-        fields = ('entity', 'beginning_date_display', 'village', 'tree_specie', 'beginning_date')
+        fields = ('entity', 'beginning_date_display', 'village', 'tree_specie', 'beginning_date', 'parcel_id')
 
     def get_beginning_date_display(self, obj):
         return self.parse_timestamp_to_str_date(obj.beginning_date)
