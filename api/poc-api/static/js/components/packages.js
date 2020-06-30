@@ -76,8 +76,6 @@ let Packages = Vue.component('packages', {
             keyword: '',
             active_package_type: '',
             packages: [],
-            nextPage: '',
-            prevPage: '',
             perPage: 10,
             currentPage: 1,
             totalObjects: 0
@@ -159,8 +157,6 @@ let Packages = Vue.component('packages', {
             this.$http.get(url).then(function (response) {
                 this.packages = response.data.results;
                 this.totalObjects = response.data.count;
-                this.nextPage = response.data.next;
-                this.prevPage = response.data.previous;
                 this.$root.$data.loading = false;
             }).catch(function (err) {
                 this.$root.$data.loading = false;
