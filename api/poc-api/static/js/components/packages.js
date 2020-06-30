@@ -85,7 +85,7 @@ let Packages = Vue.component('packages', {
     },
     computed: {
         totalPages() {
-            return Math.ceil(this.totalObjects / this.perPage)
+            return Math.ceil(this.totalObjects / this.perPage) || 1
         },
         pages() {
             let arr = [];
