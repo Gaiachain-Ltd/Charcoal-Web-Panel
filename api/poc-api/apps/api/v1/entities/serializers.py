@@ -321,9 +321,20 @@ class EntityDetailsSerializer(SimpleEntitySerializer):
             return transaction
         return {}
 
+    def deg_to_dms(self, deg, x=True):
+        d = int(deg)
+        md = abs(deg - d) * 60
+        m = int(md)
+        sd = (md - m) * 60
+        if d < 0:
+            direction = 'W' if x else 'S'
+        else:
+            direction = 'E' if x else 'N'
+
+        return f'{abs(d)}°{m}\'{sd:.1f}"{direction}'
+
     def get_location_display(self, obj):
-        # TODO: add degree minute second format
-        return f'{obj.location.x}, {obj.location.y}'
+        return f'{self.deg_to_dms(obj.location.y, x=False)} {self.deg_to_dms(obj.location.x)}'
 
 
 class BaseEntityActionSerializer(serializers.Serializer):

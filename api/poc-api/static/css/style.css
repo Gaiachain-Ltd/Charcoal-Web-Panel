@@ -594,6 +594,31 @@ section.main-section .main-content .content-data .packages-data .title-block .na
 section.main-section .main-content .content-data .packages-data .title-block .nav nav a.active.transport, section.main-section .main-content .content-data .replantation-data .title-block .nav nav a.active.transport {
   border-bottom: 4px solid #FF70F1;
 }
+section.main-section .main-content .content-data .packages-data .pagination .pagination-button, section.main-section .main-content .content-data .replantation-data .pagination .pagination-button {
+  display: table;
+  width: 48px;
+  height: 48px;
+  border: 1px solid #D6D6D6;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-left: 5px;
+  margin-right: 5px;
+  text-align: center;
+}
+section.main-section .main-content .content-data .packages-data .pagination .pagination-button span, section.main-section .main-content .content-data .replantation-data .pagination .pagination-button span {
+  display: table-cell;
+  vertical-align: middle;
+  font-size: 18px;
+  color: #000000;
+  opacity: 0.5;
+}
+section.main-section .main-content .content-data .packages-data .pagination .pagination-button.current, section.main-section .main-content .content-data .replantation-data .pagination .pagination-button.current {
+  border-width: 2px;
+}
+section.main-section .main-content .content-data .packages-data .pagination .pagination-button.current span, section.main-section .main-content .content-data .replantation-data .pagination .pagination-button.current span {
+  opacity: 1;
+  font-weight: bold;
+}
 section.main-section .main-content .content-data .packages, section.main-section .main-content .content-data .replantations {
   display: flex;
   flex-direction: column;

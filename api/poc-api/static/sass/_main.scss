@@ -616,6 +616,33 @@ section.main-section {
             }
           }
         }
+        .pagination {
+          .pagination-button {
+            display: table;
+            width: 48px;
+            height: 48px;
+            border: 1px solid $border-color;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 5px;
+            margin-right: 5px;
+            text-align: center;
+            span {
+              display: table-cell;
+              vertical-align: middle;
+              font-size: 18px;
+              color: $black-color;
+              opacity: 0.5;
+            }
+            &.current {
+              border-width: 2px;
+              span {
+                opacity: 1;
+                font-weight: bold;
+              }
+            }
+          }
+        }
       }
       .packages, .replantations {
           display: flex;

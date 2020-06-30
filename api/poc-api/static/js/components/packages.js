@@ -54,6 +54,19 @@ let Packages = Vue.component('packages', {
                             </div>
                         </div>
                     </div>
+                    <div class="pagination justify-content-end" v-if="showPagination">
+                        <div class="pagination-button previous-page" v-if="currentPage !== 1" @click="currentPage = 1">
+                            <span><<</span>
+                        </div>
+                        <div class="pagination-button" v-for="page in pages" :class="{ current: page == currentPage }" 
+                             @click="currentPage = page">
+                             <span>[[ page ]]</span>
+                        </div>
+                        <div class="pagination-button next-page" v-if="currentPage !== totalPages" 
+                             @click="currentPage = totalPages">
+                             <span>>></span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>`,
@@ -63,6 +76,31 @@ let Packages = Vue.component('packages', {
             keyword: '',
             active_package_type: '',
             packages: [],
+            nextPage: '',
+            prevPage: '',
+            perPage: 1,
+            currentPage: 1,
+            totalObjects: 0
+        }
+    },
+    computed: {
+        totalPages() {
+            return Math.ceil(this.totalObjects / this.perPage)
+        },
+        pages() {
+            let arr = [];
+            let currentPage = this.currentPage;
+            for (let i = Math.max(currentPage - 2, 1); i < currentPage; i += 1) {
+                arr.push(i);
+            }
+            for (let i = currentPage; i <= currentPage + 2 && i <= this.totalPages; i += 1) {
+                arr.push(i);
+            }
+
+            return arr;
+        },
+        pageOffset() {
+            return this.perPage * (this.currentPage - 1)
         }
     },
     props: {
@@ -76,14 +114,21 @@ let Packages = Vue.component('packages', {
         showTimezone: {
             type: Boolean,
             default: true
+        },
+        showPagination: {
+            type: Boolean,
+            default: true
         }
     },
     watch: {
         keyword: function (val) {
-            let args = val ? {keyword: val} : {};
-            this.getPackages(this.active_package_type, args, true)
+            this.currentPage = 1;
+            this.getPackages(this.active_package_type)
         },
         date: function (val) {
+            this.getPackages(this.active_package_type)
+        },
+        currentPage: function() {
             this.getPackages(this.active_package_type)
         }
     },
@@ -92,20 +137,30 @@ let Packages = Vue.component('packages', {
         document.getElementById('current-page-name').innerHTML = this.$t('traceability')
     },
     methods: {
-        getPackages: function (type, args = {}, search = false) {
-            if (!search) {
-                this.$root.$data.loading = true;
+        getPackages: function (type) {
+            let params = {type: type};
+            if (this.showPagination) {
+                params = {...params, ...{
+                    limit: this.perPage, offset: this.pageOffset
+                }}
             }
-            let params = {...{type: type}, ...args};
             if (this.date) {
                 params = {...params, ...{
                     from_timestamp: dateFns.startOfDay(this.date).getTime() / 1000 | 0,
                     to_timestamp: dateFns.endOfDay(this.date).getTime() / 1000 | 0
                 }}
             }
+            if (this.keyword) {
+                params = {...params, ...{
+                    keyword: this.keyword,
+                }}
+            }
             let url = '/api/v1/entities/packages/?' + new URLSearchParams(params).toString();
             this.$http.get(url).then(function (response) {
                 this.packages = response.data.results;
+                this.totalObjects = response.data.count;
+                this.nextPage = response.data.next;
+                this.prevPage = response.data.previous;
                 this.$root.$data.loading = false;
             }).catch(function (err) {
                 this.$root.$data.loading = false;

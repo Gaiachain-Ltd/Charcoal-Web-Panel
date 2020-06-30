@@ -83,7 +83,8 @@ let Calendar = Vue.component('calendar', {
                             </p>
                         </div>
                         <div class="calendar-details-packages">
-                            <packages v-bind:date="selectedDate" v-bind:showSearch="false" v-bind:showTimezone="false"></packages>
+                            <packages v-bind:date="selectedDate" v-bind:showSearch="false" v-bind:showTimezone="false" 
+                                      v-bind:show-pagination="false"></packages>
                         </div>
                     </div>
                 </div>
