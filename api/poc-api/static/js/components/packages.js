@@ -78,7 +78,7 @@ let Packages = Vue.component('packages', {
             packages: [],
             nextPage: '',
             prevPage: '',
-            perPage: 1,
+            perPage: 10,
             currentPage: 1,
             totalObjects: 0
         }
