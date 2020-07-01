@@ -465,7 +465,7 @@ class PackageOvenSerializer(serializers.ModelSerializer):
         return {}
 
     def get_carbonization_ending(self, obj):
-        if obj.carbonization_ending:
+        if hasattr(obj, 'carbonization_ending'):
             return CarbonizationEndingSerializer(
                 obj.carbonization_ending,
                 context=self.context).data
