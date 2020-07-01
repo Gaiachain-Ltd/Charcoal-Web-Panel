@@ -381,7 +381,7 @@ class LoadingTransportSerializer(BaseEntityActionSerializer, serializers.ModelSe
 
     class Meta:
         model = LoadingTransport
-        fields = ('entity', 'plate_number', 'loading_date_display', 'bags', 'scanned_bags', 'loading_date')
+        fields = ('entity', 'plate_number', 'loading_date_display', 'bags', 'scanned_bags', 'loading_date', 'destination_id')
 
     def get_scanned_bags(self, obj):
         return obj.bags.count()
