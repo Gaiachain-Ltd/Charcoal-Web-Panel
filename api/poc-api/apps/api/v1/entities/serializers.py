@@ -434,9 +434,12 @@ class CarbonizationBeginningSerializer(BaseEntityActionSerializer, serializers.M
     def get_timber_volume(self, obj):
         result = 1
         measurements = obj.oven_measurements
-        for key in measurements:
-            result *= measurements[key]
-        return result
+        try:
+            for key in measurements:
+                result *= measurements[key]
+            return result
+        except TypeError:
+            return 0
 
     def get_beginning_date_display(self, obj):
         return self.parse_timestamp_to_str_date(obj.beginning_date)
