@@ -351,7 +351,7 @@ class LoggingBeginningSerializer(BaseEntityActionSerializer, serializers.ModelSe
 
     class Meta:
         model = LoggingBeginning
-        fields = ('entity', 'beginning_date_display', 'village', 'tree_specie', 'beginning_date', 'parcel_id')
+        fields = ('entity', 'beginning_date_display', 'village', 'tree_specie', 'beginning_date', 'parcel_id', 'id')
 
     def get_beginning_date_display(self, obj):
         return self.parse_timestamp_to_str_date(obj.beginning_date)
@@ -362,7 +362,7 @@ class LoggingEndingSerializer(BaseEntityActionSerializer, serializers.ModelSeria
 
     class Meta:
         model = LoggingEnding
-        fields = ('entity', 'ending_date_display', 'number_of_trees', 'ending_date')
+        fields = ('entity', 'ending_date_display', 'number_of_trees', 'ending_date', 'id')
 
     def get_ending_date_display(self, obj):
         return self.parse_timestamp_to_str_date(obj.ending_date)
@@ -381,7 +381,8 @@ class LoadingTransportSerializer(BaseEntityActionSerializer, serializers.ModelSe
 
     class Meta:
         model = LoadingTransport
-        fields = ('entity', 'plate_number', 'loading_date_display', 'bags', 'scanned_bags', 'loading_date', 'destination_id')
+        fields = ('entity', 'plate_number', 'loading_date_display', 'bags', 'scanned_bags', 'loading_date',
+                  'destination_id', 'id')
 
     def get_scanned_bags(self, obj):
         return obj.bags.count()
@@ -405,7 +406,8 @@ class ReceptionSerializer(BaseEntityActionSerializer, serializers.ModelSerialize
 
     class Meta:
         model = Reception
-        fields = ('entity', 'bags', 'scanned_bags', 'documents_photos', 'receipt_photos', 'reception_date_display', 'reception_date')
+        fields = ('entity', 'bags', 'scanned_bags', 'documents_photos', 'receipt_photos', 'reception_date_display',
+                  'reception_date', 'id')
 
     def get_reception_date_display(self, obj):
         if obj.reception_date:
@@ -429,7 +431,8 @@ class CarbonizationBeginningSerializer(BaseEntityActionSerializer, serializers.M
 
     class Meta:
         model = CarbonizationBeginning
-        fields = ('entity', 'beginning_date_display', 'oven_type_display', 'oven_measurements', 'timber_volume', 'beginning_date')
+        fields = ('entity', 'beginning_date_display', 'oven_type_display', 'oven_measurements', 'timber_volume',
+                  'beginning_date', 'id')
 
     def get_timber_volume(self, obj):
         result = 1
