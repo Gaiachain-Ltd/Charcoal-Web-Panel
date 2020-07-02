@@ -294,7 +294,7 @@ class EntityDetailsSerializer(SimpleEntitySerializer):
     class Meta:
         model = Entity
         fields = ('description', 'timestamp_display', 'timezone', 'action_display', 'user_id', 'location_display',
-                  'blockchain_details', 'user_code', 'timestamp')
+                  'blockchain_details', 'user_code', 'timestamp', 'id')
 
     def get_blockchain_details(self, obj):
         if obj.blockchain_batch_id:
