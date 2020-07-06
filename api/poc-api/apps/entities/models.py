@@ -106,13 +106,14 @@ class Package(models.Model):
     )
 
     plot = models.OneToOneField(
-        'entities.Package', verbose_name='Plot ID', related_name='plot_harvest',
+        'entities.Package', verbose_name=_('Plot ID'), related_name='plot_harvest',
         on_delete=models.CASCADE, null=True, blank=True
     )
     harvest = models.ForeignKey(
-        'entities.Package', verbose_name='Harvest ID', related_name='trucks',
+        'entities.Package', verbose_name=_('Harvest ID'), related_name='trucks',
         on_delete=models.CASCADE, null=True, blank=True
     )
+    is_finished = models.BooleanField(verbose_name=_('Is Finished'), default=False)
 
     def __str__(self):
         try:

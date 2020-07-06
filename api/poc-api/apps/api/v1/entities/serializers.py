@@ -272,7 +272,7 @@ class PackagesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Package
-        fields = ('id', 'pid', 'type', 'type_display', 'entities', 'plot_has_replantation')
+        fields = ('id', 'pid', 'type', 'type_display', 'entities', 'plot_has_replantation', 'is_finished')
 
     def get_type_display(self, obj):
         return obj.get_type_display().lower()
@@ -549,7 +549,7 @@ class PackageDetailsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Package
-        fields = ('id', 'pid', 'type_display', 'properties')
+        fields = ('id', 'pid', 'type_display', 'properties', 'is_finished')
 
     def get_type_display(self, obj):
         return obj.get_type_display().lower()

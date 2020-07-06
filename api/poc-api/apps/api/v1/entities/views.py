@@ -327,6 +327,19 @@ class PackageViewSet(ViewSet, MultiSerializerMixin):
         serializer = self.get_serializer(package)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    def get_package_chain_queryset(self, pk):
+        package = get_object_or_404(Package, pk=pk)
+        return self.queryset.filter(
+            Q(id=package.id) |  # matches self
+            Q(plot=package) |  # matches harvest's plot
+            Q(harvest=package) |  # matches truck's harvest
+            Q(trucks=package) |  # matches harvest's trucks
+            Q(plot_harvest=package) |  # matches plot's harvest
+            Q(plot_harvest__trucks=package) |  # matches plot's trucks
+            Q(harvest__plot=package) |  # matches truck's plot
+            Q(harvest__trucks=package)  # matches truck's other trucks
+        ).distinct().order_by('id')
+
     @action(methods=['get'], detail=True)
     def get_package_chain(self, request, pk=None):
         """
@@ -341,19 +354,26 @@ class PackageViewSet(ViewSet, MultiSerializerMixin):
             type: integer
         ---
         """
-        package = get_object_or_404(Package, pk=pk)
-        queryset = self.queryset.filter(
-            Q(id=package.id) |  # matches self
-            Q(plot=package) |  # matches harvest's plot
-            Q(harvest=package) |  # matches truck's harvest
-            Q(trucks=package) |  # matches harvest's trucks
-            Q(plot_harvest=package) |  # matches plot's harvest
-            Q(plot_harvest__trucks=package) |  # matches plot's trucks
-            Q(harvest__plot=package) |  # matches truck's plot
-            Q(harvest__trucks=package)  # matches truck's other trucks
-        ).distinct().order_by('id')
-        chain = self.get_serializer(queryset, many=True)
+        chain = self.get_serializer(self.get_package_chain_queryset(pk), many=True)
+        return Response(chain.data, status=status.HTTP_200_OK)
 
+    @action(methods=['post'], detail=True)
+    def finalize_supply_chain(self, request, pk=None):
+        """
+        ---
+        desc: Mark supply chain as complete
+        ret: Chain of actions for package
+        input:
+        -
+            name: id
+            required: true
+            location: path
+            type: integer
+        ---
+        """
+        queryset = self.get_package_chain_queryset(pk)
+        queryset.update(is_finished=True)
+        chain = self.get_serializer(self.get_package_chain_queryset(pk), many=True)
         return Response(chain.data, status=status.HTTP_200_OK)
 
 
