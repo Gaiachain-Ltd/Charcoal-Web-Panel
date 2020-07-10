@@ -70,6 +70,7 @@ LOCAL_APPS = [
     'apps.additional_data',
     'apps.blockchain',
     'apps.webpanel',
+    'apps.notifications',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS

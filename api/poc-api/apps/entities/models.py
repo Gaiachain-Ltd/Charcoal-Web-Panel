@@ -1,4 +1,5 @@
 from django.contrib.gis.db import models
+from django.contrib.gis.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 
 from apps.additional_data.models import OvenType
@@ -83,6 +84,36 @@ class Entity(models.Model):
             Update Package entities.
         """
         self.package.update_in_chain(self)
+
+    def get_notification_users(self):
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+        role_names = ()
+        if self.action == self.LOGGING_ENDING:
+            role_names = ('CARBONIZER',)
+        elif self.action == self.CARBONIZATION_ENDING:
+            role_names = ('CARBONIZER',)
+        elif self.action == self.LOADING_TRANSPORT:
+            role_names = ('DIRECTOR',)
+        return User.objects.filter(Q(role__name__in=role_names) | Q(function=User.PRESIDENT)).exclude(id=self.user_id)
+
+    def send_notification(self):
+        from apps.notifications.models import Notification
+        users = self.get_notification_users()
+        try:
+            for idx, x in enumerate(self.ACTIONS):
+                if x[0] == self.action:
+                    action = self.ACTIONS[idx+1][0]
+        except IndexError:
+            action = 'Replantation'
+        notification = Notification.objects.create(package=self.package, action_name=action)
+        notification.users.add(*users)
+
+    def save(self, *args, **kwargs):
+        is_new = self.id is None
+        super().save(*args, **kwargs)
+        if is_new:
+            self.send_notification()
 
     class Meta:
         ordering = ('-timestamp',)
