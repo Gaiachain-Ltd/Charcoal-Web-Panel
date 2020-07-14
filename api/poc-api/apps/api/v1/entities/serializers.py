@@ -107,8 +107,9 @@ class EntitySerializer(serializers.ModelSerializer):
 
     @staticmethod
     def _create_logging_beginning(entity, properties_data):
-        if not (entity.user.is_logger or entity.user.is_carbonizer or entity.user.is_superuser_role):
-            raise InvalidAgentRoleError("Only Logger or Carbonizer can add logging beginning.")
+        # allow all roles
+        # if not (entity.user.is_logger or entity.user.is_carbonizer or entity.user.is_superuser_role):
+        #     raise InvalidAgentRoleError("Only Logger or Carbonizer can add logging beginning.")
         parcel_id = properties_data.pop('parcel')
         village_id = properties_data.pop('village')
         tree_specie_id = properties_data.pop('tree_specie')
@@ -125,8 +126,9 @@ class EntitySerializer(serializers.ModelSerializer):
 
     @staticmethod
     def _create_logging_ending(entity, properties_data):
-        if not (entity.user.is_logger or entity.user.is_carbonizer or entity.user.is_superuser_role):
-            raise InvalidAgentRoleError("Only Logger or Carbonizer can add logging ending.")
+        # allow all roles
+        # if not (entity.user.is_logger or entity.user.is_carbonizer or entity.user.is_superuser_role):
+        #     raise InvalidAgentRoleError("Only Logger or Carbonizer can add logging ending.")
         properties_data['ending_date'] = properties_data.get('ending_date') or properties_data.pop('event_date')
         logging_ending, created = LoggingEnding.objects.get_or_create(
             entity=entity,
@@ -137,7 +139,8 @@ class EntitySerializer(serializers.ModelSerializer):
 
     @staticmethod
     def _create_carbonization_beginning(entity, properties_data):
-        if not (entity.user.is_carbonizer or entity.user.is_superuser_role):
+        user = entity.user
+        if not (user.is_carbonizer or user.is_superuser_role or user.is_director):
             raise InvalidAgentRoleError("Only Carbonizer can add carbonization beginning.")
         oven_id = properties_data.pop('oven_id')
         if CarbonizationBeginning.objects.filter(oven__oven_id=oven_id, entity__package=entity.package).exists():
@@ -152,11 +155,12 @@ class EntitySerializer(serializers.ModelSerializer):
             **properties_data
         )
         if created:
-            carbonization_beginning.add_to_chain(entity.user, PackageProto.HARVEST, PayloadFactory.Types.CREATE_PACKAGE)
+            carbonization_beginning.add_to_chain(user, PackageProto.HARVEST, PayloadFactory.Types.CREATE_PACKAGE)
 
     @staticmethod
     def _create_carbonization_ending(entity, properties_data):
-        if not (entity.user.is_carbonizer or entity.user.is_superuser_role):
+        user = entity.user
+        if not (user.is_carbonizer or user.is_superuser_role or user.is_director):
             raise InvalidAgentRoleError("Only Carbonizer can add carbonization ending.")
         oven_id = properties_data.pop('oven_id')
         try:
@@ -174,7 +178,8 @@ class EntitySerializer(serializers.ModelSerializer):
 
     @staticmethod
     def _create_loading_transport(entity, properties_data):
-        if not (entity.user.is_carbonizer or entity.user.is_superuser_role):
+        user = entity.user
+        if not (user.is_carbonizer or user.is_superuser_role or user.is_director):
             raise InvalidAgentRoleError("Only Carbonizer can add loading transport.")
         bags_qr_codes = properties_data.pop('bags_qr_codes')
         destination_id = properties_data.pop('destination')
@@ -189,7 +194,7 @@ class EntitySerializer(serializers.ModelSerializer):
             bags = (Bag(pid=f'{harvest_pid}/B{i+1:03d}', qr_code=qr_code, transport_id=loading_transport.id)
                     for i, qr_code in enumerate(bags_qr_codes))
             Bag.objects.bulk_create(bags)
-            entity.package.add_to_chain(entity.user, PackageProto.TRUCK, PayloadFactory.Types.CREATE_PACKAGE)
+            entity.package.add_to_chain(user, PackageProto.TRUCK, PayloadFactory.Types.CREATE_PACKAGE)
 
     @staticmethod
     def _create_reception(entity, properties_data):

@@ -95,7 +95,7 @@ class GaiachainTransactionHandler(TransactionHandler):
     ):
         if signer is None:
             return False
-        return signer.role == Agent.SUPER_USER or (
+        return signer.role in (Agent.SUPER_USER, Agent.DIRECTOR) or (
             signer.role == Agent.CARBONIZER
             and status in (Entity.LOGGING_ENDING, Entity.CARBONIZATION_BEGINNING, Entity.CARBONIZATION_ENDING)
         ) or (
@@ -114,7 +114,7 @@ class GaiachainTransactionHandler(TransactionHandler):
         if signer is None:
             return False
         # CARBONIZER is allowed to create PLOT, HARVEST and TRUCK packages
-        return signer.role in (Agent.SUPER_USER, Agent.CARBONIZER) or (
+        return signer.role in (Agent.SUPER_USER, Agent.CARBONIZER, Agent.DIRECTOR) or (
             signer.role == Agent.LOGGER
             and type == Package.PLOT
         )
