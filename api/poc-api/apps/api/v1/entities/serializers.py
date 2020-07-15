@@ -55,16 +55,21 @@ class EntitySerializer(serializers.ModelSerializer):
         data = Point(data['longitude'], data['latitude'])
         return data
 
-    def get_plot_id(self, data, pid):
-        plot_id = data.pop('plot_id', None)
-        if plot_id is None:
-            pid_split = pid.split('/')
-            if len(pid_split) >= 3:
-                plot_pid = '/'.join(pid_split[:3])
-                plot_id = get_object_or_404(Package, pid=plot_pid).id
-            else:
-                raise NotFound(detail=f'Pid format is incorrect, plot not found.')
-        return plot_id
+    def get_plot_id(self, pid):
+        pid_split = pid.split('/')
+        if len(pid_split) >= 3:
+            plot_pid = '/'.join(pid_split[:3])
+            return get_object_or_404(Package, pid=plot_pid).id
+        else:
+            raise NotFound(detail=f'Pid format is incorrect, plot not found.')
+
+    def get_harvest_id(self, pid):
+        pid_split = pid.split('/')
+        if len(pid_split) >= 4:
+            harvest_pid = '/'.join(pid_split[:4])
+            return get_object_or_404(Package, pid=harvest_pid).id
+        else:
+            raise NotFound(detail=f'Pid format is incorrect, harvest not found.')
 
     @transaction.atomic
     def create(self, validated_data):
@@ -78,12 +83,12 @@ class EntitySerializer(serializers.ModelSerializer):
         elif pid and action in [Entity.CARBONIZATION_BEGINNING, Entity.CARBONIZATION_ENDING]:
             package_kwargs = {'pid': pid, 'type': Package.HARVEST}
             if action == Entity.CARBONIZATION_BEGINNING:
-                package_kwargs['plot_id'] = self.get_plot_id(properties_data, pid)
+                package_kwargs['plot_id'] = self.get_plot_id(pid)
             package, created = Package.objects.get_or_create(**package_kwargs)
             if action == Entity.CARBONIZATION_ENDING:
                 get_list_or_404(Entity, package=package, action=Entity.CARBONIZATION_BEGINNING)
         elif pid and action == Entity.LOADING_TRANSPORT:
-            harvest_id = properties_data.pop('harvest_id')
+            harvest_id = self.get_harvest_id(pid)
             package, created = Package.objects.get_or_create(pid=pid, type=Package.TRUCK, harvest_id=harvest_id)
         elif action == Entity.RECEPTION:
             qr_code = properties_data['bags_qr_codes'][0]
