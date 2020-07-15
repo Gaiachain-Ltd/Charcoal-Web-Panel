@@ -55,6 +55,17 @@ class EntitySerializer(serializers.ModelSerializer):
         data = Point(data['longitude'], data['latitude'])
         return data
 
+    def get_plot_id(self, data, pid):
+        plot_id = data.pop('plot_id', None)
+        if plot_id is None:
+            pid_split = pid.split('/')
+            if len(pid_split) >= 3:
+                plot_pid = '/'.join(pid_split[:3])
+                plot_id = get_object_or_404(Package, pid=plot_pid).id
+            else:
+                raise NotFound(detail=f'Pid format is incorrect, plot not found.')
+        return plot_id
+
     @transaction.atomic
     def create(self, validated_data):
         properties_data = validated_data.pop('properties')
@@ -67,7 +78,7 @@ class EntitySerializer(serializers.ModelSerializer):
         elif pid and action in [Entity.CARBONIZATION_BEGINNING, Entity.CARBONIZATION_ENDING]:
             package_kwargs = {'pid': pid, 'type': Package.HARVEST}
             if action == Entity.CARBONIZATION_BEGINNING:
-                package_kwargs['plot_id'] = properties_data.pop('plot_id')
+                package_kwargs['plot_id'] = self.get_plot_id(properties_data, pid)
             package, created = Package.objects.get_or_create(**package_kwargs)
             if action == Entity.CARBONIZATION_ENDING:
                 get_list_or_404(Entity, package=package, action=Entity.CARBONIZATION_BEGINNING)
