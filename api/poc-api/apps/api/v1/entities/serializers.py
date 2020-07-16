@@ -59,7 +59,7 @@ class EntitySerializer(serializers.ModelSerializer):
         pid_split = pid.split('/')
         if len(pid_split) >= 3:
             plot_pid = '/'.join(pid_split[:3])
-            return get_object_or_404(Package, pid=plot_pid).id
+            return get_list_or_404(Package, pid=plot_pid)[-1].id
         else:
             raise NotFound(detail=f'Pid format is incorrect, plot not found.')
 
@@ -67,7 +67,7 @@ class EntitySerializer(serializers.ModelSerializer):
         pid_split = pid.split('/')
         if len(pid_split) >= 4:
             harvest_pid = '/'.join(pid_split[:4])
-            return get_object_or_404(Package, pid=harvest_pid).id
+            return get_list_or_404(Package, pid=harvest_pid)[-1].id
         else:
             raise NotFound(detail=f'Pid format is incorrect, harvest not found.')
 
@@ -77,9 +77,10 @@ class EntitySerializer(serializers.ModelSerializer):
         pid = validated_data.pop('pid') if 'pid' in validated_data else None
         action = validated_data['action']
         if pid and action in [Entity.LOGGING_BEGINNING, Entity.LOGGING_ENDING]:
-            package, created = Package.objects.get_or_create(pid=pid)
+            if action == Entity.LOGGING_BEGINNING:
+                package = Package.objects.create(pid=pid)
             if action == Entity.LOGGING_ENDING:
-                get_object_or_404(Entity, package=package, action=Entity.LOGGING_BEGINNING)
+                package = get_list_or_404(Package, pid=pid, last_action__action=Entity.LOGGING_BEGINNING)[-1]
         elif pid and action in [Entity.CARBONIZATION_BEGINNING, Entity.CARBONIZATION_ENDING]:
             package_kwargs = {'pid': pid, 'type': Package.HARVEST}
             if action == Entity.CARBONIZATION_BEGINNING:
@@ -104,9 +105,9 @@ class EntitySerializer(serializers.ModelSerializer):
             properties_data['receipt_photos'] = validated_data.pop('receipt_photos', [])
         else:
             raise NotFound(detail='Please check your data in request body.')
-        if action not in [Entity.CARBONIZATION_BEGINNING, Entity.CARBONIZATION_ENDING] \
-                and Entity.objects.filter(package=package, action=action).exists():
-            raise EntityAlreadyExistException()
+        # if action not in [Entity.CARBONIZATION_BEGINNING, Entity.CARBONIZATION_ENDING] \
+        #         and Entity.objects.filter(package=package, action=action).exists():
+        #     raise EntityAlreadyExistException()
         entity = Entity.objects.create(
             user=self.context['request'].user,
             package=package,
