@@ -263,7 +263,7 @@ class SimpleEntitySerializer(serializers.ModelSerializer):
     timezone = serializers.SerializerMethodField()
     location_display = serializers.SerializerMethodField()
     event_date = serializers.SerializerMethodField()
-    user_code = serializers.CharField(source='user.code')
+    user_code = serializers.CharField(source='user.code', allow_null=True)
 
     class Meta:
         model = Entity
@@ -314,7 +314,7 @@ class EntityDetailsSerializer(SimpleEntitySerializer):
     location_display = serializers.SerializerMethodField()
     action_display = serializers.CharField(source='get_action_display')
     blockchain_details = serializers.SerializerMethodField()
-    user_code = serializers.CharField(source='user.code')
+    user_code = serializers.CharField(source='user.code', allow_null=True)
 
     class Meta:
         model = Entity
@@ -371,8 +371,8 @@ class BaseEntityActionSerializer(serializers.Serializer):
 
 class LoggingBeginningSerializer(BaseEntityActionSerializer, serializers.ModelSerializer):
     beginning_date_display = serializers.SerializerMethodField()
-    village = serializers.CharField(source='village.name')
-    tree_specie = serializers.CharField(source='tree_specie.name')
+    village = serializers.CharField(source='village.name', allow_null=True)
+    tree_specie = serializers.CharField(source='tree_specie.name', allow_null=True)
 
     class Meta:
         model = LoggingBeginning
@@ -449,7 +449,7 @@ class ReceptionSerializer(BaseEntityActionSerializer, serializers.ModelSerialize
 
 class CarbonizationBeginningSerializer(BaseEntityActionSerializer, serializers.ModelSerializer):
     beginning_date_display = serializers.SerializerMethodField()
-    oven_type_display = serializers.CharField(source='oven_type.name')
+    oven_type_display = serializers.CharField(source='oven_type.name', allow_null=True)
     timber_volume = serializers.SerializerMethodField()
 
     class Meta:
