@@ -486,7 +486,7 @@ class PackageOvenSerializer(serializers.ModelSerializer):
         fields = ('id', 'oven_id', 'carbonization_beginning', 'carbonization_ending')
 
     def get_carbonization_beginning(self, obj):
-        if obj.carbonization_beginning:
+        if hasattr(obj, 'carbonization_beginning'):
             return CarbonizationBeginningSerializer(
                 obj.carbonization_beginning,
                 context=self.context).data
@@ -515,7 +515,7 @@ class PlotPackageSerializer(serializers.ModelSerializer):
             return LoggingBeginningSerializer(
                 obj.package_entities.get(action=Entity.LOGGING_BEGINNING).loggingbeginning,
                 context=self.context).data
-        except Entity.DoesNotExist:
+        except (Entity.DoesNotExist, LoggingBeginning.DoesNotExist):
             return {}
 
     def get_logging_ending(self, obj):
@@ -523,7 +523,7 @@ class PlotPackageSerializer(serializers.ModelSerializer):
             return LoggingEndingSerializer(
                 obj.package_entities.get(action=Entity.LOGGING_ENDING).loggingending,
                 context=self.context).data
-        except Entity.DoesNotExist:
+        except (Entity.DoesNotExist, LoggingEnding.DoesNotExist):
             return {}
 
 
@@ -556,7 +556,7 @@ class TruckPackageSerializer(serializers.ModelSerializer):
             return LoadingTransportSerializer(
                 obj.package_entities.get(action=Entity.LOADING_TRANSPORT).loadingtransport,
                 context=self.context).data
-        except Entity.DoesNotExist:
+        except (Entity.DoesNotExist, LoadingTransport.DoesNotExist):
             return {}
 
     def get_reception(self, obj):
@@ -564,7 +564,7 @@ class TruckPackageSerializer(serializers.ModelSerializer):
             return ReceptionSerializer(
                 obj.package_entities.get(action=Entity.RECEPTION).reception,
                 context=self.context).data
-        except Entity.DoesNotExist:
+        except (Entity.DoesNotExist, Reception.DoesNotExist):
             return {}
 
 
