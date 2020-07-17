@@ -271,10 +271,13 @@ class SimpleEntitySerializer(serializers.ModelSerializer):
                   'event_date', 'user_code')
 
     def get_event_date(self, obj):
-        action = getattr(obj, Entity.CHILD_MODEL_NAMES[obj.action])
-        for key in ('beginning_date', 'ending_date', 'end_date', 'loading_date', 'reception_date'):
-            if hasattr(action, key):
-                return getattr(action, key)
+        try:
+            action = getattr(obj, Entity.CHILD_MODEL_NAMES[obj.action])
+            for key in ('beginning_date', 'ending_date', 'end_date', 'loading_date', 'reception_date'):
+                if hasattr(action, key):
+                    return getattr(action, key)
+        except:
+            pass
         return 0
 
     def get_timezone(self, obj):
