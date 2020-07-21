@@ -84,14 +84,23 @@ let ovenType = Vue.component('oven-type', {
             } else {
                 promise = OvenTypeDataService.create(this.currentObject)
             }
-            promise.then(response => {
-                this.currentObject = response.data;
-                if (this.isCreating) {
-                    this.isEditing = true;
-                    this.isCreating = false;
+            promise
+                .then(response => {
+                    this.currentObject = response.data;
+                    if (this.isCreating) {
+                        this.isEditing = true;
+                        this.isCreating = false;
+                    }
+                    this.getData();
+                }).catch(e => {
+                let errorText = '';
+                for (const [key, value] of Object.entries(e.body)) {
+                    errorText += `${key}: ${value.join('; ')}\n`
                 }
-                this.getData();
-            })
+                if (errorText) {
+                    alert(errorText)
+                }
+            });
 
         },
         addObject() {
@@ -104,10 +113,19 @@ let ovenType = Vue.component('oven-type', {
                 this.isEditing = false;
             }
             else {
-                OvenTypeDataService.getByID(id).then(response => {
-                    this.currentObject = response.data;
-                    this.isEditing = true;
-                    this.isCreating = false;
+                OvenTypeDataService.getByID(id)
+                    .then(response => {
+                        this.currentObject = response.data;
+                        this.isEditing = true;
+                        this.isCreating = false;
+                    }).catch(e => {
+                    let errorText = '';
+                    for (const [key, value] of Object.entries(e.body)) {
+                        errorText += `${key}: ${value.join('; ')}\n`
+                    }
+                    if (errorText) {
+                        alert(errorText)
+                    }
                 });
             }
 

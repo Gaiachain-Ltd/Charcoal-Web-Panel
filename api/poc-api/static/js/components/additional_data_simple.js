@@ -78,13 +78,22 @@ let additionalDataSimple = Vue.component('additional-data-simple', {
             } else {
                 promise = this.dataService.create(this.currentObject);
             }
-            promise.then(response => {
-                this.isEditing = false;
-                this.currentObject = {};
-                this.isCreating = false;
-                this.getData();
-            })
-
+            promise
+                .then(response => {
+                    this.isEditing = false;
+                    this.currentObject = {};
+                    this.isCreating = false;
+                    this.getData();
+                })
+                .catch(e => {
+                    let errorText = '';
+                    for (const [key, value] of Object.entries(e.body)) {
+                        errorText += `${key}: ${value.join('; ')}\n`
+                    }
+                    if (errorText) {
+                        alert(errorText)
+                    }
+                })
         },
         addObject() {
             this.currentObject = {};
@@ -92,12 +101,21 @@ let additionalDataSimple = Vue.component('additional-data-simple', {
             this.isEditing = false;
         },
         editObject(id) {
-            this.dataService.getByID(id).then(response => {
-                this.currentObject = response.data;
-                this.isEditing = true;
-                this.isCreating = false;
-            });
-
+            this.dataService.getByID(id)
+                .then(response => {
+                    this.currentObject = response.data;
+                    this.isEditing = true;
+                    this.isCreating = false;
+                })
+                .catch(e => {
+                    let errorText = '';
+                    for (const [key, value] of Object.entries(e.body)) {
+                        errorText += `${key}: ${value.join('; ')}\n`
+                    }
+                    if (errorText) {
+                        alert(errorText)
+                    }
+                });
         },
         getData() {
             this.$root.$data.loading = true;
