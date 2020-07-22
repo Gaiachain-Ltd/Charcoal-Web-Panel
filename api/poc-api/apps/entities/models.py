@@ -72,11 +72,11 @@ class Entity(models.Model):
 
     def add_to_chain(self, package_type, status, payload_type, **kwargs):
         proto = self._build_proto(package_type, status, **kwargs)
-        # BlockTransactionFactory.send(
-        #     protos=[proto],
-        #     signer_key=self.user.private_key,
-        #     payload_type=payload_type,
-        # )
+        BlockTransactionFactory.send(
+            protos=[proto],
+            signer_key=self.user.private_key,
+            payload_type=payload_type,
+        )
         return self
 
     def update_in_chain(self):
@@ -172,12 +172,12 @@ class Package(models.Model):
 
     def add_to_chain(self, user, package_type, payload_type, **kwargs):
         proto = self._build_proto(package_type, **kwargs)
-        # response = BlockTransactionFactory.send(
-        #     protos=[proto],
-        #     signer_key=user.private_key,
-        #     payload_type=payload_type,
-        # )
-        # self.assign_batch_id(response, self.package_entities.all())
+        response = BlockTransactionFactory.send(
+            protos=[proto],
+            signer_key=user.private_key,
+            payload_type=payload_type,
+        )
+        self.assign_batch_id(response, self.package_entities.all())
         return self
 
     def update_in_chain(self, entity):
@@ -188,13 +188,13 @@ class Package(models.Model):
             'id': self.pid,
             'entity': entity.build_proto()
         }
-        # response = BlockTransactionFactory.send(
-        #     protos=[data],
-        #     signer_key=entity.user.private_key,
-        #     payload_type=PayloadFactory.Types.UPDATE_PACKAGE,
-        # )
-        # self.assign_batch_id(response, [entity])
-        return None
+        response = BlockTransactionFactory.send(
+            protos=[data],
+            signer_key=entity.user.private_key,
+            payload_type=PayloadFactory.Types.UPDATE_PACKAGE,
+        )
+        self.assign_batch_id(response, [entity])
+        return response
 
     def assign_batch_id(self, response, entities):
         if 'link' in response:
@@ -470,12 +470,12 @@ class Replantation(models.Model):
 
     def add_to_chain(self, payload_type):
         proto = self._build_proto()
-        # response = BlockTransactionFactory.send(
-        #     protos=[proto],
-        #     signer_key=self.user.private_key,
-        #     payload_type=payload_type,
-        # )
-        # self.assign_batch_id(response)
+        response = BlockTransactionFactory.send(
+            protos=[proto],
+            signer_key=self.user.private_key,
+            payload_type=payload_type,
+        )
+        self.assign_batch_id(response)
         return self
 
     def assign_batch_id(self, response):
