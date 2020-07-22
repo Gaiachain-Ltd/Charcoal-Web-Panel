@@ -17,7 +17,9 @@ class BaseAdditionalDataViewSet(object):
     filter_backends = (SearchFilter,)
 
     def get_queryset(self):
-        return self.model.objects.filter(active=True)
+        if self.request.GET.get('active_only'):
+            return self.model.objects.filter(active=True)
+        return self.model.objects.all()
 
     def perform_destroy(self, instance):
         instance.active = False
@@ -53,12 +55,15 @@ class AdditionalDataViewSet(BaseAdditionalDataViewSet, ViewSet):
 
     @action(methods=['get'], detail=False, filter_backends=(SearchFilter,), search_fields=('name',))
     def all_data(self, request):
+        filter_kwargs = {}
+        if self.request.GET.get('active_only'):
+            filter_kwargs = {'active': True}
         data = {
-            'villages': VillageSerializer(Village.objects.filter(active=True), many=True).data,
-            'parcels': ParcelSerializer(Parcel.objects.filter(active=True), many=True).data,
-            'destinations': DestinationSerializer(Destination.objects.filter(active=True), many=True).data,
-            'tree_species': TreeSpecieSerializer(TreeSpecie.objects.filter(active=True), many=True).data,
-            'oven_types': OvenTypeSerializer(OvenType.objects.filter(active=True), many=True).data,
+            'villages': VillageSerializer(Village.objects.filter(**filter_kwargs), many=True).data,
+            'parcels': ParcelSerializer(Parcel.objects.filter(**filter_kwargs), many=True).data,
+            'destinations': DestinationSerializer(Destination.objects.filter(**filter_kwargs), many=True).data,
+            'tree_species': TreeSpecieSerializer(TreeSpecie.objects.filter(**filter_kwargs), many=True).data,
+            'oven_types': OvenTypeSerializer(OvenType.objects.filter(**filter_kwargs), many=True).data,
         }
         return Response(data)
 

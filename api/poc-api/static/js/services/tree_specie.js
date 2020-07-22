@@ -1,6 +1,6 @@
 class TreeSpecieDataServiceClass {
     getAll() {
-        return Vue.http.get("/api/v1/additional_data/tree-species/");
+        return Vue.http.get("/api/v1/additional_data/tree-species/?active_only=1");
     }
 
     getByID(id) {

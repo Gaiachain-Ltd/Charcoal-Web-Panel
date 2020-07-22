@@ -1,6 +1,6 @@
 class OvenTypeDataServiceClass {
     getAll() {
-        return Vue.http.get("/api/v1/additional_data/oven-types/");
+        return Vue.http.get("/api/v1/additional_data/oven-types/?active_only=1");
     }
 
     getByID(id) {

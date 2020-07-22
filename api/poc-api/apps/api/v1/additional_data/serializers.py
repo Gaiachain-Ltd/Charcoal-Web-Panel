@@ -6,7 +6,7 @@ from apps.additional_data.models import (Village, Destination, Parcel, TreeSpeci
 class VillageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Village
-        fields = ('id', 'name',)
+        fields = ('id', 'name', 'active')
 
 
 class ParcelSerializer(serializers.ModelSerializer):
@@ -14,25 +14,25 @@ class ParcelSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Parcel
-        fields = ('id', 'name', 'code',)
+        fields = ('id', 'name', 'code', 'active')
 
 
 class DestinationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Destination
-        fields = ('id', 'name',)
+        fields = ('id', 'name', 'active')
 
 
 class TreeSpecieSerializer(serializers.ModelSerializer):
     class Meta:
         model = TreeSpecie
-        fields = ('id', 'name',)
+        fields = ('id', 'name', 'active')
 
 
 class OvenTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = OvenType
-        fields = ('id', 'name', 'oven_height', 'oven_width', 'oven_length', 'type',)
+        fields = ('id', 'name', 'oven_height', 'oven_width', 'oven_length', 'type', 'active')
 
     def validate(self, attrs):
         if attrs.get('type'):

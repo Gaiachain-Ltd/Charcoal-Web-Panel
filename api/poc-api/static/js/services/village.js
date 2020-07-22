@@ -1,6 +1,6 @@
 class VillageDataServiceClass {
     getAll() {
-        return Vue.http.get("/api/v1/additional_data/villages/");
+        return Vue.http.get("/api/v1/additional_data/villages/?active_only=1");
     }
 
     getByID(id) {

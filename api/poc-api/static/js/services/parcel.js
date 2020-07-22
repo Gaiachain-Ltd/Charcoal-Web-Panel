@@ -1,6 +1,6 @@
 class ParcelDataServiceClass {
     getAll() {
-        return Vue.http.get("/api/v1/additional_data/parcels/");
+        return Vue.http.get("/api/v1/additional_data/parcels/?active_only=1");
     }
 
     getByID(id) {

@@ -1,6 +1,6 @@
 class DestinationDataServiceClass {
     getAll() {
-        return Vue.http.get("/api/v1/additional_data/destinations/");
+        return Vue.http.get("/api/v1/additional_data/destinations/?active_only=1");
     }
 
     getByID(id) {
