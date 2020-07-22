@@ -16,6 +16,7 @@ let ovenType = Vue.component('oven-type', {
                     <div class="additional-data-list-row-name" v-else>[[ object.name ]]</div>
                     <div class="additional-data-list-row-actions">
                         <button @click="editObject(object.id)">[[ $t("edit") ]] <i class="icon-edit"></i></button>
+                        <button @click="openedModal = object.id">[[ $t("delete") ]] <i class="icon-delete"></i></button>
                     </div>
                     <div class="additional-data-list-row-extra" v-if="isEditing && object.id == currentObject.id">
                         <label><input type="radio" name="oven_measurements" value="1" v-model="currentObject.type"  @change="saveObject"> [[ $t("custom_measurements") ]]</label>
@@ -33,6 +34,9 @@ let ovenType = Vue.component('oven-type', {
                             <span v-if="object.type == 2">[[ $t("width") ]]: [[ object.oven_width ]] [m]</span>
                         </span>
                     </div>
+                    <delete-object-modal v-if="openedModal == object.id" @close="openedModal = null" 
+                                         v-bind:object-id="object.id" v-bind:submit-callback="deleteObject">
+                    </delete-object-modal>
                 </div>
                 <div class="additional-data-list-row" v-if="isCreating">
                     <div class="additional-data-list-row-name">

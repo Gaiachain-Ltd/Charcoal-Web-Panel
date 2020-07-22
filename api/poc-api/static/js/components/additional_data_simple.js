@@ -16,7 +16,11 @@ let additionalDataSimple = Vue.component('additional-data-simple', {
                     <div class="additional-data-list-row-name" v-else>[[ object[nameField] ]]</div>
                     <div class="additional-data-list-row-actions">
                         <button @click="editObject(object.id)">[[ $t("edit") ]] <i class="icon-edit"></i></button>
+                        <button @click="openedModal = object.id">[[ $t("delete") ]] <i class="icon-delete"></i></button>
                     </div>
+                    <delete-object-modal v-if="openedModal == object.id" @close="openedModal = null" 
+                                         v-bind:object-id="object.id" v-bind:submit-callback="deleteObject">
+                    </delete-object-modal>
                 </div>
                 <div class="additional-data-list-row" v-if="isCreating">
                     <div class="additional-data-list-row-name">
@@ -34,6 +38,7 @@ let additionalDataSimple = Vue.component('additional-data-simple', {
             isEditing: false,
             currentObject: {},
             openedModal: null,
+            nameField: 'name'
         }
     },
     props: {
@@ -43,11 +48,7 @@ let additionalDataSimple = Vue.component('additional-data-simple', {
         },
         placeholder: {
             type: String,
-            default: ''
-        },
-        nameField: {
-            type: String,
-            default: ''
+            default: 'name'
         },
         dataServiceName: {
             type: String,

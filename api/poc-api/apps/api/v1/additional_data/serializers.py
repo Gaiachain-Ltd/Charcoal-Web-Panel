@@ -10,9 +10,11 @@ class VillageSerializer(serializers.ModelSerializer):
 
 
 class ParcelSerializer(serializers.ModelSerializer):
+    code = serializers.CharField(source='name', read_only=True)
+
     class Meta:
         model = Parcel
-        fields = ('id', 'code',)
+        fields = ('id', 'name', 'code',)
 
 
 class DestinationSerializer(serializers.ModelSerializer):

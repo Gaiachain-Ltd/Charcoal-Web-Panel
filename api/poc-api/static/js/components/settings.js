@@ -23,23 +23,23 @@ let Settings = Vue.component('settings', {
             </div>
             <div class="content-data">
                 <div class="settings-tab-details" v-show="activeTab == 'logging'">
-                    <additional-data-simple title="parcel_list" placeholder="code" 
-                                            data-service-name="ParcelDataService" v-bind:initial-objects="parcels"
-                                            name-field="code" v-if="dataLoaded"></additional-data-simple>
-                    <additional-data-simple title="tree_species_list" placeholder="name" 
-                                            data-service-name="TreeSpecieDataService" v-bind:initial-objects="treeSpecies"
-                                            name-field="name" v-if="dataLoaded"></additional-data-simple>
-                    <additional-data-simple title="village_list" placeholder="name" 
-                                            data-service-name="VillageDataService" v-bind:initial-objects="villages"
-                                            name-field="name" v-if="dataLoaded"></additional-data-simple>
+                    <additional-data-simple title="parcel_list" placeholder="code" data-service-name="ParcelDataService"
+                                            v-bind:initial-objects="parcels" v-if="dataLoaded">
+                    </additional-data-simple>
+                    <additional-data-simple title="tree_species_list" data-service-name="TreeSpecieDataService" 
+                                            v-bind:initial-objects="treeSpecies" v-if="dataLoaded">
+                    </additional-data-simple>
+                    <additional-data-simple title="village_list" data-service-name="VillageDataService" 
+                                            v-bind:initial-objects="villages" v-if="dataLoaded">
+                    </additional-data-simple>
                 </div>
                 <div class="settings-tab-details" v-show="activeTab == 'carbonization'">
                     <oven-type v-bind:initial-objects="ovenTypes" v-if="dataLoaded"></oven-type>
                 </div>
                 <div class="settings-tab-details" v-show="activeTab == 'transport'">
-                    <additional-data-simple title="delivery_destination" placeholder="name" 
-                                            data-service-name="DestinationDataService" v-bind:initial-objects="destinations"
-                                            name-field="name" v-if="dataLoaded"></additional-data-simple>
+                    <additional-data-simple title="delivery_destination" data-service-name="DestinationDataService" 
+                                            v-bind:initial-objects="destinations" v-if="dataLoaded">
+                    </additional-data-simple>
                 </div>
                 
             </div>

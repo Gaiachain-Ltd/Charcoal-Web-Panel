@@ -71,7 +71,6 @@ class EntitiesTests(MainTestCase):
         data['properties'] = {
             "oven_type": self.oven_type.id,
             "beginning_date": 1576181866,
-            "plot_id": plot_response.data["package_id"],
             "oven_id": "A"
         }
         data['location'] = json.dumps(data['location'])
@@ -90,7 +89,6 @@ class EntitiesTests(MainTestCase):
         data['properties'] = {
             "bags_qr_codes": ["123-321"],
             "loading_date": 1576181866,
-            "harvest_id": harvest_response.data["package_id"],
             "destination": self.destination.id,
             "plate_number": "12345AB67"
         }
@@ -180,13 +178,15 @@ class EntitiesTests(MainTestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['count'], Package.objects.filter(last_action__action=last_action).count())
 
-    def test_replantation_list_login_required(self):
+    @patch('apps.api.v1.entities.serializers.ReplantationListSerializer.get_blockchain_details', return_value={})
+    def test_replantation_list_login_required(self, mock1):
         response = self.client.get(self.replantation_list_url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     @patch('apps.entities.models.Replantation.add_to_chain')
     @patch('apps.entities.models.Package.add_to_chain')
-    def test_replantation_list(self, mock_chain, mock_chain2):
+    @patch('apps.api.v1.entities.serializers.ReplantationListSerializer.get_blockchain_details', return_value={})
+    def test_replantation_list(self, mock_chain, mock_chain2, mock3):
         G(Replantation)
         self.client.force_authenticate(self.super_user)
         response = self.client.get(self.replantation_list_url)
