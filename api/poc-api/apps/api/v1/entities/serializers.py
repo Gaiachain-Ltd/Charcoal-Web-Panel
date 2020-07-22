@@ -85,9 +85,9 @@ class EntitySerializer(serializers.ModelSerializer):
             package_kwargs = {'pid': pid, 'type': Package.HARVEST}
             if action == Entity.CARBONIZATION_BEGINNING:
                 package_kwargs['plot_id'] = self.get_plot_id(pid)
-            package, created = Package.objects.get_or_create(**package_kwargs)
+                package, created = Package.objects.get_or_create(**package_kwargs)
             if action == Entity.CARBONIZATION_ENDING:
-                get_list_or_404(Entity, package=package, action=Entity.CARBONIZATION_BEGINNING)
+                package = get_list_or_404(Package, pid=pid, last_action__action__in=(Entity.CARBONIZATION_BEGINNING, Entity.CARBONIZATION_ENDING))[-1]
         elif pid and action == Entity.LOADING_TRANSPORT:
             harvest_id = self.get_harvest_id(pid)
             package, created = Package.objects.get_or_create(pid=pid, type=Package.TRUCK, harvest_id=harvest_id)
