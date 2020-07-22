@@ -294,10 +294,11 @@ class PackagesSerializer(serializers.ModelSerializer):
     type_display = serializers.SerializerMethodField()
     entities = SimpleEntitySerializer(many=True, source='package_entities')
     plot_has_replantation = serializers.SerializerMethodField()
+    parent_id = serializers.SerializerMethodField()
 
     class Meta:
         model = Package
-        fields = ('id', 'pid', 'type', 'type_display', 'entities', 'plot_has_replantation', 'is_finished')
+        fields = ('id', 'pid', 'type', 'type_display', 'entities', 'plot_has_replantation', 'is_finished', 'parent_id')
 
     def get_type_display(self, obj):
         return obj.get_type_display().lower()
@@ -308,6 +309,13 @@ class PackagesSerializer(serializers.ModelSerializer):
         except AttributeError:
             pass
         return False
+
+    def get_parent_id(self, obj):
+        if obj.type == Package.HARVEST:
+            return obj.plot_id
+        elif obj.type == Package.TRUCK:
+            return obj.harvest_id
+        return None
 
 
 class EntityDetailsSerializer(SimpleEntitySerializer):
