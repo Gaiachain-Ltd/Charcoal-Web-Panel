@@ -88,14 +88,10 @@ class Entity(models.Model):
     def get_notification_users(self):
         from django.contrib.auth import get_user_model
         User = get_user_model()
-        role_names = ()
-        if self.action == self.LOGGING_ENDING:
-            role_names = ('CARBONIZER',)
-        elif self.action == self.CARBONIZATION_ENDING:
-            role_names = ('CARBONIZER',)
-        elif self.action == self.LOADING_TRANSPORT:
-            role_names = ('DIRECTOR',)
-        return User.objects.filter(Q(role__name__in=role_names) | Q(function=User.PRESIDENT)).exclude(id=self.user_id)
+        return User.objects.filter(
+            Q(role__name__in=('DIRECTOR', 'PRESIDENT', 'VICE_PRESIDENT')) |
+            Q(function__in=(User.PRESIDENT, User.VICE_PRESIDENT))
+        ).exclude(id=self.user_id)
 
     def send_notification(self):
         from apps.notifications.models import Notification
