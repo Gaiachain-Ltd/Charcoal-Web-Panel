@@ -118,8 +118,13 @@ let PackageMap = Vue.component('package-map', {
                     iconUrl: `${window.staticPrefix}img/marker-icon-pink.png`,
                     iconRetinaUrl: `${window.staticPrefix}img/marker-icon-pink2x.png`,
                 });
+            let transportMarkers = {};
             this.packages.forEach((package) => {
+                if (package.type_display == 'transport')
+                    transportMarkers[package.pid] = [];
                 package.entities.forEach((entity) => {
+                    if (package.type_display == 'transport')
+                        transportMarkers[package.pid].push(entity.location_display);
                     bounds.push(entity.location_display);
                     markers.push({
                         location: entity.location_display,
@@ -134,12 +139,13 @@ let PackageMap = Vue.component('package-map', {
                             else if (package.type_display == 'transport') {
                                 return transportIcon
                             }
-                        }
+                        },
                     })
                 })
             });
             let mapWrapper = document.getElementById('map-wrapper');
             mapWrapper.innerHTML = '<div id="map"></div>';
+
             if (bounds.length) {
                 let map = L.map('map').setView(bounds[0], 13);
                 L.tileLayer(`https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=${window.mapboxToken}`, {
@@ -154,7 +160,13 @@ let PackageMap = Vue.component('package-map', {
                 map.fitBounds(bounds);
                 markers.forEach((marker) => {
                     L.marker(marker.location, {icon: marker.icon()}).addTo(map).bindPopup(marker.text);
+
                 });
+                if (transportMarkers)
+                    for (const [key, value] of Object.entries(transportMarkers)) {
+                        if (value.length > 1)
+                            L.polyline(value, {color: '#FF70F1'}).addTo(map);
+                    }
             }
             this.$root.$data.loading = false;
         }
