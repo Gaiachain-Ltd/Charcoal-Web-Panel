@@ -1184,7 +1184,7 @@ section.main-section .main-content .content-data .replantation .replantation-end
   padding-bottom: 20px;
   border-bottom: 1px solid #EFF6F0;
 }
-.start-content.settings .content-data .settings-tab-details .additional-data-block .additional-data-list .additional-data-list-row input[type=text] {
+.start-content.settings .content-data .settings-tab-details .additional-data-block .additional-data-list .additional-data-list-row input[type=text], .start-content.settings .content-data .settings-tab-details .additional-data-block .additional-data-list .additional-data-list-row input[type=number] {
   font-size: 14px;
   color: #000000;
   border: 1px solid #D6D6D6;
@@ -1192,7 +1192,7 @@ section.main-section .main-content .content-data .replantation .replantation-end
   height: 30px;
   padding-left: 9px;
 }
-.start-content.settings .content-data .settings-tab-details .additional-data-block .additional-data-list .additional-data-list-row input[type=text]::placeholder {
+.start-content.settings .content-data .settings-tab-details .additional-data-block .additional-data-list .additional-data-list-row input[type=text]::placeholder, .start-content.settings .content-data .settings-tab-details .additional-data-block .additional-data-list .additional-data-list-row input[type=number]::placeholder {
   color: #000000;
   text-transform: lowercase;
 }

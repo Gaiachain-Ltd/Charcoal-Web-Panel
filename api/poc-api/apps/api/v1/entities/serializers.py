@@ -458,18 +458,22 @@ class ReceptionSerializer(BaseEntityActionSerializer, serializers.ModelSerialize
 class CarbonizationBeginningSerializer(BaseEntityActionSerializer, serializers.ModelSerializer):
     beginning_date_display = serializers.SerializerMethodField()
     oven_type_display = serializers.CharField(source='oven_type.name', allow_null=True)
-    timber_volume = serializers.SerializerMethodField()
+    oven_volume = serializers.SerializerMethodField()
 
     class Meta:
         model = CarbonizationBeginning
-        fields = ('entity', 'beginning_date_display', 'oven_type_display', 'oven_measurements', 'timber_volume', 'beginning_date')
+        fields = ('entity', 'beginning_date_display', 'oven_type_display', 'oven_measurements', 'oven_volume', 'beginning_date')
 
-    def get_timber_volume(self, obj):
+    def get_oven_volume(self, obj):
+        if obj.oven_volume:
+            return obj.oven_volume
         result = 1
         measurements = obj.oven_measurements
         try:
             for key in measurements:
-                result *= measurements[key]
+                # if oven is trapezoid then volume is already stored in db
+                if key != 'oven_height2':
+                    result *= measurements[key]
             return result
         except TypeError:
             return 0

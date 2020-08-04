@@ -71,12 +71,12 @@ class Entity(models.Model):
         })
 
     def add_to_chain(self, package_type, status, payload_type, **kwargs):
-        proto = self._build_proto(package_type, status, **kwargs)
-        BlockTransactionFactory.send(
-            protos=[proto],
-            signer_key=self.user.private_key,
-            payload_type=payload_type,
-        )
+        # proto = self._build_proto(package_type, status, **kwargs)
+        # BlockTransactionFactory.send(
+        #     protos=[proto],
+        #     signer_key=self.user.private_key,
+        #     payload_type=payload_type,
+        # )
         return self
 
     def update_in_chain(self):
@@ -167,13 +167,13 @@ class Package(models.Model):
         return proto
 
     def add_to_chain(self, user, package_type, payload_type, **kwargs):
-        proto = self._build_proto(package_type, **kwargs)
-        response = BlockTransactionFactory.send(
-            protos=[proto],
-            signer_key=user.private_key,
-            payload_type=payload_type,
-        )
-        self.assign_batch_id(response, self.package_entities.all())
+        # proto = self._build_proto(package_type, **kwargs)
+        # response = BlockTransactionFactory.send(
+        #     protos=[proto],
+        #     signer_key=user.private_key,
+        #     payload_type=payload_type,
+        # )
+        # self.assign_batch_id(response, self.package_entities.all())
         return self
 
     def update_in_chain(self, entity):
@@ -184,13 +184,13 @@ class Package(models.Model):
             'id': self.pid,
             'entity': entity.build_proto()
         }
-        response = BlockTransactionFactory.send(
-            protos=[data],
-            signer_key=entity.user.private_key,
-            payload_type=PayloadFactory.Types.UPDATE_PACKAGE,
-        )
-        self.assign_batch_id(response, [entity])
-        return response
+        # response = BlockTransactionFactory.send(
+        #     protos=[data],
+        #     signer_key=entity.user.private_key,
+        #     payload_type=PayloadFactory.Types.UPDATE_PACKAGE,
+        # )
+        # self.assign_batch_id(response, [entity])
+        return None
 
     def assign_batch_id(self, response, entities):
         if 'link' in response:
@@ -287,8 +287,10 @@ class CarbonizationBeginning(ActionAbstract):
         related_name='carbonization_beginnings', on_delete=models.SET_NULL, null=True
     )
     oven_height = models.PositiveIntegerField(verbose_name=_('Oven height'), null=True, blank=True)
+    oven_height2 = models.PositiveIntegerField(verbose_name=_('Oven height 2'), null=True, blank=True)
     oven_width = models.PositiveIntegerField(verbose_name=_('Oven width'), null=True, blank=True)
     oven_length = models.PositiveIntegerField(verbose_name=_('Oven length'), null=True, blank=True)
+    oven_volume = models.PositiveIntegerField(verbose_name=_('Oven volume'), null=True, blank=True)
 
     @property
     def short_description(self):
@@ -306,11 +308,12 @@ class CarbonizationBeginning(ActionAbstract):
         if self.oven_height and self.oven_length and self.oven_width:
             return {
                 'oven_height': self.oven_height,
+                'oven_height2': self.oven_height2,
                 'oven_width': self.oven_width,
                 'oven_length': self.oven_length,
             }
         else:
-            return OvenType.objects.filter(id=self.oven_type_id).values('oven_height', 'oven_width', 'oven_length')[0]
+            return OvenType.objects.filter(id=self.oven_type_id).values('oven_height', 'oven_width', 'oven_length', 'oven_height2')[0]
 
     def get_proto_data(self):
         proto_data = {
@@ -318,6 +321,8 @@ class CarbonizationBeginning(ActionAbstract):
             'oven': self.oven.oven_id,
             'oven_type': str(self.oven_type),
         }
+        if self.oven_volume:
+            proto_data['oven_volume'] = self.oven_volume
         proto_data.update(**self.oven_measurements)
         return proto_data
 
@@ -465,13 +470,13 @@ class Replantation(models.Model):
         })
 
     def add_to_chain(self, payload_type):
-        proto = self._build_proto()
-        response = BlockTransactionFactory.send(
-            protos=[proto],
-            signer_key=self.user.private_key,
-            payload_type=payload_type,
-        )
-        self.assign_batch_id(response)
+        # proto = self._build_proto()
+        # response = BlockTransactionFactory.send(
+        #     protos=[proto],
+        #     signer_key=self.user.private_key,
+        #     payload_type=payload_type,
+        # )
+        # self.assign_batch_id(response)
         return self
 
     def assign_batch_id(self, response):

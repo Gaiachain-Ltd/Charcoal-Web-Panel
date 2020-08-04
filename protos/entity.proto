@@ -53,8 +53,10 @@ message Entity {
     string oven = 13; // also used at step 4
     string oven_type = 14;
     uint64 oven_height = 15;
+    uint64 oven_height2 = 28;
     uint64 oven_width = 16;
     uint64 oven_length = 17;
+    uint64 oven_volume = 29;
 
     // step 4
     uint64 end_date = 18;

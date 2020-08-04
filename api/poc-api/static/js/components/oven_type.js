@@ -21,15 +21,17 @@ let ovenType = Vue.component('oven-type', {
                     <div class="additional-data-list-row-extra" v-if="isEditing && object.id == currentObject.id">
                         <label><input type="radio" name="oven_measurements" value="1" v-model="currentObject.type"  @change="saveObject"> [[ $t("custom_measurements") ]]</label>
                         <label><input type="radio" name="oven_measurements" value="2" v-model="currentObject.type"  @change="saveObject"> [[ $t("fixed_measurements") ]]</label>
-                        <input type="text" :placeholder="$t('height') + ' [m]'" v-model="currentObject.oven_height" v-if="currentObject.type == 2"  @change="saveObject">
-                        <input type="text" :placeholder="$t('length') + ' [m]'" v-model="currentObject.oven_length" v-if="currentObject.type == 2"  @change="saveObject">
-                        <input type="text" :placeholder="$t('width') + ' [m]'" v-model="currentObject.oven_width" v-if="currentObject.type == 2"  @change="saveObject">
+                        <input type="number" min="0" :placeholder="$t('height') + ' [m]'" v-model="currentObject.oven_height" v-if="currentObject.type == 2"  @change="saveObject">
+                        <input type="number" min="0" :placeholder="$t('height') + ' 2 [m]'" v-model="currentObject.oven_height2" v-if="currentObject.type == 2"  @change="saveObject">
+                        <input type="number" min="0" :placeholder="$t('length') + ' [m]'" v-model="currentObject.oven_length" v-if="currentObject.type == 2"  @change="saveObject">
+                        <input type="number" min="0" :placeholder="$t('width') + ' [m]'" v-model="currentObject.oven_width" v-if="currentObject.type == 2"  @change="saveObject">
                     </div>
                     <div class="additional-data-list-row-extra" v-else>
                         <span v-if="object.type == 1">[[ $t("custom_measurements") ]]</span>
                         <span v-if="object.type == 2">[[ $t("fixed_measurements") ]]</span>
                         <span class="measurements">
                             <span v-if="object.type == 2">[[ $t("height") ]]: [[ object.oven_height ]] [m]</span>
+                            <span v-if="object.type == 2 && object.oven_height2">[[ $t("height") ]] 2: [[ object.oven_height2 ]] [m]</span>
                             <span v-if="object.type == 2">[[ $t("length") ]]: [[ object.oven_length ]] [m]</span>
                             <span v-if="object.type == 2">[[ $t("width") ]]: [[ object.oven_width ]] [m]</span>
                         </span>
@@ -45,9 +47,10 @@ let ovenType = Vue.component('oven-type', {
                     <div class="additional-data-list-row-extra">
                         <label><input type="radio" name="oven_measurements" value="1" v-model="currentObject.type"  @change="saveObject"> [[ $t("custom_measurements") ]]</label>
                         <label><input type="radio" name="oven_measurements" value="2" v-model="currentObject.type"  @change="saveObject"> [[ $t("fixed_measurements") ]]</label>
-                        <input type="text" :placeholder="$t('height') + ' [m]'" v-model="currentObject.oven_height" v-if="currentObject.type == 2"  @change="saveObject">
-                        <input type="text" :placeholder="$t('length') + ' [m]'" v-model="currentObject.oven_length" v-if="currentObject.type == 2"  @change="saveObject">
-                        <input type="text" :placeholder="$t('width') + ' [m]'" v-model="currentObject.oven_width" v-if="currentObject.type == 2"  @change="saveObject">
+                        <input type="number" min="0" :placeholder="$t('height') + ' [m]'" v-model="currentObject.oven_height" v-if="currentObject.type == 2"  @change="saveObject">
+                        <input type="number" min="0" :placeholder="$t('height') + ' 2 [m]'" v-model="currentObject.oven_height2" v-if="currentObject.type == 2"  @change="saveObject">
+                        <input type="number" min="0" :placeholder="$t('length') + ' [m]'" v-model="currentObject.oven_length" v-if="currentObject.type == 2"  @change="saveObject">
+                        <input type="number" min="0" :placeholder="$t('width') + ' [m]'" v-model="currentObject.oven_width" v-if="currentObject.type == 2"  @change="saveObject">
                     </div>
                 </div>
             </div>
@@ -83,6 +86,9 @@ let ovenType = Vue.component('oven-type', {
         },
         saveObject(e) {
             let promise;
+            if (this.currentObject.oven_height2 === "") {
+                this.currentObject.oven_height2 = null;
+            }
             if (this.isEditing) {
                 promise = OvenTypeDataService.update(this.currentObject.id, this.currentObject)
             } else {

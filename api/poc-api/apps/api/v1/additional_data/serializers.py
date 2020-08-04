@@ -32,7 +32,7 @@ class TreeSpecieSerializer(serializers.ModelSerializer):
 class OvenTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = OvenType
-        fields = ('id', 'name', 'oven_height', 'oven_width', 'oven_length', 'type', 'active')
+        fields = ('id', 'name', 'oven_height', 'oven_height2', 'oven_width', 'oven_length', 'type', 'active')
 
     def validate(self, attrs):
         if attrs.get('type'):
@@ -42,6 +42,7 @@ class OvenTypeSerializer(serializers.ModelSerializer):
                         attrs[key] = 1
             else:
                 attrs['oven_height'] = None
+                attrs['oven_height2'] = None
                 attrs['oven_length'] = None
                 attrs['oven_width'] = None
         return attrs

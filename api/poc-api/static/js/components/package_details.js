@@ -125,11 +125,12 @@ let PackageDetails = Vue.component('package-details', {
                                 </div>
                                 <div class="entity-property">
                                     <div class="entity-property-name">[[ $t('oven_measurements') ]]</div>
-                                    <div class="entity-property-value">[[ $t('height') ]]: [[ oven.carbonization_beginning.oven_measurements.oven_height ]]m  [[ $t('length') ]]: [[ oven.carbonization_beginning.oven_measurements.oven_length ]]m  [[ $t('width') ]]: [[ oven.carbonization_beginning.oven_measurements.oven_width ]]m</div>
+                                    <div class="entity-property-value" v-if="oven.carbonization_beginning.oven_measurements.oven_height2">[[ $t('height') ]]: [[ oven.carbonization_beginning.oven_measurements.oven_height ]]m  [[ $t('height') ]] 2: [[ oven.carbonization_beginning.oven_measurements.oven_height2 ]]m  [[ $t('length') ]]: [[ oven.carbonization_beginning.oven_measurements.oven_length ]]m  [[ $t('width') ]]: [[ oven.carbonization_beginning.oven_measurements.oven_width ]]m</div>
+                                    <div class="entity-property-value" v-else>[[ $t('height') ]]: [[ oven.carbonization_beginning.oven_measurements.oven_height ]]m  [[ $t('length') ]]: [[ oven.carbonization_beginning.oven_measurements.oven_length ]]m  [[ $t('width') ]]: [[ oven.carbonization_beginning.oven_measurements.oven_width ]]m</div>
                                 </div>
                                 <div class="entity-property">
                                     <div class="entity-property-name">[[ $t('timber_volume') ]]</div>
-                                    <div class="entity-property-value">[[ oven.carbonization_beginning.timber_volume ]] m3</div>
+                                    <div class="entity-property-value">[[ oven.carbonization_beginning.oven_volume ]] m3</div>
                                 </div>
                             </div>
                         </div>

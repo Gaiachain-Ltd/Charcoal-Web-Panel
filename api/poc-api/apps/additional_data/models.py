@@ -43,6 +43,7 @@ class OvenType(BaseAdditionalModel):
     )
     type = models.PositiveSmallIntegerField(default=CUSTOM, choices=TYPE_CHOICES)
     oven_height = models.PositiveIntegerField(verbose_name=_('Oven height'), null=True, blank=True)
+    oven_height2 = models.PositiveIntegerField(verbose_name=_('Oven height2'), null=True, blank=True)
     oven_width = models.PositiveIntegerField(verbose_name=_('Oven width'), null=True, blank=True)
     oven_length = models.PositiveIntegerField(verbose_name=_('Oven length'), null=True, blank=True)
 
