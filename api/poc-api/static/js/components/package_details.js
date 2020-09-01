@@ -165,6 +165,12 @@ let PackageDetails = Vue.component('package-details', {
                                    :class="{ 'active': activeSubTab == 'loading_transport' } "
                                    @click.prevent="showSubTab('loading_transport')" href="#">[[ $t("loading_transport") ]]</a>
                             </li>
+                            <li class="nav-item" v-for="localReception in localReceptions">
+                                <a class="nav-link"
+                                   :class="{ 'active': activeSubTab == 'localReception' + localReception.entity.id } "
+                                   @click.prevent="showSubTab('localReception' + localReception.entity.id)" 
+                                   href="#">[[ $t("local_reception") ]]</a>
+                            </li>
                             <li class="nav-item" v-if="objectNotEmpty(reception)">
                                 <a class="nav-link"
                                    :class="{ 'active': activeSubTab == 'reception' } "
@@ -214,6 +220,50 @@ let PackageDetails = Vue.component('package-details', {
                             </div>
                         </div>
                     </div>
+                    <div v-for="reception in localReceptions">
+                        <div class="content-data" v-if="activeSubTab == 'localReception' + reception.entity.id">
+                            <div class="entity">
+                                <div class="entity-header">
+                                    <div class="entity-action">[[ reception.entity.action_display ]]</div>
+                                    <div class="entity-timestamp">[[ reception.entity.timestamp | timestampToDateTime ]] 
+                                        <div class="blockchain-details" 
+                                             @click="openModal(reception.entity.action_display, reception.entity.blockchain_details)" 
+                                             v-if="objectNotEmpty(reception.entity.blockchain_details)">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="entity-details">
+                                    <div class="entity-property">
+                                        <div class="entity-property-name">[[ $t('plate_number') ]]</div>
+                                        <div class="entity-property-value">[[ loadingTransport.plate_number ]]</div>
+                                    </div>
+                                    <div class="entity-property">
+                                        <div class="entity-property-name">[[ $t('reception_date') ]]</div>
+                                        <div class="entity-property-value">[[ reception.reception_date | timestampToDate ]]</div>
+                                    </div>
+                                    <div class="entity-property">
+                                        <div class="entity-property-name">[[ $t('scanned_bags') ]]</div>
+                                        <div class="entity-property-value">[[ reception.scanned_bags ]]</div>
+                                    </div>
+                                    <div class="entity-property">
+                                        <div class="entity-property-name">[[ $t('gps_coordinates') ]]</div>
+                                        <div class="entity-property-value">[[ reception.entity.location_display ]]</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="entity">
+                                <div class="entity-header">
+                                    <div class="entity-action">[[ $t('scanned_bags') ]] ([[ reception.scanned_bags ]])</div>
+                                </div>
+                                <div class="entity-details" v-for="bag in reception.bags" :key="'reception_bag_' + bag.id">
+                                    <div class="entity-property">
+                                        <div class="entity-property-name">[[ bag.pid ]]</div>
+                                        <div class="entity-property-value">[[ bag.qr_code ]]</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="content-data" v-if="activeSubTab == 'reception' && objectNotEmpty(reception)">
                         <div class="entity">
                             <div class="entity-header">
@@ -237,11 +287,11 @@ let PackageDetails = Vue.component('package-details', {
                                 <div class="entity-property">
                                     <div class="entity-property-name">[[ $t('scanned_bags') ]]</div>
                                     <div class="entity-property-value">[[ reception.scanned_bags ]]</div>
-                                    <div class="entity-property-icon-warning" v-if="reception.scanned_bags != loadingTransport.scanned_bags"></div>
+                                    <div class="entity-property-icon-warning" v-if="reception.total_bags != loadingTransport.scanned_bags"></div>
                                 </div>
                                 <div class="entity-property">
                                     <div class="entity-property-name">[[ $t('gps_coordinates') ]]</div>
-                                    <div class="entity-property-value">[[ loadingTransport.entity.location_display ]]</div>
+                                    <div class="entity-property-value">[[ reception.entity.location_display ]]</div>
                                 </div>
                                 <div class="row m-0">
                                     <div class="entity-property col px-0">
@@ -305,6 +355,7 @@ let PackageDetails = Vue.component('package-details', {
             loggingEnding: {},
             loadingTransport: {},
             reception: {},
+            localReceptions: {},
             ovens: [],
             isModalOpen: false,
             modalAction: '',
@@ -338,6 +389,7 @@ let PackageDetails = Vue.component('package-details', {
                 this.loggingEnding = this.package.properties.logging_ending;
                 this.loadingTransport = this.package.properties.loading_transport;
                 this.reception = this.package.properties.reception;
+                this.localReceptions = this.package.properties.local_receptions;
                 this.ovens = this.package.properties.ovens;
                 if (this.package.type_display == 'transport') {
                     this.activeSubTab = 'loading_transport'

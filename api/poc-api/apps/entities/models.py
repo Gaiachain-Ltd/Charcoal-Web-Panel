@@ -15,6 +15,7 @@ class Entity(models.Model):
     CARBONIZATION_BEGINNING = 'CB'
     CARBONIZATION_ENDING = 'CE'
     LOADING_TRANSPORT = 'TR'
+    LOCAL_RECEPTION = 'LR'
     RECEPTION = 'RE'
     ACTIONS = [
         (INITIAL, 'Initial'),
@@ -23,7 +24,8 @@ class Entity(models.Model):
         (CARBONIZATION_BEGINNING, 'Carbonization Beginning'),
         (CARBONIZATION_ENDING, 'Carbonization Ending'),
         (LOADING_TRANSPORT, 'Loading & Transport'),
-        (RECEPTION, 'Reception')
+        (LOCAL_RECEPTION, 'Local Reception'),
+        (RECEPTION, 'Reception'),
     ]
     CHILD_MODEL_NAMES = {
         LOGGING_BEGINNING: 'loggingbeginning',
@@ -31,6 +33,7 @@ class Entity(models.Model):
         CARBONIZATION_BEGINNING: 'carbonizationbeginning',
         CARBONIZATION_ENDING: 'carbonizationending',
         LOADING_TRANSPORT: 'loadingtransport',
+        LOCAL_RECEPTION: 'reception',
         RECEPTION: 'reception',
     }
 
@@ -71,12 +74,12 @@ class Entity(models.Model):
         })
 
     def add_to_chain(self, package_type, status, payload_type, **kwargs):
-        # proto = self._build_proto(package_type, status, **kwargs)
-        # BlockTransactionFactory.send(
-        #     protos=[proto],
-        #     signer_key=self.user.private_key,
-        #     payload_type=payload_type,
-        # )
+        proto = self._build_proto(package_type, status, **kwargs)
+        BlockTransactionFactory.send(
+            protos=[proto],
+            signer_key=self.user.private_key,
+            payload_type=payload_type,
+        )
         return self
 
     def update_in_chain(self):
@@ -167,13 +170,13 @@ class Package(models.Model):
         return proto
 
     def add_to_chain(self, user, package_type, payload_type, **kwargs):
-        # proto = self._build_proto(package_type, **kwargs)
-        # response = BlockTransactionFactory.send(
-        #     protos=[proto],
-        #     signer_key=user.private_key,
-        #     payload_type=payload_type,
-        # )
-        # self.assign_batch_id(response, self.package_entities.all())
+        proto = self._build_proto(package_type, **kwargs)
+        response = BlockTransactionFactory.send(
+            protos=[proto],
+            signer_key=user.private_key,
+            payload_type=payload_type,
+        )
+        self.assign_batch_id(response, self.package_entities.all())
         return self
 
     def update_in_chain(self, entity):
@@ -184,13 +187,13 @@ class Package(models.Model):
             'id': self.pid,
             'entity': entity.build_proto()
         }
-        # response = BlockTransactionFactory.send(
-        #     protos=[data],
-        #     signer_key=entity.user.private_key,
-        #     payload_type=PayloadFactory.Types.UPDATE_PACKAGE,
-        # )
-        # self.assign_batch_id(response, [entity])
-        return None
+        response = BlockTransactionFactory.send(
+            protos=[data],
+            signer_key=entity.user.private_key,
+            payload_type=PayloadFactory.Types.UPDATE_PACKAGE,
+        )
+        self.assign_batch_id(response, [entity])
+        return response
 
     def assign_batch_id(self, response, entities):
         if 'link' in response:
@@ -412,9 +415,23 @@ class ReceptionImage(models.Model):
         on_delete=models.CASCADE, related_name='images'
     )
 
-
 class Reception(ActionAbstract):
     reception_date = models.PositiveIntegerField(verbose_name=_('Reception date'), null=True)
+
+    LOCAL = 1
+    FINAL = 2
+    TYPE_CHOICES = (
+        (LOCAL, _('Local')),
+        (FINAL, _('Final')),
+    )
+    type = models.PositiveSmallIntegerField(verbose_name=_('Type'), choices=TYPE_CHOICES, default=FINAL)
+
+    @property
+    def total_bags(self):
+        # sum local and final reception bags to show warning in webpanel
+        if self.type == self.FINAL:
+            return Bag.objects.filter(reception__entity__package_id=self.entity.package_id).count()
+        return 0
 
     def get_proto_status(self):
         return EntityProto.RECEPTION
@@ -424,7 +441,8 @@ class Reception(ActionAbstract):
             'documents_photos': list(self.images.filter(type=ReceptionImage.DOCUMENT).values_list('image', flat=True)),
             'receipt_photos': list(self.images.filter(type=ReceptionImage.RECEIPT).values_list('image', flat=True)),
             'bags': list(self.bags.values_list('qr_code', flat=True)),
-            'reception_date': self.reception_date
+            'reception_date': self.reception_date,
+            'reception_type': self.get_type_display(),
         }
 
     @property
@@ -433,7 +451,9 @@ class Reception(ActionAbstract):
 
     @property
     def web_description(self):
-        return _('Reception at storage facility')
+        if self.type == self.FINAL:
+            return _('Reception at storage facility')
+        return _('Bags sold at local market')
 
 
 class Replantation(models.Model):
@@ -470,13 +490,13 @@ class Replantation(models.Model):
         })
 
     def add_to_chain(self, payload_type):
-        # proto = self._build_proto()
-        # response = BlockTransactionFactory.send(
-        #     protos=[proto],
-        #     signer_key=self.user.private_key,
-        #     payload_type=payload_type,
-        # )
-        # self.assign_batch_id(response)
+        proto = self._build_proto()
+        response = BlockTransactionFactory.send(
+            protos=[proto],
+            signer_key=self.user.private_key,
+            payload_type=payload_type,
+        )
+        self.assign_batch_id(response)
         return self
 
     def assign_batch_id(self, response):

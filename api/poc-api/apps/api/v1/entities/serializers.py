@@ -91,13 +91,13 @@ class EntitySerializer(serializers.ModelSerializer):
         elif pid and action == Entity.LOADING_TRANSPORT:
             harvest_id = self.get_harvest_id(pid)
             package, created = Package.objects.get_or_create(pid=pid, type=Package.TRUCK, harvest_id=harvest_id)
-        elif action == Entity.RECEPTION:
+        elif action in (Entity.RECEPTION, Entity.LOCAL_RECEPTION):
             qr_code = properties_data['bags_qr_codes'][0]
             # qr codes are reusable after reception in any other chain
             package = Package.objects.filter(
                 package_entities__loadingtransport__bags__qr_code=qr_code,
                 type=Package.TRUCK,
-                last_action__action=Entity.LOADING_TRANSPORT
+                last_action__action__in=(Entity.LOADING_TRANSPORT, Entity.LOCAL_RECEPTION)
             ).order_by('id').last()
             if not package:
                 raise NotFound(detail=f'Truck with this bag ({qr_code}) not found.')
@@ -232,6 +232,23 @@ class EntitySerializer(serializers.ModelSerializer):
             photos.extend([ReceptionImage(image=image, type=ReceptionImage.RECEIPT, reception_id=reception.id)
                     for image in receipt_photos])
             ReceptionImage.objects.bulk_create(photos)
+            entity.update_in_chain()
+
+    @staticmethod
+    def _create_local_reception(entity, properties_data):
+        if not (entity.user.is_director or entity.user.is_superuser_role):
+            raise InvalidAgentRoleError("Only Director can add reception.")
+        bags_qr_codes = properties_data.pop('bags_qr_codes')
+        documents_photos = properties_data.pop('documents_photos')
+        receipt_photos = properties_data.pop('receipt_photos')
+        properties_data['reception_date'] = properties_data.get('reception_date') or properties_data.pop('event_date')
+        reception, created = Reception.objects.get_or_create(
+            entity=entity,
+            type=Reception.LOCAL,
+            **properties_data
+        )
+        if created:
+            Bag.objects.filter(qr_code__in=bags_qr_codes, transport__entity__package=entity.package).update(reception=reception)
             entity.update_in_chain()
 
 
@@ -438,7 +455,8 @@ class ReceptionSerializer(BaseEntityActionSerializer, serializers.ModelSerialize
 
     class Meta:
         model = Reception
-        fields = ('entity', 'bags', 'scanned_bags', 'documents_photos', 'receipt_photos', 'reception_date_display', 'reception_date')
+        fields = ('entity', 'bags', 'scanned_bags', 'documents_photos', 'receipt_photos', 'reception_date_display',
+                  'reception_date', 'total_bags')
 
     def get_reception_date_display(self, obj):
         if obj.reception_date:
@@ -556,11 +574,12 @@ class HarvestPackageSerializer(serializers.ModelSerializer):
 class TruckPackageSerializer(serializers.ModelSerializer):
     loading_transport = serializers.SerializerMethodField()
     reception = serializers.SerializerMethodField()
+    local_receptions = serializers.SerializerMethodField()
 
     class Meta:
         model = Package
         fields = (
-            'loading_transport', 'reception'
+            'loading_transport', 'reception', 'local_receptions'
         )
 
     def get_loading_transport(self, obj):
@@ -570,6 +589,11 @@ class TruckPackageSerializer(serializers.ModelSerializer):
                 context=self.context).data
         except (Entity.DoesNotExist, LoadingTransport.DoesNotExist):
             return {}
+
+    def get_local_receptions(self, obj):
+        return ReceptionSerializer(
+            Reception.objects.filter(type=Reception.LOCAL, entity__package_id=obj.id),
+            many=True, context=self.context).data
 
     def get_reception(self, obj):
         try:

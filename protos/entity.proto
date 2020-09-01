@@ -53,27 +53,28 @@ message Entity {
     string oven = 13; // also used at step 4
     string oven_type = 14;
     uint64 oven_height = 15;
-    uint64 oven_height2 = 28;
-    uint64 oven_width = 16;
-    uint64 oven_length = 17;
-    uint64 oven_volume = 29;
+    uint64 oven_height2 = 16;
+    uint64 oven_width = 17;
+    uint64 oven_length = 18;
+    uint64 oven_volume = 19;
 
     // step 4
-    uint64 end_date = 18;
+    uint64 end_date = 20;
 
     // step 5
-    uint64 loading_date = 19;
-    string plate_number = 20;
-    string destination = 21;
-    repeated string bags = 22; // also used at step 6
+    uint64 loading_date = 21;
+    string plate_number = 22;
+    string destination = 23;
+    repeated string bags = 24; // also used at step 6
 
     // step 6
-    repeated string documents_photos = 23;
-    repeated string receipt_photos = 24;
-    uint64 reception_date = 25;
+    repeated string documents_photos = 25;
+    repeated string receipt_photos = 26;
+    uint64 reception_date = 27;
+    string reception_type = 28;
 
-    Location location = 26;
-    Agent user = 27;
+    Location location = 29;
+    Agent user = 30;
 
 }
 
