@@ -433,6 +433,13 @@ class Reception(ActionAbstract):
             return Bag.objects.filter(reception__entity__package_id=self.entity.package_id).count()
         return 0
 
+    @property
+    def total_bags_sold(self):
+        # total bags sold at local reception
+        if self.type == self.FINAL:
+            return self.total_bags - self.bags.count()
+        return 0
+
     def get_proto_status(self):
         return EntityProto.RECEPTION
 

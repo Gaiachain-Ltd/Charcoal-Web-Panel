@@ -285,6 +285,10 @@ let PackageDetails = Vue.component('package-details', {
                                     <div class="entity-property-value">[[ reception.reception_date | timestampToDate ]]</div>
                                 </div>
                                 <div class="entity-property">
+                                    <div class="entity-property-name">[[ $t('total_bags_sold') ]]</div>
+                                    <div class="entity-property-value">[[ reception.total_bags_sold ]]</div>
+                                </div>
+                                <div class="entity-property">
                                     <div class="entity-property-name">[[ $t('scanned_bags') ]]</div>
                                     <div class="entity-property-value">[[ reception.scanned_bags ]]</div>
                                     <div class="entity-property-icon-warning" v-if="reception.total_bags != loadingTransport.scanned_bags"></div>

@@ -456,7 +456,7 @@ class ReceptionSerializer(BaseEntityActionSerializer, serializers.ModelSerialize
     class Meta:
         model = Reception
         fields = ('entity', 'bags', 'scanned_bags', 'documents_photos', 'receipt_photos', 'reception_date_display',
-                  'reception_date', 'total_bags')
+                  'reception_date', 'total_bags', 'total_bags_sold')
 
     def get_reception_date_display(self, obj):
         if obj.reception_date:
