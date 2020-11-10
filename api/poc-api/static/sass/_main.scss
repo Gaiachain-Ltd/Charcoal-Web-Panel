@@ -1,3 +1,7 @@
+.no-border {
+  border: none !important;
+}
+
 header.main-header {
   height: 120px;
   background: transparent linear-gradient(270deg, $main-header-bg 0%, $white-color 100%) 0% 0% no-repeat padding-box;
@@ -10,7 +14,7 @@ header.main-header {
     height: 120px;
     display: inline-block;
     img {
-      padding-top: 30px;
+      padding-top: 15px;
       padding-left: 30px;
     }
   }
@@ -94,7 +98,7 @@ section.main-section {
         cursor: pointer;
       }
     }
-    #settings {
+    #sidebar-footer {
       position: absolute;
       bottom: 0;
       width: 100%;
@@ -122,6 +126,9 @@ section.main-section {
       border-bottom: 1px solid $main-header-border-color;
       &:first-child {
         margin-top: 120px;
+      }
+      &.no-pointer {
+        cursor: unset;
       }
       i {
         position: absolute;
@@ -232,6 +239,41 @@ section.main-section {
       .show-arrow-icon-switch {
         transform: rotate(180deg);
         transition: transform 300ms ease;
+      }
+      .gaia-icon {
+        background-image: url(../img/gaia-sidebar.png);
+        background-image:
+          -webkit-image-set(
+            url(../img/gaia-sidebar.png) 1x,
+            url(../img/gaia-sidebar@2x.png) 2x
+        );
+        background-image:
+          image-set(
+            url(../img/gaia-sidebar.png) 1x,
+            url(../img/gaia-sidebar@2x.png) 2x
+        );
+        height: 40px;
+        width: 112px;
+        top: 26px;
+        left: 30px;
+      }
+      .milo-icon {
+        background-image: url(../img/milo-sidebar.png);
+        background-image:
+          -webkit-image-set(
+            url(../img/milo-sidebar.png) 1x,
+            url(../img/milo-sidebar@2x.png) 2x
+        );
+        background-image:
+          image-set(
+            url(../img/milo-sidebar.png) 1x,
+            url(../img/milo-sidebar@2x.png) 2x
+        );
+        height: 40px;
+        width: 101px;
+        top: 26px;
+        left: unset;
+        right: 30px;
       }
     }
     .active-element {

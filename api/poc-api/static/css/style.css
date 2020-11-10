@@ -94,6 +94,10 @@ section.auth-section .buttons-block a.skip-login-button {
   align-items: center;
 }
 
+.no-border {
+  border: none !important;
+}
+
 header.main-header {
   height: 120px;
   background: transparent linear-gradient(270deg, #F5F7FA 0%, #FFFFFF 100%) 0% 0% no-repeat padding-box;
@@ -108,7 +112,7 @@ header.main-header .logo {
   display: inline-block;
 }
 header.main-header .logo img {
-  padding-top: 30px;
+  padding-top: 15px;
   padding-left: 30px;
 }
 header.main-header .current-page-name {
@@ -187,12 +191,12 @@ section.main-section .sidebar .submenu .submenu-element {
   font-weight: 600;
   cursor: pointer;
 }
-section.main-section .sidebar #settings {
+section.main-section .sidebar #sidebar-footer {
   position: absolute;
   bottom: 0;
   width: 100%;
 }
-section.main-section .sidebar #settings .menu-element:first-child {
+section.main-section .sidebar #sidebar-footer .menu-element:first-child {
   margin-top: 0;
   border-top: 1px solid #E8EBF1;
 }
@@ -214,6 +218,9 @@ section.main-section .sidebar .menu-element {
 }
 section.main-section .sidebar .menu-element:first-child {
   margin-top: 120px;
+}
+section.main-section .sidebar .menu-element.no-pointer {
+  cursor: unset;
 }
 section.main-section .sidebar .menu-element i {
   position: absolute;
@@ -276,6 +283,25 @@ section.main-section .sidebar .menu-element .show-arrow-icon {
 section.main-section .sidebar .menu-element .show-arrow-icon-switch {
   transform: rotate(180deg);
   transition: transform 300ms ease;
+}
+section.main-section .sidebar .menu-element .gaia-icon {
+  background-image: url(../img/gaia-sidebar.png);
+  background-image: -webkit-image-set(url(../img/gaia-sidebar.png) 1x, url(../img/gaia-sidebar@2x.png) 2x);
+  background-image: image-set(url(../img/gaia-sidebar.png) 1x, url(../img/gaia-sidebar@2x.png) 2x);
+  height: 40px;
+  width: 112px;
+  top: 26px;
+  left: 30px;
+}
+section.main-section .sidebar .menu-element .milo-icon {
+  background-image: url(../img/milo-sidebar.png);
+  background-image: -webkit-image-set(url(../img/milo-sidebar.png) 1x, url(../img/milo-sidebar@2x.png) 2x);
+  background-image: image-set(url(../img/milo-sidebar.png) 1x, url(../img/milo-sidebar@2x.png) 2x);
+  height: 40px;
+  width: 101px;
+  top: 26px;
+  left: unset;
+  right: 30px;
 }
 section.main-section .sidebar .active-element {
   background: transparent linear-gradient(107deg, #72B400 0%, #86E100 100%) 0% 0% no-repeat padding-box;

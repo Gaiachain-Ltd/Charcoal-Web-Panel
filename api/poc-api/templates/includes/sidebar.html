@@ -18,16 +18,20 @@
             [[ $t('replantation') ]]
         </div>
     </router-link>
-    <div id="settings">
-        <router-link to="/settings" v-slot="{ href, route, navigate, isActive, isExactActive }">
-            <div class='menu-element' @click="navigate" :class="{ 'active-element': isActive }">
-                <i class="settings-icon"></i>
-                [[ $t('settings') ]]
-            </div>
-        </router-link>
-        <div class='menu-element' @click="switchLanguage()">
-            <i :class="$i18n.locale + '-language-icon'"></i>
-            [[ languageName ]]
+    <router-link to="/settings" v-slot="{ href, route, navigate, isActive, isExactActive }">
+        <div class='menu-element' @click="navigate" :class="{ 'active-element': isActive }">
+            <i class="settings-icon"></i>
+            [[ $t('settings') ]]
+        </div>
+    </router-link>
+    <div class='menu-element' @click="switchLanguage()">
+        <i :class="$i18n.locale + '-language-icon'"></i>
+        [[ languageName ]]
+    </div>
+    <div id="sidebar-footer">
+        <div class='menu-element no-border no-pointer'>
+            <a href="https://www.gaiachain.io"><i class="gaia-icon"></i></a>
+            <a href="https://www.milosolutions.com"><i class="milo-icon"></i></a>
         </div>
     </div>
 </div>
