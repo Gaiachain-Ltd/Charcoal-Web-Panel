@@ -2,6 +2,8 @@ from django.views.generic import TemplateView
 from django.conf import settings
 from django.http import Http404
 
+from .models import AppPackage
+
 
 class WebPanelView(TemplateView):
     template_name = 'main.html'
@@ -14,4 +16,5 @@ class WebPanelView(TemplateView):
 
     def get_context_data(self, **kwargs):
         kwargs['mapbox_token'] = settings.MAPBOX_TOKEN
+        kwargs['app_package'] = AppPackage.objects.first()
         return super().get_context_data(**kwargs)

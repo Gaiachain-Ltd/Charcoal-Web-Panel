@@ -100,7 +100,8 @@ const messages = {
         logout: 'Logout',
         email_address: 'E-mail address',
         password: 'Password',
-        connection: 'Connection'
+        connection: 'Connection',
+        download_app: 'Download app',
     },
     fr: {
         search: 'Rechercher',
@@ -192,7 +193,8 @@ const messages = {
         logout: 'Quitter',
         email_address: 'Adresse e-mail',
         password: 'Mot de passe',
-        connection: 'Connexion'
+        connection: 'Connexion',
+        download_app: 'Télécharger l\'application',
     },
 };
 

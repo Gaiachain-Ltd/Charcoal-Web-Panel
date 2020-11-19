@@ -1,6 +1,9 @@
 .no-border {
   border: none !important;
 }
+.no-padding {
+  padding: 0!important;
+}
 
 header.main-header {
   height: 120px;
@@ -130,6 +133,9 @@ section.main-section {
       &.no-pointer {
         cursor: unset;
       }
+      &.content-center {
+        justify-content: center;
+      }
       i {
         position: absolute;
         left: 20px;
@@ -240,6 +246,12 @@ section.main-section {
         transform: rotate(180deg);
         transition: transform 300ms ease;
       }
+      .android-icon {
+        background-image: url('../img/android-logo.svg');
+        width: 21px;
+        height: 24px;
+        left: 12px;
+      }
       .gaia-icon {
         background-image: url(../img/gaia-sidebar.png);
         background-image:
@@ -274,6 +286,16 @@ section.main-section {
         top: 26px;
         left: unset;
         right: 30px;
+      }
+      a.package-download {
+        position: relative;
+        text-transform: initial;
+        padding: 10px 9px 10px 40px;
+        font-size: 16px;
+        letter-spacing: 0px;
+        color: $white-color;
+        background: transparent linear-gradient(101deg, $sidebar-active-bg-from 0%, $sidebar-active-bg-to 100%) 0% 0% no-repeat padding-box;
+        border-radius: 5px;
       }
     }
     .active-element {

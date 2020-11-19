@@ -98,6 +98,10 @@ section.auth-section .buttons-block a.skip-login-button {
   border: none !important;
 }
 
+.no-padding {
+  padding: 0 !important;
+}
+
 header.main-header {
   height: 120px;
   background: transparent linear-gradient(270deg, #F5F7FA 0%, #FFFFFF 100%) 0% 0% no-repeat padding-box;
@@ -222,6 +226,9 @@ section.main-section .sidebar .menu-element:first-child {
 section.main-section .sidebar .menu-element.no-pointer {
   cursor: unset;
 }
+section.main-section .sidebar .menu-element.content-center {
+  justify-content: center;
+}
 section.main-section .sidebar .menu-element i {
   position: absolute;
   left: 20px;
@@ -284,6 +291,12 @@ section.main-section .sidebar .menu-element .show-arrow-icon-switch {
   transform: rotate(180deg);
   transition: transform 300ms ease;
 }
+section.main-section .sidebar .menu-element .android-icon {
+  background-image: url("../img/android-logo.svg");
+  width: 21px;
+  height: 24px;
+  left: 12px;
+}
 section.main-section .sidebar .menu-element .gaia-icon {
   background-image: url(../img/gaia-sidebar.png);
   background-image: -webkit-image-set(url(../img/gaia-sidebar.png) 1x, url(../img/gaia-sidebar@2x.png) 2x);
@@ -302,6 +315,16 @@ section.main-section .sidebar .menu-element .milo-icon {
   top: 26px;
   left: unset;
   right: 30px;
+}
+section.main-section .sidebar .menu-element a.package-download {
+  position: relative;
+  text-transform: initial;
+  padding: 10px 9px 10px 40px;
+  font-size: 16px;
+  letter-spacing: 0px;
+  color: #FFFFFF;
+  background: transparent linear-gradient(101deg, #72B400 0%, #86E100 100%) 0% 0% no-repeat padding-box;
+  border-radius: 5px;
 }
 section.main-section .sidebar .active-element {
   background: transparent linear-gradient(107deg, #72B400 0%, #86E100 100%) 0% 0% no-repeat padding-box;

@@ -29,6 +29,11 @@
         [[ languageName ]]
     </div>
     <div id="sidebar-footer">
+        {% if app_package %}
+            <div class='menu-element no-border no-pointer no-padding content-center'>
+                <a class="package-download" href="{{ app_package.file.url }}"><i class="android-icon"></i> [[ $t('download_app') ]]</a>
+            </div>
+        {% endif %}
         <div class='menu-element no-border no-pointer'>
             <a href="https://www.gaiachain.io"><i class="gaia-icon"></i></a>
             <a href="https://www.milosolutions.com"><i class="milo-icon"></i></a>
